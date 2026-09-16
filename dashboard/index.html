@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIOps-Pulse | Autonomous Performance Engineering & Anomaly Detection</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <!-- Chart.js for real-time telemetry streaming -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="logo-icon">⚡</div>
+        <div>
+          <h1>AIOps-Pulse</h1>
+          <span class="subtitle">Autonomous Performance Engineering & Telemetry Anomaly Detection</span>
+        </div>
+      </div>
+      <div class="nav-status">
+        <span class="cluster-badge online"><span class="dot"></span> Platform Online</span>
+        <span class="slo-badge" id="sloBadge">SLO: Healthy</span>
+        <button id="resetBtn" class="btn btn-outline">Reset System State</button>
+      </div>
+    </header>
+
+    <!-- Top KPI Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">Throughput</div>
+        <div class="kpi-value" id="kpiRps">0.0 <span class="kpi-unit">RPS</span></div>
+        <div class="kpi-footer" id="kpiTotalReq">Total: 0 requests</div>
+      </div>
+      <div class="kpi-card highlight">
+        <div class="kpi-header">p99 Latency (SLO: &lt;200ms)</div>
+        <div class="kpi-value" id="kpiP99">0.0 <span class="kpi-unit">ms</span></div>
+        <div class="kpi-footer" id="kpiP50">p50: 0.0ms | p95: 0.0ms</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">Active Virtual Users</div>
+        <div class="kpi-value" id="kpiVus">0 <span class="kpi-unit">VUs</span></div>
+        <div class="kpi-footer" id="kpiStatus">Engine: Idle</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">Error Rate</div>
+        <div class="kpi-value" id="kpiError">0.0 <span class="kpi-unit">%</span></div>
+        <div class="kpi-footer" id="kpiFailed">0 failed requests</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">Memory Footprint</div>
+        <div class="kpi-value" id="kpiMemory">0.0 <span class="kpi-unit">MB</span></div>
+        <div class="kpi-footer" id="kpiHeap">Heap Leaked: 0 KB</div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Split -->
+    <div class="main-layout">
+      <!-- Left Column: Controls & Regressions -->
+      <aside class="sidebar">
+        <!-- Load Workload Control Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>🎯 Benchmark Workload</h3>
+          </div>
+          <div class="form-group">
+            <label for="workloadSelect">Workload Profile</label>
+            <select id="workloadSelect" class="custom-select">
+              <option value="baseline">Nominal Baseline (50 VUs)</option>
+              <option value="spike">Spike Traffic Surge (500+ VUs)</option>
+              <option value="soak">Soak / Endurance Test (Leak Check)</option>
+              <option value="stress">Step-Stress Saturation (1000 VUs)</option>
+            </select>
+            <p class="field-hint" id="workloadDesc">Steady 50 virtual users validating nominal SLO parameters.</p>
+          </div>
+          <div class="button-group">
+            <button id="startLoadBtn" class="btn btn-primary">Start Benchmark</button>
+            <button id="stopLoadBtn" class="btn btn-danger" disabled>Stop Load</button>
+          </div>
+        </div>
+
+        <!-- Injected Production Bottlenecks -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>⚠️ Inject Production Regressions</h3>
+          </div>
+          <p class="panel-subtitle">Test how the AIOps engine detects and attributes specific failure modes:</p>
+          
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <strong>DB Connection Pool Starvation</strong>
+              <span>Unindexed table scan + pool exhaustion</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggleDb">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <strong>Heap Memory Leak</strong>
+              <span>Uncollected buffer growth in telemetry ingestion</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggleMemory">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <strong>Event-Loop CPU Lock</strong>
+              <span>CPU spinlock blocking synchronous execution</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggleCpu">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Prometheus Metrics Link -->
+        <div class="panel links-panel">
+          <h4>Telemetry Exporter</h4>
+          <a href="/metrics" target="_blank" class="link-item">View Native Prometheus Metrics (/metrics) ↗</a>
+        </div>
+      </aside>
+
+      <!-- Center & Right: Live Telemetry, Profiler & AI RCA -->
+      <main class="content-area">
+        <!-- Live Charts -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>📈 Live Golden Signals & Latency Curves</h3>
+            <div class="chart-legend-custom">
+              <span class="badge-tag p50">p50</span>
+              <span class="badge-tag p95">p95</span>
+              <span class="badge-tag p99">p99</span>
+              <span class="badge-tag slo">SLO Limit (200ms)</span>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="latencyChart"></canvas>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="panel half">
+            <div class="panel-header">
+              <h3>Throughput & Concurrency</h3>
+            </div>
+            <div class="chart-container-sm">
+              <canvas id="throughputChart"></canvas>
+            </div>
+          </div>
+          <div class="panel half">
+            <div class="panel-header">
+              <h3>Resource Saturation (Memory RSS)</h3>
+            </div>
+            <div class="chart-container-sm">
+              <canvas id="resourceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- AIOps Section: Incident RCA + Anomaly Radar -->
+        <div class="aiops-grid">
+          <!-- Live Anomaly Feed -->
+          <div class="panel">
+            <div class="panel-header">
+              <h3>🤖 AIOps Telemetry Anomaly Stream</h3>
+              <span class="badge" id="anomalyCountBadge">0 Flags</span>
+            </div>
+            <div class="anomaly-feed" id="anomalyFeed">
+              <div class="empty-state">No anomalies detected. Telemetry operating within normal variance.</div>
+            </div>
+          </div>
+
+          <!-- Root Cause Analysis (RCA) -->
+          <div class="panel highlight-panel">
+            <div class="panel-header">
+              <h3>🧠 Automated Root Cause Analysis (RCA)</h3>
+              <button id="downloadRcaBtn" class="btn btn-sm btn-outline">Export CI/CD Audit Report</button>
+            </div>
+            <div class="rca-card" id="rcaCard">
+              <div class="rca-header">
+                <span class="badge" id="rcaSeverity">NOMINAL</span>
+                <span class="rca-id" id="rcaId">INC-BASELINE</span>
+                <span class="rca-confidence" id="rcaConfidence">Confidence: 99%</span>
+              </div>
+              <h4 id="rcaTitle" class="rca-title">Nominal System Baseline Performance</h4>
+              <p id="rcaDiagnosis" class="rca-body">All telemetry streams operating within nominal parameters. p99 latency satisfies contractual SLO (&lt;200ms).</p>
+              
+              <div class="rca-section">
+                <h5>Profiler Hotspot Attribution:</h5>
+                <code id="rcaHotspot">uvicorn.run (Balanced I/O)</code>
+              </div>
+
+              <div class="rca-section">
+                <h5>Prescriptive Remediation Action Plan:</h5>
+                <ul id="rcaRemediationList" class="remediation-list">
+                  <li>Continue continuous monitoring and automated regression gating.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profiler Flame Graph Tree -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>🔥 Execution Flame Graph & Call-Stack Bottleneck</h3>
+            <span class="badge" id="hotspotBadge">None (Nominal)</span>
+          </div>
+          <p class="panel-subtitle">Hierarchical execution time attribution across application, database, and system calls:</p>
+          <div class="flamegraph-tree" id="flamegraphView">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
