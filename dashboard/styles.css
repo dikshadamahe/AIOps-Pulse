@@ -94,6 +94,11 @@ body.parca-body {
   letter-spacing: -0.2px;
 }
 
+.brand-dot {
+  color: var(--parca-purple-light);
+  margin: 0 1px;
+}
+
 .parca-nav-menu {
   display: flex;
   gap: 28px;
