@@ -619,6 +619,11 @@ async function fetchTelemetryData() {
           kpiStatus.className = "badge-status-idle";
         }
       }
+
+      const tryNowBtn = document.getElementById("heroTryNowBtn");
+      if (tryNowBtn) {
+        tryNowBtn.textContent = currentState.isRunning ? "Running Benchmark..." : "Run Benchmark";
+      }
     }
 
     // Latest metric snapshot
