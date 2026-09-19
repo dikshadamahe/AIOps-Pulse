@@ -107,18 +107,3 @@ docker-compose -f docker/docker-compose.yml up --build
 2. **Simulate DB Contention**: Toggle **"DB Connection Pool Starvation"** ON. Notice p99 latency diverges beyond the 200ms SLO limit to 1,200ms+. The **Z-Score Detector** immediately flags a statistical anomaly ($Z > 3.5\sigma$), and the **RCA card** attributes the degradation to `DB_POOL_SEMAPHORE.acquire`.
 3. **Simulate Memory Leak**: Toggle **"Heap Memory Leak"** ON during a *Soak Test*. Watch the memory footprint climb linearly. The **Isolation Forest** flags a multivariate anomaly even before request errors occur.
 4. **Export Audit Report**: Click **"Export CI/CD Audit Report"** to download an executive incident breakdown.
-
----
-
-## 💼 Omnissa Sr. Performance Engineer Interview Guide
-
-When interviewing for Performance Engineering / SRE roles at Omnissa, reference this project directly:
-
-### Q1: "How do you distinguish between application bottlenecks and infrastructure bottlenecks?"
-> *"In AIOps-Pulse, I correlated application-level latency percentiles (p50/p95/p99) with infrastructure metrics (CPU %, RSS memory, thread saturation). When p50 remained low but p99 diverged sharply under high concurrency, our Isolation Forest and flame-graph profiler attributed the root cause to database connection semaphore starvation rather than host CPU saturation. Profiling revealed 68% of thread time was spent in `acquire()` waits on an unindexed query."*
-
-### Q2: "Why use p99 latency instead of average response time?"
-> *"Averages hide the long-tail latency experienced by enterprise customers. In our baseline tests, an average response time of 45ms concealed a p99 latency spike of 1,800ms caused by connection pool queue delays. For strict SLO compliance, p99 and p99.9 provide the true measure of user experience and system capacity."*
-
-### Q3: "How do you incorporate AI/ML into modern Performance Engineering?"
-> *"Static alert thresholds (e.g. CPU > 80%) generate high false-positive rates during benign traffic spikes. In AIOps-Pulse, I implemented rolling Z-scoring to adaptively detect abnormal latency variance, combined with multivariate Isolation Forest to detect cross-metric anomalies (such as linear heap accumulation during steady VU loads) before SLO degradation becomes catastrophic."*
