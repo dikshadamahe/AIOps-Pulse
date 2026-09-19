@@ -1,29 +1,37 @@
 /* ==========================================================================
-   AIOps-Pulse: Parca.dev Light & High-Contrast Performance Theme
+   AIOps-Pulse: Parca.dev UI/UX Theme
+   Black, White & Parca Signature Restrained Palette (Zero Neon Colors)
    ========================================================================== */
 
 :root {
-  --parca-bg-white: #ffffff;
-  --parca-bg-light: #f8fafc;
-  --parca-bg-dark: #07090e;
-  --parca-bg-card-dark: #0f141e;
+  /* Parca Black & White Foundation */
+  --parca-black: #0b0f19;
+  --parca-dark-card: #111827;
+  --parca-white: #ffffff;
+  --parca-light-bg: #f8fafc;
+  
+  /* Slate & Muted Grays */
   --parca-border-light: #e2e8f0;
   --parca-border-dark: #1e293b;
-
-  --parca-text-dark: #090d16;
+  --parca-text-dark: #0f172a;
   --parca-text-body: #334155;
   --parca-text-muted: #64748b;
+  --parca-text-light: #94a3b8;
   --parca-text-white: #ffffff;
 
-  --accent-orange: #f97316;
-  --accent-yellow: #eab308;
-  --accent-purple: #8b5cf6;
-  --accent-fuchsia: #d946ef;
-  --accent-green: #10b981;
-  --accent-red: #f43f5e;
+  /* Parca Signature Accents (Matte, Non-Neon) */
+  --parca-purple: #7c3aed;
+  --parca-purple-light: #8b5cf6;
+  --parca-indigo: #4338ca;
+  --parca-fuchsia: #d946ef;
+  --parca-green: #10b981;
+  --parca-amber: #f59e0b;
+  --parca-red: #ef4444;
+  --parca-blue: #3b82f6;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 * {
@@ -32,54 +40,23 @@
   padding: 0;
 }
 
-body.parca-theme {
-  background-color: var(--parca-bg-white);
+body.parca-body {
+  background-color: var(--parca-light-bg);
   color: var(--parca-text-body);
   font-family: var(--font-sans);
   line-height: 1.5;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ==========================================================================
-   Top Announcement Banner & Navbar
+   1. Parca Navigation Bar
    ========================================================================== */
 
-.parca-top-banner {
-  background: #090d16;
-  color: #f8fafc;
-  border-bottom: 1px solid #1e293b;
-  padding: 10px 24px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.banner-inner {
-  max-width: 1300px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.banner-badge {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 20px;
-  text-decoration: none;
-  font-size: 12px;
-  transition: background 0.2s;
-}
-.banner-badge:hover { background: rgba(255, 255, 255, 0.22); }
-
-/* ==========================================================================
-   Exact Parca Dark Navbar & Hero Section
-   ========================================================================== */
-
-.parca-navbar-dark {
-  background: rgba(11, 15, 25, 0.95);
+.parca-navbar {
+  background: rgba(11, 15, 25, 0.96);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--parca-border-dark);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -95,86 +72,121 @@ body.parca-theme {
   padding: 0 24px;
 }
 
-.parca-logo-brand {
+.parca-brand {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 8px;
   text-decoration: none;
 }
 
-.parca-logo-text {
+.brand-name {
   color: #ffffff;
-  font-family: var(--font-sans);
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
-  letter-spacing: -2px;
+  letter-spacing: -1.5px;
   text-transform: lowercase;
 }
 
-.parca-menu-links {
-  display: flex;
-  gap: 32px;
+.brand-sub {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
-.parca-nav-link {
+.parca-nav-menu {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.nav-link {
   color: #94a3b8;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   transition: color 0.2s;
 }
-.parca-nav-link:hover {
+.nav-link:hover {
   color: #ffffff;
 }
 
-.nav-actions-group {
+.mono-link {
+  font-family: var(--font-mono);
+  color: var(--parca-blue);
+  background: rgba(59, 130, 246, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.nav-actions {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.parca-btn-dark {
+.btn-parca-dark {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #161b26;
-  border: 1px solid #2b3547;
+  border: 1px solid #283344;
   color: #f8fafc;
-  padding: 8px 16px;
+  padding: 7px 14px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.2s;
 }
-.parca-btn-dark:hover {
-  background: #1f2737;
+.btn-parca-dark:hover {
+  background: #1e2535;
   border-color: #3b475e;
 }
 
-.parca-btn-white {
+.btn-parca-reset {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-parca-reset:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btn-parca-white {
   background: #ffffff;
   color: #0b0f19;
-  padding: 9px 20px;
+  border: none;
+  padding: 8px 18px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 700;
-  text-decoration: none;
+  cursor: pointer;
   transition: all 0.2s;
 }
-.parca-btn-white:hover {
+.btn-parca-white:hover {
   background: #f1f5f9;
   transform: translateY(-1px);
 }
 
 /* ==========================================================================
-   Exact Parca Hero Section (Live Dynamic Hex Matrix Canvas)
+   2. Parca Hero Section (Live Dynamic Hex Canvas Animation)
    ========================================================================== */
 
-.parca-hero-exact {
+.parca-hero-section {
   position: relative;
-  background-color: #0b0f19;
+  background-color: var(--parca-black);
   color: #ffffff;
-  min-height: 82vh;
+  min-height: 84vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -192,7 +204,7 @@ body.parca-theme {
   pointer-events: none;
 }
 
-.hero-content-exact {
+.hero-container {
   position: relative;
   z-index: 2;
   max-width: 1280px;
@@ -218,21 +230,21 @@ body.parca-theme {
   word-spacing: 4px;
 }
 
-.hero-interactive-flow {
+.hero-flow-layout {
   display: flex;
   flex-direction: column;
   position: relative;
   margin-bottom: 40px;
 }
 
-.hero-bottlenecks-align {
+.hero-bottlenecks-box {
   display: flex;
   justify-content: flex-end;
   width: 100%;
   padding-right: 18px;
 }
 
-.hero-word-bottlenecks {
+.hero-bottlenecks-word {
   font-size: clamp(30px, 4.2vw, 54px);
   font-weight: 900;
   color: #ffffff;
@@ -240,7 +252,7 @@ body.parca-theme {
   text-transform: uppercase;
 }
 
-.hero-arrow-flow-container {
+.hero-action-row {
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -248,7 +260,7 @@ body.parca-theme {
   width: 100%;
 }
 
-.hero-purple-gradient-btn {
+.btn-parca-purple-cta {
   background: linear-gradient(135deg, #4338ca 0%, #7c3aed 50%, #d946ef 100%);
   color: #ffffff;
   font-size: 18px;
@@ -259,18 +271,18 @@ body.parca-theme {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 28px rgba(124, 58, 237, 0.45);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   z-index: 3;
   flex-shrink: 0;
 }
-.hero-purple-gradient-btn:hover {
+.btn-parca-purple-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 36px rgba(217, 70, 239, 0.55);
+  box-shadow: 0 8px 30px rgba(217, 70, 239, 0.45);
 }
 
-.hero-connector-svg-holder {
+.hero-arrow-connector {
   flex: 1;
   height: 72px;
   position: relative;
@@ -278,44 +290,71 @@ body.parca-theme {
   overflow: visible;
 }
 
-.hero-flow-svg {
+.arrow-svg {
   width: 100%;
   height: 100%;
   display: block;
   overflow: visible;
 }
 
-/* Hero Floating Telemetry Pill */
-.hero-telemetry-pill {
+/* Hero Floating Telemetry Pill (Matte, High-Contrast) */
+.hero-floating-pill {
   display: inline-flex;
   align-items: center;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 14px 28px;
   gap: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
 }
 
-.pill-metric {
+.pill-col {
   display: flex;
   flex-direction: column;
 }
-.pill-metric .p-lbl {
+
+.pill-lbl {
   font-size: 10px;
   font-weight: 700;
   color: #64748b;
   letter-spacing: 0.5px;
 }
-.pill-metric .p-val {
+
+.pill-num {
   font-size: 20px;
   font-weight: 800;
-  color: #fff;
+  color: #ffffff;
+  font-family: var(--font-mono);
 }
-.pill-metric .p-val small { font-size: 11px; color: #94a3b8; font-weight: 500; }
-.pill-metric.highlight .p-val { color: var(--accent-orange); }
-.text-green { color: var(--accent-green) !important; }
+.pill-num small {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.pill-col.highlight .pill-num {
+  color: #f8fafc;
+}
+
+.pill-status-healthy {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--parca-green);
+  background: rgba(16, 185, 129, 0.12);
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.pill-status-breach {
+  color: var(--parca-red);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
 
 .pill-divider {
   width: 1px;
@@ -324,677 +363,627 @@ body.parca-theme {
 }
 
 /* ==========================================================================
-   SECTION 2: Parca White Statement Section (Screenshot 1)
+   3. Statement Bar
    ========================================================================== */
 
-.parca-statement-section {
-  background-color: var(--parca-bg-white);
-  padding: 110px 24px;
+.parca-statement-bar {
+  background-color: var(--parca-white);
+  border-bottom: 1px solid var(--parca-border-light);
+  padding: 50px 24px;
 }
 
-.statement-container {
+.statement-inner {
   max-width: 1100px;
   margin: 0 auto;
+  text-align: center;
 }
 
-.statement-heading {
-  font-size: 52px;
-  font-weight: 900;
-  line-height: 1.25;
-  letter-spacing: -1.5px;
+.statement-inner h2 {
+  font-size: 28px;
+  font-weight: 700;
   color: var(--parca-text-dark);
+  letter-spacing: -0.5px;
+  line-height: 1.4;
 }
 
-.accent-orange {
-  color: var(--accent-orange);
-}
-
-.accent-yellow {
-  color: var(--accent-yellow);
+.statement-inner h2 span {
+  color: var(--parca-purple);
+  text-decoration: underline;
+  text-decoration-color: rgba(124, 58, 237, 0.3);
+  text-underline-offset: 4px;
 }
 
 /* ==========================================================================
-   SECTION 3: Parca Interactive Code Section (Screenshot 4 & 5)
+   4. Main Workspace (Cards, Grid, Controls)
    ========================================================================== */
 
-.parca-code-section {
-  background-color: #f8fafc;
-  border-top: 1px solid var(--parca-border-light);
-  border-bottom: 1px solid var(--parca-border-light);
-  padding: 90px 24px 100px;
+.parca-workspace {
+  max-width: 1320px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
 }
 
-.code-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 28px;
+  align-items: start;
 }
 
-.code-heading {
-  font-size: 44px;
-  font-weight: 900;
-  line-height: 1.25;
-  letter-spacing: -1px;
-  color: var(--parca-text-dark);
-  margin-bottom: 12px;
+@media (max-width: 1024px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.code-symbol {
-  display: inline-block;
-  background: rgba(6, 182, 212, 0.15);
-  color: #0891b2;
-  padding: 0 8px;
-  border-radius: 6px;
-}
-
-.infinity-symbol {
-  display: inline-block;
-  background: rgba(249, 115, 22, 0.15);
-  color: #ea580c;
-  padding: 0 8px;
-  border-radius: 6px;
-}
-
-.code-subheading {
-  font-size: 16px;
-  color: var(--parca-text-muted);
-  margin-bottom: 28px;
-}
-
-.code-tab-picker {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-
-.code-tab {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  background: #ffffff;
-  border: 1px solid var(--parca-border-light);
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--parca-text-dark);
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.code-tab:hover {
-  border-color: var(--accent-purple);
-  transform: translateY(-1px);
-}
-
-.code-tab.active {
-  background: #090d16;
-  color: #ffffff;
-  border-color: #090d16;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.tab-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.tab-dot.db { background: var(--accent-red); }
-.tab-dot.mem { background: var(--accent-yellow); }
-.tab-dot.cpu { background: var(--accent-orange); }
-.tab-dot.nominal { background: var(--accent-green); }
-
-/* Overlapping macOS Code Windows */
-.editor-workspace {
-  position: relative;
-  height: 440px;
-  margin-bottom: 30px;
-}
-
-.macos-window {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 45px rgba(0,0,0,0.12);
-  border: 1px solid var(--parca-border-light);
-  background: #ffffff;
-  position: absolute;
-}
-
-.macos-window.window-back {
-  width: 580px;
-  top: 15px;
-  left: 20px;
-  background: #f1f5f9;
-  opacity: 0.6;
-  z-index: 1;
-}
-
-.macos-window.window-front {
-  width: 720px;
-  top: 45px;
-  left: 90px;
-  z-index: 2;
-  border: 1px solid #cbd5e1;
-}
-
-.window-titlebar {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.window-dots {
-  display: flex;
-  gap: 6px;
-}
-.window-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
-.d-red { background: #ef4444; }
-.d-yellow { background: #f59e0b; }
-.d-green { background: #10b981; }
-
-.window-title {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--parca-text-muted);
-  font-weight: 600;
-}
-
-.editor-lang-badge {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: 700;
-  background: #e2e8f0;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: var(--parca-text-dark);
-}
-
-.code-lines {
-  padding: 16px 20px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.6;
-  color: #1e293b;
-}
-
-.code-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.code-row .ln {
-  color: #94a3b8;
-  width: 24px;
-  user-select: none;
-}
-
-.code-row.slow-hotspot {
-  background: #ffe4e6;
-  border-left: 3px solid #f43f5e;
-  font-weight: 700;
-}
-
-/* Floating Circular Badges (Parca Screenshot 4 & 5) */
-.parca-badge {
-  position: absolute;
-  background: #ffffff;
-  border-radius: 50%;
-  width: 140px;
-  height: 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-  border: 4px solid #f1f5f9;
-  z-index: 3;
-  transition: transform 0.3s;
-}
-
-.parca-badge:hover { transform: scale(1.08); }
-
-.badge-number {
-  font-size: 32px;
-  font-weight: 900;
-  line-height: 1.0;
-}
-.badge-label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-}
-.badge-addr {
-  font-size: 8px;
-  font-family: var(--font-mono);
-  color: var(--parca-text-muted);
-}
-
-.badge-cpu {
-  top: 15px;
-  right: 140px;
-  border-color: rgba(249, 115, 22, 0.3);
-  color: var(--accent-orange);
-}
-
-.badge-mem {
-  bottom: 25px;
-  right: 250px;
-  border-color: rgba(234, 179, 8, 0.3);
-  color: var(--accent-yellow);
-}
-
-.badge-io {
-  top: 150px;
-  right: 30px;
-  border-color: rgba(139, 92, 246, 0.4);
-  color: var(--accent-purple);
-  animation: pulseBadge 2s infinite alternate;
-}
-
-@keyframes pulseBadge {
-  from { box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2); }
-  to { box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4); }
-}
-
-/* Action Box directly under code */
-.code-action-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #ffffff;
+/* Clean Parca Cards (Matte, 1px Slate Border, Zero Neon) */
+.parca-card {
+  background: var(--parca-white);
   border: 1px solid var(--parca-border-light);
   border-radius: 10px;
-  padding: 16px 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.action-info h4 {
-  font-size: 15px;
-  font-weight: 800;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 700;
   color: var(--parca-text-dark);
-  margin-bottom: 4px;
+  letter-spacing: -0.2px;
 }
 
-.action-info p {
+.card-subtitle {
+  display: block;
+  font-size: 12px;
+  color: var(--parca-text-muted);
+  margin-top: 2px;
+}
+
+.card-desc {
   font-size: 13px;
   color: var(--parca-text-muted);
+  margin-bottom: 16px;
+  line-height: 1.4;
 }
 
-.btn-toggle-active {
-  background: #090d16;
+/* Form Controls */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--parca-text-dark);
+  margin-bottom: 6px;
+}
+
+.parca-select {
+  width: 100%;
+  background: var(--parca-light-bg);
+  border: 1px solid var(--parca-border-light);
+  color: var(--parca-text-dark);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.parca-select:focus {
+  border-color: var(--parca-purple);
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--parca-text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.btn-group-dual {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-parca-primary {
+  flex: 1;
+  background: var(--parca-black);
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-parca-primary:hover {
+  background: #1e293b;
+}
+.btn-parca-primary:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.btn-parca-danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 10px 16px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
-.btn-toggle-active:hover {
-  background: var(--accent-purple);
-  transform: translateY(-1px);
+.btn-parca-danger:hover:not(:disabled) {
+  background: #fecaca;
+}
+.btn-parca-danger:disabled {
+  background: var(--parca-light-bg);
+  color: #cbd5e1;
+  border-color: var(--parca-border-light);
+  cursor: not-allowed;
 }
 
-/* ==========================================================================
-   SECTION 4: Parca 6-Feature Grid (Screenshot 3)
-   ========================================================================== */
-
-.parca-features-section {
-  background-color: #07090e;
-  color: #ffffff;
-  padding: 100px 24px;
-}
-
-.features-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.features-heading {
-  font-size: 46px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  line-height: 1.2;
-  margin-bottom: 60px;
-  max-width: 800px;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-
-.feature-card {
-  background: #0f141e;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  padding: 28px;
-  transition: transform 0.2s, border-color 0.2s;
-}
-
-.feature-card:hover {
-  transform: translateY(-3px);
-  border-color: #38bdf8;
-}
-
-.feature-icon {
-  margin-bottom: 20px;
-}
-
-.feature-card h3 {
-  font-size: 18px;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 10px;
-}
-
-.feature-card p {
-  font-size: 14px;
-  color: #94a3b8;
-  line-height: 1.6;
-}
-
-/* ==========================================================================
-   SECTION 5: Telemetry, Profiler & APM Section
-   ========================================================================== */
-
-.parca-telemetry-section {
-  background-color: #ffffff;
-  padding: 90px 24px;
-  border-bottom: 1px solid var(--parca-border-light);
-}
-
-.telemetry-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.telemetry-header-bar {
+/* Chaos Toggle Rows */
+.toggle-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 24px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--parca-border-light);
+}
+.toggle-row:last-of-type {
+  border-bottom: none;
 }
 
-.sub-pill {
+.toggle-text strong {
+  display: block;
+  font-size: 13px;
+  color: var(--parca-text-dark);
+}
+.toggle-text span {
+  display: block;
   font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--accent-purple);
-  text-transform: uppercase;
+  color: var(--parca-text-muted);
 }
 
-.telemetry-header-bar h2 {
-  font-size: 32px;
-  font-weight: 900;
+/* Clean Switch */
+.parca-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.parca-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #cbd5e1;
+  transition: .3s;
+  border-radius: 24px;
+}
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+.parca-switch input:checked + .switch-slider {
+  background-color: var(--parca-purple);
+}
+.parca-switch input:checked + .switch-slider:before {
+  transform: translateX(20px);
+}
+
+.card-footer-action {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--parca-border-light);
+}
+
+.btn-parca-reset-full {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--parca-border-light);
+  color: var(--parca-text-muted);
+  padding: 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-parca-reset-full:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* Exporter Stats */
+.exporter-stats {
+  background: var(--parca-light-bg);
+  border: 1px solid var(--parca-border-light);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 4px 0;
+  color: var(--parca-text-body);
+}
+.stat-row strong {
+  font-family: var(--font-mono);
   color: var(--parca-text-dark);
 }
 
-.hotspot-flag {
-  font-family: var(--font-mono);
+.exporter-link {
+  display: block;
+  text-align: center;
   font-size: 12px;
-  background: #f1f5f9;
-  border: 1px solid var(--parca-border-light);
-  padding: 6px 14px;
+  font-weight: 600;
+  color: var(--parca-blue);
+  text-decoration: none;
+  padding: 8px;
+  background: rgba(59, 130, 246, 0.08);
   border-radius: 6px;
-  color: var(--accent-orange);
-  font-weight: 700;
+  transition: background 0.2s;
+}
+.exporter-link:hover {
+  background: rgba(59, 130, 246, 0.15);
 }
 
-.flamegraph-card {
-  background: #090d16;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-}
+/* ==========================================================================
+   5. Telemetry Charts & Profiler
+   ========================================================================== */
 
-.flame-viewer-canvas {
-  max-height: 360px;
-  overflow-y: auto;
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.flame-bar-row {
+.chart-legend-tags {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 8px;
+  gap: 8px;
+}
+
+.tag-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
   border-radius: 4px;
-  margin-bottom: 4px;
+  font-family: var(--font-mono);
 }
 
-.flame-bar-row.hotspot {
-  background: rgba(244, 63, 94, 0.2);
-  border-left: 3px solid var(--accent-red);
+.tag-p50 {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--parca-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+.tag-p95 {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--parca-amber);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.tag-p99 {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--parca-red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.tag-slo {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--parca-text-muted);
+  border: 1px dashed rgba(100, 116, 139, 0.4);
 }
 
-.flame-visual-bar {
-  height: 8px;
-  background: linear-gradient(90deg, var(--accent-yellow), var(--accent-red));
-  border-radius: 4px;
+.chart-holder-large {
+  position: relative;
+  height: 280px;
+  width: 100%;
 }
 
-.apm-charts-grid {
+.charts-dual-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
 }
 
-.chart-card {
-  background: #ffffff;
-  border: 1px solid var(--parca-border-light);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+@media (max-width: 768px) {
+  .charts-dual-row {
+    grid-template-columns: 1fr;
+  }
 }
 
-.card-top {
+.half-card {
+  margin-bottom: 24px;
+}
+
+.chart-holder-small {
+  position: relative;
+  height: 190px;
+  width: 100%;
+}
+
+/* Continuous Flame Graph Tree (Parca Styled Stack) */
+.badge-hotspot-clean {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--parca-text-muted);
+  background: var(--parca-light-bg);
+  border: 1px solid var(--parca-border-light);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+}
+.badge-hotspot-clean.hot {
+  color: var(--parca-red);
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.flamegraph-render-box {
+  background: #0f141e;
+  border: 1px solid var(--parca-border-dark);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   6. AIOps RCA & Incident Intelligence
+   ========================================================================== */
+
+.aiops-intelligence-row {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .aiops-intelligence-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.badge-anomaly-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--parca-green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.anomaly-stream-list {
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 12px;
+}
+
+.empty-state-text {
+  color: var(--parca-text-muted);
+  padding: 24px 0;
+  text-align: center;
+  font-size: 13px;
+}
+
+.anomaly-item {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--parca-light-bg);
+  border: 1px solid var(--parca-border-light);
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.anomaly-item strong {
+  color: var(--parca-red);
+  display: block;
+}
+
+/* RCA Incident Details */
+.rca-header-left {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
+}
+
+.badge-severity {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--parca-green);
+}
+.badge-severity.breach {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.rca-incident-code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--parca-text-muted);
+}
+
+.rca-confidence-score {
+  font-size: 12px;
+  color: var(--parca-text-muted);
+}
+
+.btn-parca-export {
+  background: transparent;
+  border: 1px solid var(--parca-border-light);
+  color: var(--parca-text-dark);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-parca-export:hover {
+  background: var(--parca-light-bg);
+  border-color: var(--parca-text-muted);
+}
+
+.rca-headline {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--parca-text-dark);
+  margin: 12px 0 6px;
+}
+
+.rca-summary-text {
+  font-size: 13px;
+  color: var(--parca-text-muted);
+  line-height: 1.5;
   margin-bottom: 16px;
 }
 
-.card-top h4 {
-  font-size: 14px;
-  font-weight: 800;
+.rca-columns-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: var(--parca-light-bg);
+  border: 1px solid var(--parca-border-light);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.rca-col-item h5 {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--parca-text-dark);
+  margin-bottom: 6px;
 }
 
-.legend-tags { display: flex; gap: 6px; }
-.legend-tags span { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
-.tag-p50 { background: #e0f2fe; color: #0284c7; }
-.tag-p95 { background: #fef3c7; color: #d97706; }
-.tag-p99 { background: #fee2e2; color: #dc2626; }
-.tag-slo { background: #f1f5f9; color: #64748b; border: 1px dashed #94a3b8; }
-
-.canvas-holder-lg {
-  height: 220px;
-  position: relative;
-}
-
-/* ==========================================================================
-   SECTION 6: Root Cause Analysis (RCA) Section
-   ========================================================================== */
-
-.parca-rca-section {
-  background-color: #f8fafc;
-  padding: 80px 24px;
-}
-
-.rca-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.rca-card-main {
+.rca-col-item code {
+  font-family: var(--font-mono);
+  font-size: 12px;
   background: #ffffff;
   border: 1px solid var(--parca-border-light);
-  border-radius: 12px;
-  padding: 28px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-}
-
-.rca-top-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.rca-badge {
-  background: var(--accent-green);
-  color: white;
-  padding: 4px 10px;
+  padding: 4px 8px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 800;
-}
-.rca-badge.CRITICAL { background: var(--accent-red); }
-.rca-badge.WARNING { background: var(--accent-yellow); color: black; }
-
-.rca-code {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--parca-text-muted);
-}
-
-.rca-confidence {
-  font-size: 12px;
-  color: var(--accent-purple);
-  font-weight: 700;
-}
-
-.btn-download-rca {
-  margin-left: auto;
-  background: transparent;
-  border: 1px solid var(--parca-border-light);
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  color: var(--parca-text-dark);
-}
-.btn-download-rca:hover { background: #f1f5f9; }
-
-.rca-heading {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--parca-text-dark);
-  margin-bottom: 8px;
-}
-
-.rca-summary {
-  font-size: 14px;
-  color: var(--parca-text-body);
-  margin-bottom: 20px;
-}
-
-.rca-details-row {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 24px;
-  border-top: 1px solid var(--parca-border-light);
-  padding-top: 20px;
-}
-
-.rca-col h5 {
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--parca-text-muted);
-  margin-bottom: 8px;
-}
-
-.rca-col code {
   display: inline-block;
-  background: #f1f5f9;
-  border: 1px solid var(--parca-border-light);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  color: var(--accent-purple);
-  font-size: 13px;
+  color: var(--parca-red);
 }
 
-.rca-col ul {
-  padding-left: 20px;
-  font-size: 13px;
+.remediation-clean-list {
+  padding-left: 18px;
+  font-size: 12px;
   color: var(--parca-text-body);
 }
-.rca-col li { margin-bottom: 4px; }
 
 /* ==========================================================================
-   Floating AI Copilot Drawer
+   7. AI Diagnostic Copilot Slideover Drawer
    ========================================================================== */
 
-.copilot-drawer {
+.copilot-slideover {
   position: fixed;
   top: 0;
-  right: -440px;
+  right: -460px;
   width: 440px;
   height: 100vh;
-  background: #ffffff;
-  border-left: 1px solid var(--parca-border-light);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+  background: #0f1422;
+  border-left: 1px solid var(--parca-border-dark);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
-  z-index: 200;
+  z-index: 1000;
   transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #ffffff;
+}
+.copilot-slideover.open {
+  right: 0;
 }
 
-.copilot-drawer.open { right: 0; }
-
-.copilot-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--parca-border-light);
+.copilot-top-bar {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--parca-border-dark);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.copilot-title { display: flex; align-items: center; gap: 10px; }
-.copilot-title h3 { font-size: 14px; font-weight: 800; color: var(--parca-text-dark); }
-.copilot-title .sub { font-size: 11px; color: var(--parca-text-muted); }
-
-.close-btn {
-  background: transparent;
-  border: none;
-  font-size: 22px;
-  color: var(--parca-text-muted);
-  cursor: pointer;
+.copilot-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.copilot-icon {
+  font-size: 20px;
+  color: var(--parca-purple-light);
+}
+.copilot-brand-title h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.copilot-sub {
+  font-size: 11px;
+  color: #94a3b8;
 }
 
-.copilot-body {
+.copilot-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 22px;
+  cursor: pointer;
+}
+.copilot-close-btn:hover {
+  color: #ffffff;
+}
+
+.copilot-chat-body {
   flex: 1;
-  padding: 16px;
   overflow-y: auto;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.chat-msg { display: flex; gap: 10px; font-size: 12px; }
-.chat-msg.user { flex-direction: row-reverse; }
+.chat-msg {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.chat-msg.user {
+  flex-direction: row-reverse;
+}
 
 .msg-avatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1002,233 +991,153 @@ body.parca-theme {
   flex-shrink: 0;
 }
 
-.chat-msg.ai .msg-content {
-  background: #f8fafc;
-  border: 1px solid var(--parca-border-light);
-  padding: 10px 14px;
+.msg-text {
+  background: #1e2535;
+  border: 1px solid #334155;
   border-radius: 8px;
-  color: var(--parca-text-dark);
-  line-height: 1.5;
+  padding: 10px 14px;
+  color: #e2e8f0;
+  max-width: 85%;
+}
+.chat-msg.user .msg-text {
+  background: var(--parca-purple);
+  border-color: var(--parca-purple-light);
+  color: #ffffff;
 }
 
-.chat-msg.user .msg-content {
-  background: var(--accent-purple);
-  color: white;
-  padding: 10px 14px;
-  border-radius: 8px;
-}
-
-.copilot-quick-prompts {
-  padding: 8px 16px;
+.copilot-suggestions-bar {
+  padding: 10px 18px;
+  border-top: 1px solid var(--parca-border-dark);
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  border-top: 1px solid var(--parca-border-light);
+  background: rgba(15, 20, 34, 0.7);
 }
 
 .prompt-chip {
-  background: #f8fafc;
-  border: 1px solid var(--parca-border-light);
-  color: var(--accent-purple);
-  font-size: 11px;
-  padding: 4px 8px;
+  background: #161d2d;
+  border: 1px solid #2d3748;
+  color: #cbd5e1;
+  padding: 4px 10px;
   border-radius: 12px;
+  font-size: 11px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 .prompt-chip:hover {
-  background: #ede9fe;
+  background: #1f293d;
+  color: #ffffff;
+  border-color: var(--parca-purple);
 }
 
-.copilot-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--parca-border-light);
+.copilot-input-row {
+  padding: 14px 18px;
+  border-top: 1px solid var(--parca-border-dark);
   display: flex;
   gap: 8px;
 }
 
-.copilot-footer input {
+.copilot-input-row input {
   flex: 1;
-  background: #f8fafc;
-  border: 1px solid var(--parca-border-light);
+  background: #161d2d;
+  border: 1px solid #334155;
   border-radius: 6px;
-  padding: 8px 12px;
-  color: var(--parca-text-dark);
-  font-size: 12px;
+  padding: 9px 12px;
+  color: #ffffff;
+  font-size: 13px;
   outline: none;
 }
-.copilot-footer input:focus { border-color: var(--accent-purple); }
-
-.btn-send-purple {
-  background: var(--accent-purple);
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
+.copilot-input-row input:focus {
+  border-color: var(--parca-purple);
 }
 
-/* Footer */
+.btn-copilot-submit {
+  background: var(--parca-purple);
+  color: #ffffff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-copilot-submit:hover {
+  background: var(--parca-purple-light);
+}
+
+/* Floating Action Button (AI Copilot FAB) */
+.floating-copilot-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99;
+  background: var(--parca-black);
+  border: 1px solid #334155;
+  color: #ffffff;
+  border-radius: 50px;
+  padding: 11px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.floating-copilot-fab:hover {
+  transform: translateY(-2px);
+  background: #1e293b;
+  border-color: var(--parca-purple);
+}
+.fab-icon { font-size: 16px; }
+
+/* ==========================================================================
+   8. Parca Footer
+   ========================================================================== */
+
 .parca-footer {
-  background: #090d16;
+  background: var(--parca-black);
   color: #94a3b8;
   padding: 50px 24px;
+  border-top: 1px solid var(--parca-border-dark);
 }
 
 .footer-inner {
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.f-brand p { font-size: 12px; color: #64748b; margin-top: 4px; }
-.f-links { display: flex; gap: 24px; }
-.f-links a { color: #cbd5e1; text-decoration: none; font-size: 13px; font-weight: 600; }
-.f-links a:hover { color: #fff; }
-
-/* ==========================================================================
-   Hero Workload Runner Toolbar Strip
-   ========================================================================== */
-.hero-workload-strip {
-  margin-top: 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 20px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 10px;
-  padding: 10px 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-.strip-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.strip-lbl {
-  font-size: 11px;
+.f-logo {
+  font-size: 20px;
   font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.5px;
-}
-
-.strip-select {
-  background: #1e293b;
-  border: 1px solid #334155;
   color: #ffffff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  outline: none;
-  cursor: pointer;
 }
-
-.strip-buttons {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-strip-run {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #ffffff;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-.btn-strip-run:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-}
-.btn-strip-run:disabled {
-  background: #334155;
-  color: #94a3b8;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.btn-strip-stop {
-  background: #dc2626;
-  color: #ffffff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.btn-strip-stop:disabled {
-  background: #1e293b;
+.f-sub {
+  font-size: 12px;
   color: #64748b;
-  cursor: not-allowed;
-}
-
-.btn-strip-reset {
-  background: transparent;
-  border: 1px solid #475569;
-  color: #cbd5e1;
-  padding: 7px 14px;
-  border-radius: 6px;
-  font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
 }
-.btn-strip-reset:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-.strip-link {
-  color: #38bdf8;
-  text-decoration: none;
+.footer-brand p {
   font-size: 12px;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-.strip-link:hover {
-  background: rgba(56, 189, 248, 0.15);
+  color: #64748b;
+  margin-top: 4px;
 }
 
-/* ==========================================================================
-   Floating Action Button (AI Copilot FAB)
-   ========================================================================== */
-.floating-copilot-fab {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  z-index: 99;
-  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 50px;
-  padding: 12px 22px;
+.footer-links {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  gap: 24px;
 }
-.floating-copilot-fab:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.6);
+.footer-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
 }
-.fab-spark { font-size: 16px; }
-
+.footer-links a:hover {
+  color: #ffffff;
+}

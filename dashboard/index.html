@@ -3,64 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIOps-Pulse | Continuous Performance Profiling & Telemetry Anomaly Detection</title>
+  <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
   <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js for real-time telemetry streaming -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="parca-theme">
+<body class="parca-body">
 
-  <!-- Parca Style Top Announcement Ribbon -->
-  <div class="parca-top-banner">
-    <div class="banner-inner">
-      <span>🚀 Continuous Performance Profiling &amp; AIOps Telemetry Platform</span>
-      <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank" class="banner-badge">Star on GitHub ⭐</a>
-    </div>
-  </div>
-
-  <!-- Parca Style Navigation Bar (Exact Match to Screenshot) -->
-  <header class="parca-navbar-dark">
+  <!-- Parca Style Navigation Bar -->
+  <header class="parca-navbar">
     <div class="nav-container">
-      <a href="/" class="parca-logo-brand">
-        <span class="parca-logo-text">parca</span>
+      <a href="/" class="parca-brand">
+        <span class="brand-name">parca</span>
+        <span class="brand-sub">/ aiops-pulse</span>
       </a>
 
-      <nav class="parca-menu-links">
-        <a href="#code-inspection" class="parca-nav-link">Quick Start</a>
-        <a href="#profiler" class="parca-nav-link">Documentation</a>
-        <a href="#live-apm" class="parca-nav-link">Tutorials</a>
+      <nav class="parca-nav-menu">
+        <a href="#hero" class="nav-link">Overview</a>
+        <a href="#workload-section" class="nav-link">Workload &amp; Chaos</a>
+        <a href="#telemetry-section" class="nav-link">Live Telemetry</a>
+        <a href="#profiler-section" class="nav-link">Flame Graph</a>
+        <a href="#rca-section" class="nav-link">RCA Intelligence</a>
+        <a href="/metrics" target="_blank" class="nav-link mono-link">/metrics ↗</a>
       </nav>
 
-      <div class="nav-actions-group">
-        <button id="openCopilotTop" class="parca-btn-dark">
-          <span style="color:#c084fc;">✨</span>
-          <span>AI Copilot</span>
-        </button>
-
-        <a href="https://discord.gg" target="_blank" class="parca-btn-dark">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <div class="nav-actions">
+        <a href="https://discord.gg" target="_blank" class="btn-parca-dark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
           </svg>
-          <span>Join us on Discord</span>
+          <span>Discord</span>
         </a>
 
-        <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank" class="parca-btn-dark">
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+        <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank" class="btn-parca-dark">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
           <span>Star Us</span>
         </a>
 
-        <a href="#code-inspection" id="navTryBtn" class="parca-btn-white">Try it Now</a>
+        <button id="resetBtnNav" class="btn-parca-reset">Reset State</button>
+        <button id="openCopilotTop" class="btn-parca-white">Try AI Copilot</button>
       </div>
     </div>
   </header>
 
-  <!-- SECTION 1: HERO SECTION (EXACT MATCH TO PARCA SCREENSHOT WITH LIVE HEX MATRIX CANVAS) -->
-  <section class="parca-hero-exact" id="bottlenecks">
+  <!-- SECTION 1: EXACT PARCA HERO (LIVE DYNAMIC HEX CANVAS ANIMATION) -->
+  <section class="parca-hero-section" id="hero">
     <!-- Live Dynamic Canvas Rendering Changing Numbers & Alphabets in Background -->
     <canvas id="hexMatrixCanvas" class="hex-canvas-background"></canvas>
 
-    <div class="hero-content-exact">
+    <div class="hero-container">
       <!-- Top Kicker: TRACK -->
       <div class="hero-kicker-track">TRACK</div>
 
@@ -68,372 +64,336 @@
       <h1 class="hero-massive-headline">MEMORY. CPU. IO.</h1>
 
       <!-- Bottom Layout: BOTTLENECKS, Connected Line, and Try it Now -->
-      <div class="hero-interactive-flow">
+      <div class="hero-flow-layout">
         <!-- Right-aligned Word: BOTTLENECKS -->
-        <div class="hero-bottlenecks-align">
-          <span class="hero-word-bottlenecks">BOTTLENECKS</span>
+        <div class="hero-bottlenecks-box">
+          <span class="hero-bottlenecks-word">BOTTLENECKS</span>
         </div>
 
         <!-- Connector Path and Try it Now Button -->
-        <div class="hero-arrow-flow-container">
-          <a href="#code-inspection" id="heroTryNowBtn" class="hero-purple-gradient-btn">
+        <div class="hero-action-row">
+          <a href="#workload-section" id="heroTryNowBtn" class="btn-parca-purple-cta">
             Try it Now
           </a>
 
           <!-- SVG Connector: Drops down from BOTTLENECKS, turns 90deg left, points directly into Try it Now -->
-          <div class="hero-connector-svg-holder">
-            <svg class="hero-flow-svg" viewBox="0 0 750 90" preserveAspectRatio="none">
+          <div class="hero-arrow-connector">
+            <svg class="arrow-svg" viewBox="0 0 760 90" preserveAspectRatio="none">
               <defs>
-                <marker id="arrow-left" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+                <marker id="parca-arrowhead" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="10" markerHeight="10" orient="auto">
                   <path d="M 10 1 L 2 6 L 10 11" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </marker>
               </defs>
-              <!-- Line from top-right down to y=52, then across to x=10 with arrow pointing left -->
-              <path d="M 740 0 L 740 52 L 14 52" fill="none" stroke="#ffffff" stroke-width="2.2" marker-end="url(#arrow-left)"/>
+              <path d="M 750 0 L 750 52 L 14 52" fill="none" stroke="#ffffff" stroke-width="2.2" marker-end="url(#parca-arrowhead)"/>
             </svg>
           </div>
         </div>
       </div>
 
-      <!-- Real-Time Metrics Floating Telemetry Bar -->
-      <div class="hero-telemetry-pill">
-        <div class="pill-metric">
-          <span class="p-lbl">THROUGHPUT</span>
-          <span class="p-val" id="pillRps">0.0 <small>RPS</small></span>
+      <!-- Floating Real-Time Golden Signals Pill -->
+      <div class="hero-floating-pill">
+        <div class="pill-col">
+          <span class="pill-lbl">THROUGHPUT</span>
+          <span class="pill-num" id="kpiRps">0.0 <small>RPS</small></span>
         </div>
         <div class="pill-divider"></div>
-        <div class="pill-metric highlight">
-          <span class="p-lbl">p99 LATENCY (SLO: 200ms)</span>
-          <span class="p-val" id="pillP99">0.0 <small>ms</small></span>
+        <div class="pill-col highlight">
+          <span class="pill-lbl">p99 LATENCY (SLO: &lt;200ms)</span>
+          <span class="pill-num" id="kpiP99">0.0 <small>ms</small></span>
         </div>
         <div class="pill-divider"></div>
-        <div class="pill-metric">
-          <span class="p-lbl">ACTIVE VUs</span>
-          <span class="p-val" id="pillVus">0 <small>VUs</small></span>
+        <div class="pill-col">
+          <span class="pill-lbl">ACTIVE VUs</span>
+          <span class="pill-num" id="kpiVus">0 <small>VUs</small></span>
         </div>
         <div class="pill-divider"></div>
-        <div class="pill-metric">
-          <span class="p-lbl">AIOps ANOMALIES</span>
-          <span class="p-val text-green" id="pillAnomalies">0 Flags</span>
+        <div class="pill-col">
+          <span class="pill-lbl">ERROR RATE</span>
+          <span class="pill-num" id="kpiError">0.0 <small>%</small></span>
         </div>
-      </div>
-
-      <!-- Interactive Workload & Chaos Runner Toolbar -->
-      <div class="hero-workload-strip">
-        <div class="strip-item">
-          <label for="workloadSelect" class="strip-lbl">BENCHMARK PROFILE</label>
-          <select id="workloadSelect" class="strip-select">
-            <option value="baseline">Nominal Baseline (50 VUs)</option>
-            <option value="spike" selected>Traffic Spike Surge (500+ VUs)</option>
-            <option value="soak">Soak / Leak Endurance</option>
-            <option value="stress">Step-Stress Saturation (1000 VUs)</option>
-          </select>
-        </div>
-
-        <div class="strip-buttons">
-          <button id="runBenchmarkBtn" class="btn-strip-run">⚡ Run Benchmark</button>
-          <button id="stopBenchmarkBtn" class="btn-strip-stop" disabled>Halt</button>
-          <button id="topResetBtn" class="btn-strip-reset">Reset State</button>
-          <a href="/metrics" target="_blank" class="strip-link">/metrics ↗</a>
+        <div class="pill-divider"></div>
+        <div class="pill-col">
+          <span class="pill-lbl">SLO STATUS</span>
+          <span class="pill-status-healthy" id="sloBadge">HEALTHY</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 2: PARCA WHITE STATEMENT SECTION (EXACT MATCH TO PARCA SCREENSHOT 1) -->
-  <section class="parca-statement-section">
-    <div class="statement-container">
-      <h2 class="statement-heading">
-        Thanks to <span class="accent-orange">eBPF and statistical AIOps</span>, AIOps-Pulse operates in kernel and application space allowing it to grab exactly the performance telemetry needed at <span class="accent-yellow">zero overhead</span>.
+  <!-- SECTION 2: PARCA CLEAN STATEMENT SECTION -->
+  <section class="parca-statement-bar">
+    <div class="statement-inner">
+      <h2>
+        Continuous performance profiling and statistical AIOps telemetry anomaly detection at <span>zero overhead</span>.
       </h2>
     </div>
   </section>
 
-  <!-- SECTION 3: PARCA INTERACTIVE CODE INSPECTION (EXACT MATCH TO PARCA SCREENSHOT 4 & 5) -->
-  <section class="parca-code-section" id="code-inspection">
-    <div class="code-container">
-      <div class="section-title-wrap">
-        <h2 class="code-heading">
-          Broken down 🛠️👀🛠️ by method name, stack trace, and <span class="code-symbol">{ }</span> line number. Without complex overhead, in <span class="infinity-symbol">♾️</span> any runtime.
-        </h2>
-        <p class="code-subheading">
-          Select a production failure mode to inspect the exact line of code starving threads or leaking heap memory:
-        </p>
-
-        <!-- Interactive Bottleneck Switcher Tabs -->
-        <div class="code-tab-picker">
-          <button class="code-tab active" data-mode="db">
-            <span class="tab-dot db"></span>
-            <span>Database Pool Starvation</span>
-          </button>
-          <button class="code-tab" data-mode="mem">
-            <span class="tab-dot mem"></span>
-            <span>Heap Memory Leak</span>
-          </button>
-          <button class="code-tab" data-mode="cpu">
-            <span class="tab-dot cpu"></span>
-            <span>Event-Loop CPU Spinlock</span>
-          </button>
-          <button class="code-tab" data-mode="nominal">
-            <span class="tab-dot nominal"></span>
-            <span>Nominal State</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- The Overlapping macOS Code Editor Windows (Parca Screenshots 4 & 5) -->
-      <div class="editor-workspace">
-        
-        <!-- Background Stack Window -->
-        <div class="macos-window window-back">
-          <div class="window-titlebar">
-            <div class="window-dots"><span class="d-red"></span><span class="d-yellow"></span><span class="d-green"></span></div>
-            <span class="window-title">metrics.py</span>
-          </div>
-          <div class="code-lines">
-            <div class="code-row"><span class="ln">14</span><code>REQUEST_LATENCY = Histogram("http_duration_sec", buckets=[...])</code></div>
-            <div class="code-row"><span class="ln">15</span><code>ACTIVE_REQUESTS = Gauge("active_requests", "Concurrency")</code></div>
-            <div class="code-row"><span class="ln">16</span><code>HEAP_ALLOCATED = Gauge("heap_allocated_bytes", "Memory")</code></div>
-          </div>
-        </div>
-
-        <!-- Foreground Active Code Window -->
-        <div class="macos-window window-front">
-          <div class="window-titlebar">
-            <div class="window-dots"><span class="d-red"></span><span class="d-yellow"></span><span class="d-green"></span></div>
-            <span class="window-title" id="activeEditorTitle">target_service/app.py</span>
-            <span class="editor-lang-badge" id="activeEditorLang">Python 3.11</span>
-          </div>
-          <div class="code-lines" id="editorCodeContent">
-            <!-- Rendered dynamically by JS -->
-          </div>
-        </div>
-
-        <!-- Floating Parca Stat Badges (Circular Badges from Screenshot 4 & 5) -->
-        <div class="parca-badge badge-cpu" id="badgeCpu">
-          <div class="badge-number" id="badgeCpuVal">88%</div>
-          <div class="badge-label">CPU USAGE</div>
-          <div class="badge-addr">Address: 0x4553e0</div>
-        </div>
-
-        <div class="parca-badge badge-mem" id="badgeMem">
-          <div class="badge-number" id="badgeMemVal">92%</div>
-          <div class="badge-label">MEMORY HEAP</div>
-          <div class="badge-addr">Buffer: Leaked</div>
-        </div>
-
-        <div class="parca-badge badge-io" id="badgeIo">
-          <div class="badge-number" id="badgeIoVal">48%</div>
-          <div class="badge-label">I/O LOCK WAIT</div>
-          <div class="badge-addr">Semaphore: Saturated</div>
-        </div>
-
-      </div><!-- End editor-workspace -->
-
-      <!-- Action Box directly under code -->
-      <div class="code-action-box">
-        <div class="action-info">
-          <h4 id="actionTitle">Active Bottleneck: Database Pool Semaphore Starvation</h4>
-          <p id="actionDesc">Simulates unindexed sequential table scan causing 68% of worker time to stall in DB_POOL_SEMAPHORE.acquire.</p>
-        </div>
-        <button id="toggleActiveBottleneckBtn" class="btn-toggle-active">Activate This Bottleneck</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4: PARCA 6-FEATURE GRID (EXACT MATCH TO PARCA SCREENSHOT 3) -->
-  <section class="parca-features-section" id="architecture">
-    <div class="features-container">
-      <h2 class="features-heading">Get a full picture of how your app performs in production.</h2>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon icon-green">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="6" stroke="#10b981" stroke-width="2"/><circle cx="16" cy="16" r="6" fill="#10b981"/></svg>
-          </div>
-          <h3>Multi-dimensional data model</h3>
-          <p>Correlates 6D telemetry vectors: virtual users, throughput, CPU%, memory RSS, p99 latency, and error ratios.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon icon-yellow">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#eab308" stroke-width="2"/><path d="M11 16L15 20L21 12" stroke="#eab308" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <h3>Optimized, built-in storage</h3>
-          <p>Rolling circular telemetry buffer maintaining sub-second granularity without high memory overhead.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon icon-purple">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16H24M24 16L18 10M24 16L18 22" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="12" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="3 3"/></svg>
-          </div>
-          <h3>Push and pull profiles from targets</h3>
-          <p>Native Prometheus scraping endpoint (<code>/metrics</code>) with histogram buckets for true p95 and p99 evaluation.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon icon-orange">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="14" cy="14" r="8" stroke="#f97316" stroke-width="2"/><path d="M20 20L26 26" stroke="#f97316" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <h3>Statistical Z-Score engine</h3>
-          <p>Computes rolling variance ($Z = \frac{x - \mu}{\sigma}$) to detect sudden latency spikes beyond $2.8\sigma$ automatically.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon icon-cyan">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#06b6d4" stroke-width="2"/><path d="M16 8V24M8 16H24" stroke="#06b6d4" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <h3>Isolation Forest anomaly detection</h3>
-          <p>Unsupervised machine learning model identifying multidimensional resource exhaustion before fatal system crashes.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon icon-pink">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="6" y="8" width="20" height="16" rx="4" stroke="#ec4899" stroke-width="2"/><path d="M12 16H20" stroke="#ec4899" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <h3>Continuous call-stack profiling</h3>
-          <p>Hierarchical flame charts attributing execution cycles down to individual methods and synchronous spinlocks.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 5: INTERACTIVE FLAME GRAPH & APM TELEMETRY -->
-  <section class="parca-telemetry-section" id="profiler">
-    <div class="telemetry-container">
+  <!-- SECTION 3: MAIN WORKSPACE (ALL ORIGINAL OPTIONS IN CLEAN PARCA STYLING) -->
+  <main class="parca-workspace" id="workload-section">
+    <div class="workspace-grid">
       
-      <!-- Top Row: Profiler Flame Graph -->
-      <div class="telemetry-header-bar">
-        <div>
-          <span class="sub-pill">CONTINUOUS PROFILER</span>
-          <h2>Hierarchical Execution Flame Graph</h2>
-        </div>
-        <div class="hotspot-flag" id="flameHotspotFlag">Hotspot: None (Balanced)</div>
-      </div>
+      <!-- LEFT COLUMN: CONTROLS, WORKLOAD BENCHMARK & CHAOS INJECTION -->
+      <aside class="workspace-sidebar">
+        
+        <!-- 1. Workload Benchmark Panel (Original Option) -->
+        <div class="parca-card">
+          <div class="card-header">
+            <h3>Benchmark Workload</h3>
+            <span class="badge-status-idle" id="kpiStatus">Idle</span>
+          </div>
+          
+          <div class="form-group">
+            <label for="workloadSelect" class="form-label">Workload Profile</label>
+            <select id="workloadSelect" class="parca-select">
+              <option value="baseline">Nominal Baseline (50 VUs)</option>
+              <option value="spike" selected>Spike Traffic Surge (500+ VUs)</option>
+              <option value="soak">Soak / Endurance Test (Leak Check)</option>
+              <option value="stress">Step-Stress Saturation (1000 VUs)</option>
+            </select>
+            <p class="form-hint" id="workloadDesc">Instantaneous surge from 50 to 500+ concurrent requests testing burst queues.</p>
+          </div>
 
-      <div class="flamegraph-card">
-        <div class="flame-viewer-canvas" id="flameGraphCanvas">
-          <!-- Rendered dynamically -->
+          <div class="btn-group-dual">
+            <button id="startLoadBtn" class="btn-parca-primary">Start Benchmark</button>
+            <button id="stopLoadBtn" class="btn-parca-danger" disabled>Stop Load</button>
+          </div>
         </div>
-      </div>
 
-      <!-- Lower Row: Live APM Golden Signals Charts -->
-      <div class="apm-charts-grid" id="live-apm">
-        <div class="chart-card">
-          <div class="card-top">
-            <h4>Latency Percentiles (p50 / p95 / p99) vs SLO</h4>
-            <div class="legend-tags">
-              <span class="tag-p50">p50</span>
-              <span class="tag-p95">p95</span>
-              <span class="tag-p99">p99</span>
-              <span class="tag-slo">SLO: 200ms</span>
+        <!-- 2. Production Regressions / Chaos Injections (Original Option) -->
+        <div class="parca-card">
+          <div class="card-header">
+            <h3>Inject Production Regressions</h3>
+          </div>
+          <p class="card-desc">Simulate production failure modes to validate AIOps detection:</p>
+
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <strong>DB Connection Pool Starvation</strong>
+              <span>Unindexed table scan + semaphore exhaustion</span>
+            </div>
+            <label class="parca-switch">
+              <input type="checkbox" id="toggleDb">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <strong>Heap Memory Leak</strong>
+              <span>Uncollected buffer growth in telemetry ingestion</span>
+            </div>
+            <label class="parca-switch">
+              <input type="checkbox" id="toggleMemory">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <strong>Event-Loop CPU Lock</strong>
+              <span>Synchronous cryptographic spinlock</span>
+            </div>
+            <label class="parca-switch">
+              <input type="checkbox" id="toggleCpu">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="card-footer-action">
+            <button id="resetBtn" class="btn-parca-reset-full">Reset System State</button>
+          </div>
+        </div>
+
+        <!-- 3. Telemetry Exporter & Service Status -->
+        <div class="parca-card">
+          <div class="card-header">
+            <h3>Telemetry Exporter</h3>
+          </div>
+          <div class="exporter-stats">
+            <div class="stat-row">
+              <span>Host Memory RSS:</span>
+              <strong id="kpiMemory">0.0 MB</strong>
+            </div>
+            <div class="stat-row">
+              <span>Heap Leaked:</span>
+              <strong id="kpiHeap">0 KB</strong>
+            </div>
+            <div class="stat-row">
+              <span>Total Requests:</span>
+              <strong id="kpiTotalReq">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Failed Requests:</span>
+              <strong id="kpiFailed">0</strong>
             </div>
           </div>
-          <div class="canvas-holder-lg">
-            <canvas id="parcaLatencyChart"></canvas>
+          <a href="/metrics" target="_blank" class="exporter-link">View Prometheus Metrics (/metrics) ↗</a>
+        </div>
+
+      </aside>
+
+      <!-- RIGHT COLUMN: TELEMETRY GRAPHS, FLAME GRAPH PROFILER & RCA REPORT -->
+      <section class="workspace-main" id="telemetry-section">
+        
+        <!-- Live Golden Signals Latency Curve Chart (Original Option) -->
+        <div class="parca-card">
+          <div class="card-header">
+            <div class="header-titles">
+              <h3>Live Golden Signals &amp; Latency Curves</h3>
+              <span class="card-subtitle">p50, p95, and p99 evaluated continuously against contractual 200ms SLO</span>
+            </div>
+            <div class="chart-legend-tags">
+              <span class="tag-pill tag-p50" id="kpiP50">p50: 0.0ms</span>
+              <span class="tag-pill tag-p95" id="kpiP95">p95: 0.0ms</span>
+              <span class="tag-pill tag-p99">p99</span>
+              <span class="tag-pill tag-slo">Contractual SLO (200ms)</span>
+            </div>
+          </div>
+          <div class="chart-holder-large">
+            <canvas id="latencyChart"></canvas>
           </div>
         </div>
 
-        <div class="chart-card">
-          <div class="card-top">
-            <h4>Throughput (RPS) &amp; Memory RSS</h4>
+        <!-- Two Smaller Telemetry Charts Row (Original Option) -->
+        <div class="charts-dual-row">
+          <div class="parca-card half-card">
+            <div class="card-header">
+              <h3>Throughput (RPS) &amp; Virtual Users</h3>
+            </div>
+            <div class="chart-holder-small">
+              <canvas id="throughputChart"></canvas>
+            </div>
           </div>
-          <div class="canvas-holder-lg">
-            <canvas id="parcaThroughputChart"></canvas>
+
+          <div class="parca-card half-card">
+            <div class="card-header">
+              <h3>Resource Saturation (Memory RSS MB)</h3>
+            </div>
+            <div class="chart-holder-small">
+              <canvas id="resourceChart"></canvas>
+            </div>
           </div>
         </div>
-      </div>
 
+        <!-- Continuous Flame Graph Profiler (Original Option) -->
+        <div class="parca-card" id="profiler-section">
+          <div class="card-header">
+            <div class="header-titles">
+              <h3>Hierarchical Execution Flame Graph</h3>
+              <span class="card-subtitle">Continuous call-stack time attribution across runtime, coroutines, and thread locks</span>
+            </div>
+            <span class="badge-hotspot-clean" id="hotspotBadge">None (Nominal)</span>
+          </div>
+          <div class="flamegraph-render-box" id="flamegraphView">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Automated Root Cause Analysis & Anomaly Stream (Original Option) -->
+        <div class="aiops-intelligence-row" id="rca-section">
+          
+          <!-- Anomaly Stream (Left) -->
+          <div class="parca-card anomaly-card">
+            <div class="card-header">
+              <h3>AIOps Anomaly Stream</h3>
+              <span class="badge-anomaly-count" id="anomalyCountBadge">0 Flags</span>
+            </div>
+            <div class="anomaly-stream-list" id="anomalyFeed">
+              <div class="empty-state-text">No anomalies detected. Telemetry operating within normal variance.</div>
+            </div>
+          </div>
+
+          <!-- Incident RCA Card (Right) -->
+          <div class="parca-card rca-card" id="rcaCard">
+            <div class="card-header">
+              <div class="rca-header-left">
+                <span class="badge-severity" id="rcaSeverity">NOMINAL</span>
+                <span class="rca-incident-code" id="rcaId">INC-BASELINE</span>
+                <span class="rca-confidence-score" id="rcaConfidence">Confidence: 99%</span>
+              </div>
+              <button id="downloadRcaBtn" class="btn-parca-export">Export CI/CD Audit Report ↗</button>
+            </div>
+
+            <h4 class="rca-headline" id="rcaTitle">Nominal System Baseline Performance</h4>
+            <p class="rca-summary-text" id="rcaDiagnosis">All telemetry streams operating within nominal parameters. p99 latency satisfies contractual SLO (&lt;200ms).</p>
+
+            <div class="rca-columns-wrap">
+              <div class="rca-col-item">
+                <h5>Attributed Profiler Hotspot:</h5>
+                <code id="rcaHotspot">uvicorn.run (Balanced I/O)</code>
+              </div>
+              <div class="rca-col-item">
+                <h5>Prescriptive Remediation Action Plan:</h5>
+                <ul id="rcaRemediationList" class="remediation-clean-list">
+                  <li>Continue continuous monitoring and automated regression gating.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
     </div>
-  </section>
-
-  <!-- SECTION 6: DAVIS & BITS AI ROOT CAUSE ANALYSIS (RCA) -->
-  <section class="parca-rca-section" id="aiops-rca">
-    <div class="rca-container">
-      <div class="rca-card-main">
-        <div class="rca-top-bar">
-          <span class="rca-badge" id="rcaStatusBadge">NOMINAL BASELINE</span>
-          <span class="rca-code" id="rcaIncidentId">INC-BASELINE</span>
-          <span class="rca-confidence" id="rcaConfidenceVal">99% Confidence</span>
-          <button id="downloadRcaMarkdown" class="btn-download-rca">Export Incident Report ➔</button>
-        </div>
-
-        <h3 class="rca-heading" id="rcaHeading">Nominal System Baseline Performance</h3>
-        <p class="rca-summary" id="rcaSummary">All telemetry streams operating within nominal parameters. p99 latency satisfies contractual SLO (&lt;200ms).</p>
-
-        <div class="rca-details-row">
-          <div class="rca-col">
-            <h5>Attributed Bottleneck Hotspot</h5>
-            <code id="rcaHotspotCode">uvicorn.run (Balanced I/O)</code>
-          </div>
-          <div class="rca-col">
-            <h5>Prescriptive Remediation Action Plan</h5>
-            <ul id="rcaRemediationUl">
-              <li>Continue automated continuous profiling.</li>
-              <li>Maintain regression testing gates in CI/CD before deployments.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  </main>
 
   <!-- FLOATING AI PERFORMANCE COPILOT DRAWER -->
-  <aside class="copilot-drawer" id="copilotDrawer">
-    <div class="copilot-header">
-      <div class="copilot-title">
-        <span class="ai-spark">✨</span>
+  <aside class="copilot-slideover" id="copilotDrawer">
+    <div class="copilot-top-bar">
+      <div class="copilot-brand-title">
+        <span class="copilot-icon">✨</span>
         <div>
-          <h3>AIOps Performance Copilot</h3>
-          <span class="sub">Autonomous Systems Diagnostic Assistant</span>
+          <h3>AIOps Diagnostic Copilot</h3>
+          <span class="copilot-sub">Telemetry-Grounded Intelligence Assistant</span>
         </div>
       </div>
-      <button id="closeCopilotBtn" class="close-btn">&times;</button>
+      <button id="closeCopilotBtn" class="copilot-close-btn">&times;</button>
     </div>
 
-    <div class="copilot-body" id="copilotChatStream">
+    <div class="copilot-chat-body" id="copilotChatStream">
       <div class="chat-msg ai">
         <div class="msg-avatar">🤖</div>
-        <div class="msg-content">
-          Hello! I'm monitoring your continuous profiling pipeline. Ask me about current p99 latency, database connection waits, or memory allocation trends!
+        <div class="msg-text">
+          Hello! I am your performance intelligence copilot. Ask me about current p99 latency regressions, database lock contention, or continuous call-stack profiling!
         </div>
       </div>
     </div>
 
-    <div class="copilot-quick-prompts">
+    <div class="copilot-suggestions-bar">
       <button class="prompt-chip" data-query="Why is p99 latency spiking?">❓ Why is p99 spiking?</button>
       <button class="prompt-chip" data-query="Analyze database connection contention">🔍 Check DB pool wait times</button>
       <button class="prompt-chip" data-query="Is there a memory leak in telemetry ingestion?">🧪 Check for memory leaks</button>
       <button class="prompt-chip" data-query="Give me a 3-step remediation plan">🛠️ Remediation action plan</button>
     </div>
 
-    <div class="copilot-footer">
+    <div class="copilot-input-row">
       <input type="text" id="copilotInput" placeholder="Ask about latency, bottlenecks, or flame graphs..." />
-      <button id="sendCopilotBtn" class="btn-send-purple">Send</button>
+      <button id="sendCopilotBtn" class="btn-copilot-submit">Send</button>
     </div>
   </aside>
 
-  <!-- Footer -->
+  <!-- Floating Action Button for AI Copilot -->
+  <button id="floatingCopilotBtn" class="floating-copilot-fab" title="Open AI Diagnostic Copilot">
+    <span class="fab-icon">✨</span>
+    <span class="fab-text">AI Copilot</span>
+  </button>
+
+  <!-- Parca Footer -->
   <footer class="parca-footer">
     <div class="footer-inner">
-      <div class="f-brand">
-        <span class="logo-mark">⚡</span>
-        <span class="logo-text">aiops<span class="logo-dot">/</span>pulse</span>
+      <div class="footer-brand">
+        <span class="f-logo">parca</span>
+        <span class="f-sub">/ aiops-pulse</span>
         <p>Autonomous Performance Engineering &amp; Continuous Telemetry Profiling.</p>
       </div>
-      <div class="f-links">
+      <div class="footer-links">
         <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank">GitHub Repository</a>
         <a href="/metrics" target="_blank">Prometheus Exporter</a>
-        <a href="#bottlenecks">Back to Top ↑</a>
+        <a href="#hero">Back to Top ↑</a>
       </div>
     </div>
   </footer>
-
-  <!-- Floating Action Button for AI Performance Copilot -->
-  <button id="floatingCopilotBtn" class="floating-copilot-fab" title="Open AI Diagnostic Copilot">
-    <span class="fab-spark">✨</span>
-    <span class="fab-label">AI Copilot</span>
-  </button>
 
   <script src="/static/app.js"></script>
 </body>
