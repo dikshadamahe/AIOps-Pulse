@@ -1,0 +1,73 @@
+name: Performance Regression & SLO Gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  performance-benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt psutil locust pytest
+
+      - name: Run unit & pipeline verification tests
+        run: |
+          pytest tests/
+
+      - name: Launch AIOps-Pulse Target Service in Background
+        run: |
+          python server.py &
+          sleep 5
+
+      - name: Run Automated Load Benchmark Suite
+        run: |
+          locust -f load_engine/locustfile.py \
+            --headless \
+            --users 50 \
+            --spawn-rate 10 \
+            --run-time 30s \
+            --host http://127.0.0.1:8000 \
+            --html perf-report.html \
+            --csv perf-stats
+
+      - name: Validate Contractual Performance SLOs
+        run: |
+          python -c '
+          import pandas as pd
+          stats = pd.read_csv("perf-stats_stats.csv")
+          agg = stats[stats["Name"] == "Aggregated"]
+          p99 = agg["99%"].values[0]
+          fail_ratio = agg["Failure Count"].values[0] / max(agg["Request Count"].values[0], 1)
+          
+          print(f"Aggregated p99 latency: {p99}ms (SLO threshold: 200ms)")
+          print(f"Aggregated Failure ratio: {fail_ratio * 100:.2f}% (SLO threshold: 1.0%)")
+
+          if p99 > 200:
+              print("❌ SLO BREACH: p99 latency exceeded 200ms!")
+              exit(1)
+          if fail_ratio > 0.01:
+              print("❌ SLO BREACH: Failure rate exceeded 1%!")
+              exit(1)
+          print("✅ Performance SLOs successfully satisfied!")
+          '
+
+      - name: Upload Performance Report Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-benchmarks
+          path: |
+            perf-report.html
+            perf-stats_*.csv
