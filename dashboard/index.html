@@ -3,225 +3,591 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIOps-Pulse | Autonomous Performance Engineering & Anomaly Detection</title>
+  <title>AIOps-Pulse | Enterprise APM & Autonomous Performance Platform</title>
   <link rel="stylesheet" href="/static/styles.css">
   <!-- Chart.js for real-time telemetry streaming -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-  <div class="app-container">
-    <!-- Header -->
-    <header class="top-nav">
-      <div class="brand">
-        <div class="logo-icon">⚡</div>
-        <div>
-          <h1>AIOps-Pulse</h1>
-          <span class="subtitle">Autonomous Performance Engineering & Telemetry Anomaly Detection</span>
-        </div>
+<body class="enterprise-theme">
+  <div class="app-layout">
+    
+    <!-- Left Navigation Rail (Datadog / Dynatrace Style) -->
+    <nav class="nav-rail">
+      <div class="rail-logo">
+        <div class="logo-gem">⚡</div>
+        <span class="logo-text">AIOps</span>
       </div>
-      <div class="nav-status">
-        <span class="cluster-badge online"><span class="dot"></span> Platform Online</span>
-        <span class="slo-badge" id="sloBadge">SLO: Healthy</span>
-        <button id="resetBtn" class="btn btn-outline">Reset System State</button>
-      </div>
-    </header>
 
-    <!-- Top KPI Cards -->
-    <section class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-header">Throughput</div>
-        <div class="kpi-value" id="kpiRps">0.0 <span class="kpi-unit">RPS</span></div>
-        <div class="kpi-footer" id="kpiTotalReq">Total: 0 requests</div>
+      <div class="rail-menu">
+        <button class="rail-item active" data-tab="cockpit" title="Cockpit Overview">
+          <span class="rail-icon">📊</span>
+          <span class="rail-label">Cockpit</span>
+        </button>
+        <button class="rail-item" data-tab="servicemap" title="Service Map Topology">
+          <span class="rail-icon">🗺️</span>
+          <span class="rail-label">Service Map</span>
+        </button>
+        <button class="rail-item" data-tab="aiops" title="AIOps & Davis Root Cause">
+          <span class="rail-icon">🤖</span>
+          <span class="rail-label">Davis AI</span>
+        </button>
+        <button class="rail-item" data-tab="profiler" title="Continuous Profiler (Flame Graph)">
+          <span class="rail-icon">🔥</span>
+          <span class="rail-label">Profiler</span>
+        </button>
+        <button class="rail-item" data-tab="loadlab" title="Load & Capacity Lab (k6/Locust)">
+          <span class="rail-icon">🎯</span>
+          <span class="rail-label">Load Lab</span>
+        </button>
+        <button class="rail-item" data-tab="bigpanda" title="Alerts & Correlation (BigPanda)">
+          <span class="rail-icon">🚨</span>
+          <span class="rail-label">Incidents</span>
+        </button>
       </div>
-      <div class="kpi-card highlight">
-        <div class="kpi-header">p99 Latency (SLO: &lt;200ms)</div>
-        <div class="kpi-value" id="kpiP99">0.0 <span class="kpi-unit">ms</span></div>
-        <div class="kpi-footer" id="kpiP50">p50: 0.0ms | p95: 0.0ms</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header">Active Virtual Users</div>
-        <div class="kpi-value" id="kpiVus">0 <span class="kpi-unit">VUs</span></div>
-        <div class="kpi-footer" id="kpiStatus">Engine: Idle</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header">Error Rate</div>
-        <div class="kpi-value" id="kpiError">0.0 <span class="kpi-unit">%</span></div>
-        <div class="kpi-footer" id="kpiFailed">0 failed requests</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header">Memory Footprint</div>
-        <div class="kpi-value" id="kpiMemory">0.0 <span class="kpi-unit">MB</span></div>
-        <div class="kpi-footer" id="kpiHeap">Heap Leaked: 0 KB</div>
-      </div>
-    </section>
 
-    <!-- Main Workspace Split -->
-    <div class="main-layout">
-      <!-- Left Column: Controls & Regressions -->
-      <aside class="sidebar">
-        <!-- Load Workload Control Panel -->
-        <div class="panel">
-          <div class="panel-header">
-            <h3>🎯 Benchmark Workload</h3>
+      <div class="rail-footer">
+        <button id="openCopilotBtn" class="copilot-pill-btn" title="Open AI Performance Copilot">
+          <span class="ai-spark">✨</span>
+          <span class="rail-label">Copilot</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Application Shell -->
+    <div class="main-shell">
+      
+      <!-- Global Top Command Bar -->
+      <header class="global-header">
+        <div class="header-left">
+          <div class="env-picker">
+            <span class="env-tag prod">PROD</span>
+            <span class="env-title">Omnissa-UEM-Cluster-us-west-2</span>
+            <span class="env-chevron">▾</span>
           </div>
-          <div class="form-group">
-            <label for="workloadSelect">Workload Profile</label>
-            <select id="workloadSelect" class="custom-select">
-              <option value="baseline">Nominal Baseline (50 VUs)</option>
-              <option value="spike">Spike Traffic Surge (500+ VUs)</option>
-              <option value="soak">Soak / Endurance Test (Leak Check)</option>
-              <option value="stress">Step-Stress Saturation (1000 VUs)</option>
-            </select>
-            <p class="field-hint" id="workloadDesc">Steady 50 virtual users validating nominal SLO parameters.</p>
-          </div>
-          <div class="button-group">
-            <button id="startLoadBtn" class="btn btn-primary">Start Benchmark</button>
-            <button id="stopLoadBtn" class="btn btn-danger" disabled>Stop Load</button>
+          <div class="breadcrumb">
+            <span class="crumb">Autonomous Workspaces</span>
+            <span class="sep">/</span>
+            <span class="crumb active" id="activeBreadcrumb">Cockpit Overview</span>
           </div>
         </div>
 
-        <!-- Injected Production Bottlenecks -->
-        <div class="panel">
-          <div class="panel-header">
-            <h3>⚠️ Inject Production Regressions</h3>
-          </div>
-          <p class="panel-subtitle">Test how the AIOps engine detects and attributes specific failure modes:</p>
-          
-          <div class="toggle-card">
-            <div class="toggle-info">
-              <strong>DB Connection Pool Starvation</strong>
-              <span>Unindexed table scan + pool exhaustion</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="toggleDb">
-              <span class="slider"></span>
-            </label>
+        <div class="header-right">
+          <!-- Timeframe Selector -->
+          <div class="time-range-group">
+            <button class="time-btn" data-time="1m">1m</button>
+            <button class="time-btn active" data-time="5m">5m</button>
+            <button class="time-btn" data-time="15m">15m</button>
+            <span class="live-pill"><span class="pulse-dot"></span> LIVE</span>
           </div>
 
-          <div class="toggle-card">
-            <div class="toggle-info">
-              <strong>Heap Memory Leak</strong>
-              <span>Uncollected buffer growth in telemetry ingestion</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="toggleMemory">
-              <span class="slider"></span>
-            </label>
+          <!-- Global SLO Health Indicator -->
+          <div class="slo-health-badge healthy" id="globalSloBadge">
+            <span class="slo-indicator"></span>
+            <span class="slo-text" id="globalSloText">99.4% SLO Health</span>
           </div>
 
-          <div class="toggle-card">
-            <div class="toggle-info">
-              <strong>Event-Loop CPU Lock</strong>
-              <span>CPU spinlock blocking synchronous execution</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="toggleCpu">
-              <span class="slider"></span>
-            </label>
+          <button id="resetStateBtn" class="btn btn-ghost" title="Clear memory buffers and deactivate injected regressions">
+            🔄 Reset State
+          </button>
+
+          <button id="toggleCopilotTopBtn" class="btn btn-copilot">
+            ✨ Ask Bits AI
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: 📊 COCKPIT (OVERVIEW) -->
+      <section id="tab-cockpit" class="tab-view active">
+        <!-- Top KPI Metric Strip -->
+        <div class="kpi-strip">
+          <div class="kpi-box">
+            <div class="kpi-sub">THROUGHPUT</div>
+            <div class="kpi-main" id="kpiRps">0.0 <span class="unit">RPS</span></div>
+            <div class="kpi-meta" id="kpiTotalReq">Total: 0 reqs</div>
+          </div>
+          <div class="kpi-box highlight-box">
+            <div class="kpi-sub">p99 LATENCY (SLO &lt;200ms)</div>
+            <div class="kpi-main" id="kpiP99">0.0 <span class="unit">ms</span></div>
+            <div class="kpi-meta" id="kpiP50">p50: 0.0ms | p95: 0.0ms</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-sub">CONCURRENCY</div>
+            <div class="kpi-main" id="kpiVus">0 <span class="unit">VUs</span></div>
+            <div class="kpi-meta" id="kpiEngineState">Engine: Idle</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-sub">ERROR RATE</div>
+            <div class="kpi-main" id="kpiError">0.0 <span class="unit">%</span></div>
+            <div class="kpi-meta" id="kpiFailedReq">0 failed</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-sub">HOST MEMORY (RSS)</div>
+            <div class="kpi-main" id="kpiMemory">0.0 <span class="unit">MB</span></div>
+            <div class="kpi-meta" id="kpiHeap">Heap Leaked: 0 KB</div>
           </div>
         </div>
 
-        <!-- Prometheus Metrics Link -->
-        <div class="panel links-panel">
-          <h4>Telemetry Exporter</h4>
-          <a href="/metrics" target="_blank" class="link-item">View Native Prometheus Metrics (/metrics) ↗</a>
-        </div>
-      </aside>
-
-      <!-- Center & Right: Live Telemetry, Profiler & AI RCA -->
-      <main class="content-area">
-        <!-- Live Charts -->
-        <div class="panel">
-          <div class="panel-header">
-            <h3>📈 Live Golden Signals & Latency Curves</h3>
-            <div class="chart-legend-custom">
-              <span class="badge-tag p50">p50</span>
-              <span class="badge-tag p95">p95</span>
-              <span class="badge-tag p99">p99</span>
-              <span class="badge-tag slo">SLO Limit (200ms)</span>
-            </div>
-          </div>
-          <div class="chart-container">
-            <canvas id="latencyChart"></canvas>
-          </div>
-        </div>
-
-        <div class="charts-row">
-          <div class="panel half">
-            <div class="panel-header">
-              <h3>Throughput & Concurrency</h3>
-            </div>
-            <div class="chart-container-sm">
-              <canvas id="throughputChart"></canvas>
-            </div>
-          </div>
-          <div class="panel half">
-            <div class="panel-header">
-              <h3>Resource Saturation (Memory RSS)</h3>
-            </div>
-            <div class="chart-container-sm">
-              <canvas id="resourceChart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- AIOps Section: Incident RCA + Anomaly Radar -->
-        <div class="aiops-grid">
-          <!-- Live Anomaly Feed -->
-          <div class="panel">
-            <div class="panel-header">
-              <h3>🤖 AIOps Telemetry Anomaly Stream</h3>
-              <span class="badge" id="anomalyCountBadge">0 Flags</span>
-            </div>
-            <div class="anomaly-feed" id="anomalyFeed">
-              <div class="empty-state">No anomalies detected. Telemetry operating within normal variance.</div>
-            </div>
-          </div>
-
-          <!-- Root Cause Analysis (RCA) -->
-          <div class="panel highlight-panel">
-            <div class="panel-header">
-              <h3>🧠 Automated Root Cause Analysis (RCA)</h3>
-              <button id="downloadRcaBtn" class="btn btn-sm btn-outline">Export CI/CD Audit Report</button>
-            </div>
-            <div class="rca-card" id="rcaCard">
-              <div class="rca-header">
-                <span class="badge" id="rcaSeverity">NOMINAL</span>
-                <span class="rca-id" id="rcaId">INC-BASELINE</span>
-                <span class="rca-confidence" id="rcaConfidence">Confidence: 99%</span>
+        <!-- Cockpit Split Layout -->
+        <div class="view-grid-cockpit">
+          <!-- Left: Quick Action Dials -->
+          <div class="cockpit-sidebar">
+            <div class="card">
+              <div class="card-header">
+                <h4>🎯 Workload Generator (k6/Locust)</h4>
               </div>
-              <h4 id="rcaTitle" class="rca-title">Nominal System Baseline Performance</h4>
-              <p id="rcaDiagnosis" class="rca-body">All telemetry streams operating within nominal parameters. p99 latency satisfies contractual SLO (&lt;200ms).</p>
+              <div class="form-group">
+                <label>Benchmark Scenario</label>
+                <select id="cockpitWorkloadSelect" class="select-field">
+                  <option value="baseline">Nominal Baseline (50 VUs)</option>
+                  <option value="spike">Spike Traffic Surge (500+ VUs)</option>
+                  <option value="soak">Soak / Endurance Test (Leak Check)</option>
+                  <option value="stress">Step-Stress Saturation (1000 VUs)</option>
+                </select>
+                <p class="meta-desc" id="cockpitWorkloadDesc">Steady 50 virtual users validating nominal SLO parameters.</p>
+              </div>
+              <div class="btn-cluster">
+                <button id="cockpitStartBtn" class="btn btn-primary">Start Benchmark</button>
+                <button id="cockpitStopBtn" class="btn btn-danger" disabled>Stop</button>
+              </div>
+            </div>
+
+            <!-- Injected Production Bottlenecks -->
+            <div class="card">
+              <div class="card-header">
+                <h4>⚠️ Inject Production Regressions</h4>
+              </div>
+              <p class="meta-desc">Simulate production failure modes to watch AIOps triage:</p>
               
-              <div class="rca-section">
-                <h5>Profiler Hotspot Attribution:</h5>
-                <code id="rcaHotspot">uvicorn.run (Balanced I/O)</code>
+              <div class="toggle-row">
+                <div>
+                  <strong>DB Pool Starvation</strong>
+                  <span>Unindexed scan + pool lock</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="cockpitToggleDb">
+                  <span class="slider"></span>
+                </label>
               </div>
 
-              <div class="rca-section">
-                <h5>Prescriptive Remediation Action Plan:</h5>
-                <ul id="rcaRemediationList" class="remediation-list">
-                  <li>Continue continuous monitoring and automated regression gating.</li>
-                </ul>
+              <div class="toggle-row">
+                <div>
+                  <strong>Heap Memory Leak</strong>
+                  <span>Uncollected buffer growth</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="cockpitToggleMemory">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <div>
+                  <strong>Event-Loop CPU Lock</strong>
+                  <span>Cryptographic spinlock</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="cockpitToggleCpu">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="card apm-summary-card">
+              <div class="card-header">
+                <h4>Prometheus Exporter</h4>
+              </div>
+              <a href="/metrics" target="_blank" class="apm-link">Open Prometheus Scraping Target (/metrics) ↗</a>
+            </div>
+          </div>
+
+          <!-- Right: Live Golden Signal Graphs -->
+          <div class="cockpit-main">
+            <div class="card">
+              <div class="card-header">
+                <div class="header-with-badge">
+                  <h4>📈 Latency Distribution Curves vs SLO</h4>
+                  <span class="badge-slo-target">Contractual Target: &lt;200ms</span>
+                </div>
+                <div class="legend-pills">
+                  <span class="pill-tag p50">p50</span>
+                  <span class="pill-tag p95">p95</span>
+                  <span class="pill-tag p99">p99</span>
+                  <span class="pill-tag slo">SLO Limit (200ms)</span>
+                </div>
+              </div>
+              <div class="chart-wrapper-lg">
+                <canvas id="latencyChart"></canvas>
+              </div>
+            </div>
+
+            <div class="two-chart-grid">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Throughput (RPS) & Concurrency</h4>
+                </div>
+                <div class="chart-wrapper-sm">
+                  <canvas id="throughputChart"></canvas>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <h4>Host Memory Footprint (RSS MB)</h4>
+                </div>
+                <div class="chart-wrapper-sm">
+                  <canvas id="resourceChart"></canvas>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Profiler Flame Graph Tree -->
-        <div class="panel">
-          <div class="panel-header">
-            <h3>🔥 Execution Flame Graph & Call-Stack Bottleneck</h3>
-            <span class="badge" id="hotspotBadge">None (Nominal)</span>
+      <!-- TAB 2: 🗺️ SERVICE MAP (DYNATRACE SMARTSCAPE STYLE) -->
+      <section id="tab-servicemap" class="tab-view">
+        <div class="tab-header-banner">
+          <div>
+            <h2>Dynatrace Smartscape / Datadog Service Topology</h2>
+            <p>Live interactive dependency graph with real-time health-state propagation and traffic flows.</p>
           </div>
-          <p class="panel-subtitle">Hierarchical execution time attribution across application, database, and system calls:</p>
-          <div class="flamegraph-tree" id="flamegraphView">
-            <!-- Rendered dynamically -->
+          <div class="topology-controls">
+            <span class="node-legend ok"><span class="ring"></span> Healthy (&lt;50ms)</span>
+            <span class="node-legend warn"><span class="ring"></span> Latency Warning (50-200ms)</span>
+            <span class="node-legend fail"><span class="ring"></span> Bottleneck Breached (&gt;200ms)</span>
           </div>
         </div>
-      </main>
-    </div>
-  </div>
+
+        <div class="topology-workspace">
+          <div class="topology-canvas-container" id="topologyContainer">
+            <!-- Dynamic SVG Service Map rendered by JS -->
+            <svg id="serviceMapSvg" class="service-map-svg" viewBox="0 0 900 500"></svg>
+          </div>
+
+          <!-- Dynamic Node Inspector Drawer -->
+          <div class="node-inspector" id="nodeInspector">
+            <div class="inspector-header">
+              <h3 id="inspectNodeName">UEM Core Service</h3>
+              <span class="badge" id="inspectNodeStatus">HEALTHY</span>
+            </div>
+            <div class="inspector-body">
+              <div class="inspect-stat">
+                <label>Role</label>
+                <span id="inspectNodeRole">API & Workspace Orchestration</span>
+              </div>
+              <div class="inspect-stat">
+                <label>Current RPS</label>
+                <span id="inspectNodeRps">185 req/sec</span>
+              </div>
+              <div class="inspect-stat">
+                <label>p99 Latency</label>
+                <span id="inspectNodeP99">18.4ms</span>
+              </div>
+              <div class="inspect-stat">
+                <label>Connection Pool</label>
+                <span id="inspectNodePool">Active: 5 / Max: 50</span>
+              </div>
+              <div class="inspect-stat">
+                <label>Error Rate</label>
+                <span id="inspectNodeError">0.00%</span>
+              </div>
+              <div class="inspect-notes" id="inspectNodeNotes">
+                Operating nominally with zero active bottle-necking.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: 🤖 AIOPS & ROOT CAUSE (DAVIS AI / WATCHDOG STYLE) -->
+      <section id="tab-aiops" class="tab-view">
+        <div class="tab-header-banner">
+          <div>
+            <h2>Davis AI / Watchdog Autonomous Root Cause Analysis</h2>
+            <p>Automated causal attribution using rolling Z-Score deviations, multivariate Isolation Forest, and LLM triage.</p>
+          </div>
+          <button id="downloadRcaBtnAIOps" class="btn btn-primary">
+            📥 Download Executive Incident Report
+          </button>
+        </div>
+
+        <div class="aiops-layout">
+          <!-- Left: Davis AI Causal Incident Card -->
+          <div class="card causal-card">
+            <div class="causal-top">
+              <span class="badge" id="davisSeverity">NOMINAL</span>
+              <span class="incident-code" id="davisIncId">INC-BASELINE</span>
+              <span class="davis-confidence" id="davisConfidence">AI Confidence: 99%</span>
+            </div>
+            <h3 id="davisTitle">Nominal System Baseline Performance</h3>
+            <p class="causal-body" id="davisDiagnosis">
+              All telemetry streams operating within nominal parameters. p99 latency satisfies contractual SLO (&lt;200ms).
+            </p>
+
+            <div class="causal-diagram-box">
+              <h4>Causal Root-Cause Path</h4>
+              <div class="causal-chain" id="causalChain">
+                <div class="chain-step">Client Workload</div>
+                <div class="chain-arrow">➔</div>
+                <div class="chain-step">UEM Core API</div>
+                <div class="chain-arrow">➔</div>
+                <div class="chain-step highlight" id="causalHotspotNode">uvicorn.run (Balanced I/O)</div>
+              </div>
+            </div>
+
+            <div class="remediation-box">
+              <h4>Prescriptive Remediation Action Plan</h4>
+              <ul class="remediation-ul" id="davisRemediationList">
+                <li>Continue standard continuous monitoring.</li>
+                <li>Maintain automated load testing gates in CI/CD before deployments.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right: Real-time Anomaly Event Stream -->
+          <div class="card stream-card">
+            <div class="card-header">
+              <h4>⚡ Real-Time Telemetry Anomaly Stream</h4>
+              <span class="badge" id="aiopsAnomalyBadge">0 Anomaly Flags</span>
+            </div>
+            <div class="anomaly-stream-container" id="aiopsAnomalyStream">
+              <div class="empty-feed">No anomalies detected. Telemetry variance within normal distribution.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: 🔥 CONTINUOUS PROFILER (PYROSCOPE / DYNATRACE) -->
+      <section id="tab-profiler" class="tab-view">
+        <div class="tab-header-banner">
+          <div>
+            <h2>Continuous Profiler & Execution Flame Graph</h2>
+            <p>Hierarchical call-stack inspection detailing CPU cycles and memory allocations per method.</p>
+          </div>
+          <div class="profiler-controls">
+            <span class="hotspot-badge" id="profilerHotspotSummary">Hotspot: None (Balanced distribution)</span>
+          </div>
+        </div>
+
+        <div class="profiler-layout">
+          <!-- Interactive Flame Graph Visualizer -->
+          <div class="card">
+            <div class="card-header">
+              <h4>Interactive Call-Stack Flame Chart</h4>
+              <span class="meta-desc">Click any stack frame to inspect execution share:</span>
+            </div>
+            <div class="flamegraph-board" id="interactiveFlameView">
+              <!-- Dynamically rendered interactive flame rows -->
+            </div>
+          </div>
+
+          <!-- Stack Frame Hotspot Breakdown Table -->
+          <div class="card">
+            <div class="card-header">
+              <h4>Top Bottleneck Functions (Execution Share)</h4>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Function / Symbol</th>
+                  <th>Execution %</th>
+                  <th>Bottleneck Category</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="hotspotTableBody">
+                <tr>
+                  <td><code>uvicorn.run</code></td>
+                  <td>100.0%</td>
+                  <td>Process Entrypoint</td>
+                  <td><span class="pill-tag p50">Nominal</span></td>
+                </tr>
+                <tr>
+                  <td><code>FastAPI.dispatch_request</code></td>
+                  <td>95.0%</td>
+                  <td>HTTP Router</td>
+                  <td><span class="pill-tag p50">Nominal</span></td>
+                </tr>
+                <tr>
+                  <td><code>db_in_memory_lookup</code></td>
+                  <td>15.0%</td>
+                  <td>Indexed Lookup</td>
+                  <td><span class="pill-tag p50">Nominal</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: 🎯 LOAD & CAPACITY LAB (K6 / LOCUST STYLE) -->
+      <section id="tab-loadlab" class="tab-view">
+        <div class="tab-header-banner">
+          <div>
+            <h2>Distributed Load & Capacity Testing Studio</h2>
+            <p>Benchmark endpoint scalability limits, measure percentile degradation curves, and predict breaking points.</p>
+          </div>
+          <div class="lab-status-cluster">
+            <span class="badge" id="labRunState">STATUS: IDLE</span>
+          </div>
+        </div>
+
+        <div class="loadlab-grid">
+          <div class="card">
+            <div class="card-header">
+              <h4>Workload Configuration</h4>
+            </div>
+            <div class="form-group">
+              <label>Workload Strategy</label>
+              <select id="labWorkloadType" class="select-field">
+                <option value="baseline">Nominal Baseline (50 VUs)</option>
+                <option value="spike">Spike Traffic Surge (500+ VUs)</option>
+                <option value="soak">Soak / Endurance Test (Leak Check)</option>
+                <option value="stress">Step-Stress Saturation (1000 VUs)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Virtual Users (Concurrency Slider): <strong id="vuSliderVal">50 VUs</strong></label>
+              <input type="range" id="vuSlider" min="10" max="1500" step="10" value="50" class="range-slider">
+            </div>
+            <div class="btn-cluster">
+              <button id="labStartBtn" class="btn btn-primary">Run Workload Benchmark</button>
+              <button id="labStopBtn" class="btn btn-danger" disabled>Abort</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h4>Capacity & Percentile Distribution</h4>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Percentile</th>
+                  <th>Response Time</th>
+                  <th>Contractual SLO</th>
+                  <th>Variance</th>
+                </tr>
+              </thead>
+              <tbody id="percentilesTable">
+                <tr><td>p50 (Median)</td><td id="tdP50">0.0 ms</td><td>&lt; 50 ms</td><td class="good">Optimal</td></tr>
+                <tr><td>p75</td><td id="tdP75">0.0 ms</td><td>&lt; 100 ms</td><td class="good">Optimal</td></tr>
+                <tr><td>p90</td><td id="tdP90">0.0 ms</td><td>&lt; 150 ms</td><td class="good">Optimal</td></tr>
+                <tr><td>p95</td><td id="tdP95">0.0 ms</td><td>&lt; 180 ms</td><td class="good">Optimal</td></tr>
+                <tr><td>p99</td><td id="tdP99">0.0 ms</td><td>&lt; 200 ms</td><td id="tdP99Var" class="good">Optimal</td></tr>
+                <tr><td>p99.9</td><td id="tdP999">0.0 ms</td><td>&lt; 350 ms</td><td class="good">Optimal</td></tr>
+                <tr><td>Max Latency</td><td id="tdPMax">0.0 ms</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: 🚨 INCIDENTS & ALERT CORRELATION (BIGPANDA STYLE) -->
+      <section id="tab-bigpanda" class="tab-view">
+        <div class="tab-header-banner">
+          <div>
+            <h2>BigPanda Incident Intelligence & Alert Compression</h2>
+            <p>Autonomous correlation engine that compresses raw telemetry noise into actionable high-level incidents.</p>
+          </div>
+          <div class="compression-metric">
+            <span class="comp-val" id="compressionRatio">98.4%</span>
+            <span class="comp-label">Alert Noise Compression</span>
+          </div>
+        </div>
+
+        <div class="bigpanda-grid">
+          <!-- Alert Compression Summary -->
+          <div class="card">
+            <div class="card-header">
+              <h4>Incident Deduplication Stream</h4>
+              <span class="meta-desc">Aggregated from 100+ raw Prometheus alerts</span>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Incident ID</th>
+                  <th>Aggregated Alerts</th>
+                  <th>Root Cause Hypothesis</th>
+                  <th>Severity</th>
+                  <th>Time Detected</th>
+                </tr>
+              </thead>
+              <tbody id="bigpandaIncidentTable">
+                <tr>
+                  <td><code>INC-7821</code></td>
+                  <td>24 raw metric triggers</td>
+                  <td>Database connection pool exhaustion on unindexed query</td>
+                  <td><span class="badge CRITICAL">CRITICAL</span></td>
+                  <td>Just now</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- SLO Error Budget Burn Down -->
+          <div class="card">
+            <div class="card-header">
+              <h4>SLO Contractual Error Budget</h4>
+            </div>
+            <div class="slo-meter-box">
+              <div class="slo-meter-bar">
+                <div class="slo-meter-fill" id="sloMeterFill" style="width: 94%;"></div>
+              </div>
+              <div class="slo-meta-row">
+                <span>Remaining Error Budget: <strong id="sloRemainingText">94.2%</strong></span>
+                <span>Burn Rate: <strong id="sloBurnRate">0.02x / hr</strong></span>
+              </div>
+            </div>
+
+            <div class="incident-notes-box">
+              <h4>BigPanda AIOps Correlation Rule</h4>
+              <p>
+                Correlates <code>aiops_http_request_duration_seconds</code>, <code>aiops_active_requests</code>, 
+                and <code>aiops_db_pool_wait_duration_seconds</code> into a single consolidated incident ticket, 
+                suppressing notification storms to PagerDuty/Slack.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- End main-shell -->
+
+    <!-- FLOATING AI COPILOT DRAWER (DATADOG BITS AI STYLE) -->
+    <aside class="copilot-drawer" id="copilotDrawer">
+      <div class="copilot-header">
+        <div class="copilot-title">
+          <span class="ai-spark">✨</span>
+          <div>
+            <h3>AIOps Performance Copilot</h3>
+            <span class="sub">Autonomous Incident & Systems Diagnostic Assistant</span>
+          </div>
+        </div>
+        <button id="closeCopilotBtn" class="close-btn">&times;</button>
+      </div>
+
+      <div class="copilot-body" id="copilotChatStream">
+        <div class="chat-msg ai">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-content">
+            Hello Diksha! I'm monitoring your **Omnissa UEM platform**. How can I assist your performance engineering analysis today?
+          </div>
+        </div>
+      </div>
+
+      <div class="copilot-quick-prompts">
+        <button class="prompt-chip" data-query="Why is p99 latency spiking?">❓ Why is p99 spiking?</button>
+        <button class="prompt-chip" data-query="Analyze database connection contention">🔍 Check DB pool contention</button>
+        <button class="prompt-chip" data-query="Is there a memory leak in telemetry ingestion?">🧪 Check for memory leaks</button>
+        <button class="prompt-chip" data-query="Give me a 3-step remediation plan">🛠️ Remediation action plan</button>
+      </div>
+
+      <div class="copilot-footer">
+        <input type="text" id="copilotInput" placeholder="Ask about latency, bottlenecks, or flame graphs..." />
+        <button id="sendCopilotBtn" class="btn btn-primary btn-sm">Send</button>
+      </div>
+    </aside>
+
+  </div><!-- End app-layout -->
 
   <script src="/static/app.js"></script>
 </body>
