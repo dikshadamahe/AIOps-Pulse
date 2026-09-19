@@ -90,6 +90,7 @@ const codeSnippets = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  initHexMatrixCanvas();
   renderCodeInspector("db");
   initParcaCharts();
   bindCodeTabs();
@@ -97,6 +98,112 @@ document.addEventListener("DOMContentLoaded", () => {
   bindCopilotDrawer();
   startTelemetryPolling();
 });
+
+// --------------------------------------------------------------------------
+// 0. Live Hexadecimal Matrix Background (Changing Numbers & Alphabets)
+// --------------------------------------------------------------------------
+function initHexMatrixCanvas() {
+  const canvas = document.getElementById("hexMatrixCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+
+  // Hexadecimal character set: numbers (0-9) and alphabets (A-F)
+  const hexChars = "0123456789ABCDEF";
+  function getRandomByte() {
+    return hexChars[Math.floor(Math.random() * 16)] + hexChars[Math.floor(Math.random() * 16)];
+  }
+
+  let cols = 0;
+  let rows = 0;
+  let grid = [];
+  const charSpacingX = 32; // horizontal space between hex byte columns
+  const charSpacingY = 22; // vertical line height
+  const fontSize = 13;
+
+  function resize() {
+    const parent = canvas.parentElement;
+    const width = parent.clientWidth || window.innerWidth;
+    const height = parent.clientHeight || 720;
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    cols = Math.ceil(width / charSpacingX) + 2;
+    rows = Math.ceil(height / charSpacingY) + 2;
+
+    grid = [];
+    for (let r = 0; r < rows; r++) {
+      const row = [];
+      for (let c = 0; c < cols; c++) {
+        row.push({
+          val: getRandomByte(),
+          alpha: 0.16 + Math.random() * 0.18, // subtle readable contrast
+          glow: 0
+        });
+      }
+      grid.push(row);
+    }
+  }
+
+  window.addEventListener("resize", resize);
+  resize();
+
+  let lastUpdate = 0;
+  function render(time) {
+    requestAnimationFrame(render);
+
+    // Update interval: ~30-40ms for active, dynamic byte changing
+    if (time - lastUpdate > 35) {
+      lastUpdate = time;
+
+      // Morph 5% to 8% of the hex characters each tick (both numbers and alphabets change continuously)
+      const totalCells = rows * cols;
+      const count = Math.max(16, Math.floor(totalCells * 0.07));
+      for (let i = 0; i < count; i++) {
+        const r = Math.floor(Math.random() * rows);
+        const c = Math.floor(Math.random() * cols);
+        if (grid[r] && grid[r][c]) {
+          grid[r][c].val = getRandomByte();
+          // Occasional highlight flash
+          if (Math.random() < 0.04) {
+            grid[r][c].glow = 1.0;
+          }
+        }
+      }
+    }
+
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.font = `${fontSize}px "SF Mono", "Fira Code", Monaco, Consolas, monospace`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = grid[r][c];
+        const x = c * charSpacingX;
+        const y = r * charSpacingY + (charSpacingY / 2);
+
+        if (cell.glow > 0) {
+          ctx.fillStyle = `rgba(168, 85, 247, ${0.4 + cell.glow * 0.5})`;
+          cell.glow = Math.max(0, cell.glow - 0.06);
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${cell.alpha})`;
+        }
+
+        ctx.fillText(cell.val, x, y);
+      }
+    }
+  }
+
+  requestAnimationFrame(render);
+}
 
 // --------------------------------------------------------------------------
 // 1. Code Inspector (Parca Screenshots 4 & 5)
@@ -188,10 +295,23 @@ async function postBottlenecks() {
 // --------------------------------------------------------------------------
 
 function bindHeroControls() {
+  const tryBtn = document.getElementById("heroTryNowBtn");
+  const navTry = document.getElementById("navTryBtn");
   const runBtn = document.getElementById("heroRunTestBtn");
   const topReset = document.getElementById("topResetBtn");
 
-  runBtn.addEventListener("click", async () => {
+  const handleTryClick = (e) => {
+    e.preventDefault();
+    const target = document.getElementById("code-inspection");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  tryBtn?.addEventListener("click", handleTryClick);
+  navTry?.addEventListener("click", handleTryClick);
+
+  runBtn?.addEventListener("click", async () => {
     runBtn.disabled = true;
     runBtn.innerHTML = `<span>Running Load...</span>`;
     try {
@@ -209,14 +329,14 @@ function bindHeroControls() {
     }, 25000);
   });
 
-  topReset.addEventListener("click", async () => {
+  topReset?.addEventListener("click", async () => {
     if (!confirm("Reset all state and bottlenecks?")) return;
     await fetch("/api/v1/admin/reset", { method: "POST" });
     activeBottlenecks = { db_exhaustion_enabled: false, memory_leak_enabled: false, cpu_lock_enabled: false };
     renderCodeInspector(activeCodeMode);
   });
 
-  document.getElementById("downloadRcaMarkdown").addEventListener("click", () => {
+  document.getElementById("downloadRcaMarkdown")?.addEventListener("click", () => {
     window.open("/api/v1/aiops/report/download", "_blank");
   });
 }
