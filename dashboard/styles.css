@@ -226,13 +226,14 @@ body.parca-body {
 }
 
 .hero-massive-headline {
-  font-size: clamp(56px, 9.4vw, 132px);
+  font-size: clamp(40px, 6.2vw, 94px);
   font-weight: 900;
-  line-height: 0.96;
-  letter-spacing: -3.5px;
+  line-height: 1.0;
+  letter-spacing: -2px;
   color: #ffffff;
   margin-bottom: 8px;
-  word-spacing: 4px;
+  word-spacing: 2px;
+  white-space: nowrap;
 }
 
 .hero-flow-layout {
