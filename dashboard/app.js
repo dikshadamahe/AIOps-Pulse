@@ -297,7 +297,9 @@ async function postBottlenecks() {
 function bindHeroControls() {
   const tryBtn = document.getElementById("heroTryNowBtn");
   const navTry = document.getElementById("navTryBtn");
-  const runBtn = document.getElementById("heroRunTestBtn");
+  const runBtn = document.getElementById("runBenchmarkBtn") || document.getElementById("heroRunTestBtn");
+  const stopBtn = document.getElementById("stopBenchmarkBtn");
+  const workloadSelect = document.getElementById("workloadSelect");
   const topReset = document.getElementById("topResetBtn");
 
   const handleTryClick = (e) => {
@@ -312,25 +314,39 @@ function bindHeroControls() {
   navTry?.addEventListener("click", handleTryClick);
 
   runBtn?.addEventListener("click", async () => {
+    const selectedWorkload = workloadSelect?.value || "spike";
     runBtn.disabled = true;
-    runBtn.innerHTML = `<span>Running Load...</span>`;
+    runBtn.textContent = "Running Load...";
+    if (stopBtn) stopBtn.disabled = false;
+
     try {
       await fetch("/api/v1/load/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workload_type: "spike" })
+        body: JSON.stringify({ workload_type: selectedWorkload })
       });
     } catch (err) {
-      console.error(err);
-    }
-    setTimeout(() => {
+      console.error("Load start error:", err);
       runBtn.disabled = false;
-      runBtn.innerHTML = `<span>Run Benchmark</span><span class="btn-arrow">➔</span>`;
-    }, 25000);
+      runBtn.textContent = "⚡ Run Benchmark";
+    }
+  });
+
+  stopBtn?.addEventListener("click", async () => {
+    stopBtn.disabled = true;
+    try {
+      await fetch("/api/v1/load/stop", { method: "POST" });
+      if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.textContent = "⚡ Run Benchmark";
+      }
+    } catch (err) {
+      console.error("Load stop error:", err);
+    }
   });
 
   topReset?.addEventListener("click", async () => {
-    if (!confirm("Reset all state and bottlenecks?")) return;
+    if (!confirm("Reset all active bottlenecks and memory buffers?")) return;
     await fetch("/api/v1/admin/reset", { method: "POST" });
     activeBottlenecks = { db_exhaustion_enabled: false, memory_leak_enabled: false, cpu_lock_enabled: false };
     renderCodeInspector(activeCodeMode);
@@ -348,14 +364,19 @@ function bindHeroControls() {
 function bindCopilotDrawer() {
   const drawer = document.getElementById("copilotDrawer");
   const openBtn = document.getElementById("openCopilotTop");
+  const floatingBtn = document.getElementById("floatingCopilotBtn");
   const closeBtn = document.getElementById("closeCopilotBtn");
   const sendBtn = document.getElementById("sendCopilotBtn");
   const input = document.getElementById("copilotInput");
   const stream = document.getElementById("copilotChatStream");
   const chips = document.querySelectorAll(".prompt-chip");
 
-  openBtn.addEventListener("click", () => drawer.classList.add("open"));
-  closeBtn.addEventListener("click", () => drawer.classList.remove("open"));
+  const openDrawer = () => drawer?.classList.add("open");
+  const closeDrawer = () => drawer?.classList.remove("open");
+
+  openBtn?.addEventListener("click", openDrawer);
+  floatingBtn?.addEventListener("click", openDrawer);
+  closeBtn?.addEventListener("click", closeDrawer);
 
   const appendMsg = (sender, html) => {
     const msg = document.createElement("div");
