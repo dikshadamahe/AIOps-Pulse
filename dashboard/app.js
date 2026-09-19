@@ -1,245 +1,199 @@
 // ==========================================================================
-// AIOps-Pulse: Datadog Interactive Host Map & Multi-Product Controller
+// AIOps-Pulse: Parca.dev Interactive Controller
 // ==========================================================================
 
-let apmLatencyChart, apmThroughputChart, apmResourceChart;
+let parcaLatencyChart, parcaThroughputChart;
 let pollingInterval = null;
 let currentTelemetry = null;
-let currentBottlenecks = {
+let activeCodeMode = "db";
+let activeBottlenecks = {
   db_exhaustion_enabled: false,
   memory_leak_enabled: false,
   cpu_lock_enabled: false
 };
 const MAX_SAMPLES = 30;
 
-// Host Map Clusters Data
-const hostClusters = {
-  "1a": { zone: "us-east-1a", role: "UEM API Core", count: 18, prefix: "api-core" },
-  "1c": { zone: "us-east-1c", role: "PostgreSQL & Redis Pool", count: 14, prefix: "db-pool" },
-  "west": { zone: "us-west-1", role: "Telemetry Ingress", count: 16, prefix: "worker-ingest" }
+// Code Snippets for Parca Interactive Code Inspector (Screenshots 4 & 5)
+const codeSnippets = {
+  db: {
+    title: "target_service/app.py",
+    lang: "Python 3.11",
+    actionTitle: "Active Bottleneck: Database Pool Semaphore Starvation",
+    actionDesc: "Simulates unindexed sequential table scan causing 68% of worker coroutines to stall in DB_POOL_SEMAPHORE.acquire.",
+    cpuVal: "24%",
+    memVal: "68 MB",
+    ioVal: "68%",
+    isDegraded: true,
+    lines: [
+      { ln: 75, code: "async def list_workspaces():", slow: false },
+      { ln: 76, code: '    """Lists workspaces with optional DB pool starvation."""', slow: false },
+      { ln: 77, code: "    if BOTTLENECK_CONFIG.db_exhaustion_enabled:", slow: false },
+      { ln: 78, code: "        wait_start = time.perf_counter()", slow: false },
+      { ln: 79, code: "        async with DB_POOL_SEMAPHORE:  # Thread Pool Lock Contention (5 limit)", slow: true },
+      { ln: 80, code: "            await asyncio.sleep(BOTTLENECK_CONFIG.db_delay_sec) # Unindexed scan", slow: true },
+      { ln: 81, code: "    return list(WORKSPACES_DB.values())", slow: false }
+    ]
+  },
+  mem: {
+    title: "target_service/app.py",
+    lang: "Python 3.11",
+    actionTitle: "Active Bottleneck: Heap Memory Leak in Telemetry Ingestion",
+    actionDesc: "Appends uncollected byte arrays to a global buffer on every request, triggering monotonic memory bloat.",
+    cpuVal: "18%",
+    memVal: "94%",
+    ioVal: "12%",
+    isDegraded: true,
+    lines: [
+      { ln: 110, code: "async def submit_device_telemetry(payload: Dict):", slow: false },
+      { ln: 111, code: '    """Ingests high-frequency device telemetry."""', slow: false },
+      { ln: 112, code: "    if BOTTLENECK_CONFIG.memory_leak_enabled:", slow: false },
+      { ln: 113, code: "        chunk = os.urandom(512 * 1024)  # 512KB uncollected buffer", slow: false },
+      { ln: 114, code: "        LEAKED_MEMORY_BUFFER.append(chunk)  # Monotonic Heap Growth (OOM Risk)", slow: true },
+      { ln: 115, code: "        HEAP_ALLOCATION_BYTES.set(sum(len(c) for c in LEAKED_MEMORY_BUFFER))", slow: true },
+      { ln: 116, code: '    return {"status": "ingested", "device_id": payload.get("id")}', slow: false }
+    ]
+  },
+  cpu: {
+    title: "target_service/app.py",
+    lang: "Python 3.11",
+    actionTitle: "Active Bottleneck: Event-Loop Synchronous CPU Spinlock",
+    actionDesc: "A synchronous cryptographic loop blocks the event loop thread, monopolizing 88.5% of CPU cycles.",
+    cpuVal: "88%",
+    memVal: "62 MB",
+    ioVal: "5%",
+    isDegraded: true,
+    lines: [
+      { ln: 85, code: "if BOTTLENECK_CONFIG.cpu_lock_enabled:", slow: false },
+      { ln: 86, code: '    dummy = b"omnissa-workload-data"', slow: false },
+      { ln: 87, code: "    # Synchronous cryptographic hashing blocking async event loop:", slow: false },
+      { ln: 88, code: "    for _ in range(120000):", slow: true },
+      { ln: 89, code: "        dummy = hashlib.sha256(dummy).digest()  # Consumes 88.5% CPU time", slow: true },
+      { ln: 90, code: "    return list(WORKSPACES_DB.values())", slow: false }
+    ]
+  },
+  nominal: {
+    title: "target_service/app.py",
+    lang: "Python 3.11",
+    actionTitle: "Nominal System State: Non-blocking Clean Execution",
+    actionDesc: "Zero bottlenecks injected. Database queries use indexed lookups; memory allocations are GC-collected.",
+    cpuVal: "14%",
+    memVal: "58 MB",
+    ioVal: "2%",
+    isDegraded: false,
+    lines: [
+      { ln: 75, code: "async def list_workspaces():", slow: false },
+      { ln: 76, code: '    """Nominal non-blocking workspace retrieval."""', slow: false },
+      { ln: 77, code: "    # B-tree indexed fast memory lookup:", slow: false },
+      { ln: 78, code: "    return list(WORKSPACES_DB.values())  # Sub-15ms p99 execution", slow: false }
+    ]
+  }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  initApmCharts();
-  buildHoneycombHostMap();
-  bindProductAccordionTabs();
-  bindChaosToggles();
-  bindHeroActions();
-  bindBitsAICopilot();
+  renderCodeInspector("db");
+  initParcaCharts();
+  bindCodeTabs();
+  bindHeroControls();
+  bindCopilotDrawer();
   startTelemetryPolling();
 });
 
 // --------------------------------------------------------------------------
-// 1. Honeycomb Host Map Generation (Screenshots 2 & 4)
+// 1. Code Inspector (Parca Screenshots 4 & 5)
 // --------------------------------------------------------------------------
 
-function buildHoneycombHostMap() {
-  Object.keys(hostClusters).forEach(clusterKey => {
-    const cluster = hostClusters[clusterKey];
-    const container = document.getElementById(`hexGrid-${clusterKey}`);
-    if (!container) return;
-    container.innerHTML = "";
+function renderCodeInspector(mode) {
+  activeCodeMode = mode;
+  const snippet = codeSnippets[mode] || codeSnippets.db;
 
-    for (let i = 1; i <= cluster.count; i++) {
-      const hex = document.createElement("div");
-      const hostId = `${cluster.prefix}-${String(i).padStart(2, "0")}`;
-      hex.className = "hexagon healthy";
-      hex.id = `hex-${hostId}`;
-      hex.dataset.host = hostId;
-      hex.dataset.zone = cluster.zone;
-      hex.dataset.role = cluster.role;
+  document.getElementById("activeEditorTitle").textContent = snippet.title;
+  document.getElementById("activeEditorLang").textContent = snippet.lang;
+  document.getElementById("actionTitle").textContent = snippet.actionTitle;
+  document.getElementById("actionDesc").textContent = snippet.actionDesc;
 
-      hex.innerHTML = `<span class="hex-inner-label">${i}</span>`;
+  document.getElementById("badgeCpuVal").textContent = snippet.cpuVal;
+  document.getElementById("badgeMemVal").textContent = snippet.memVal;
+  document.getElementById("badgeIoVal").textContent = snippet.ioVal;
 
-      hex.addEventListener("click", () => openHostCard(cluster, hostId, i));
-      container.appendChild(hex);
-    }
-  });
-
-  document.getElementById("closeHostCard").addEventListener("click", () => {
-    document.getElementById("hostDetailCard").classList.remove("open");
-  });
-}
-
-function openHostCard(cluster, hostId, index) {
-  const card = document.getElementById("hostDetailCard");
-  const isDbIssue = cluster.prefix.includes("db") && currentBottlenecks.db_exhaustion_enabled;
-  const isMemIssue = cluster.prefix.includes("worker") && currentBottlenecks.memory_leak_enabled;
-  const isCpuIssue = cluster.prefix.includes("api") && currentBottlenecks.cpu_lock_enabled;
-  const isDegraded = isDbIssue || isMemIssue || isCpuIssue;
-
-  document.getElementById("hostCardName").textContent = `host: ${hostId}`;
-  document.getElementById("hostCardZone").textContent = `zone: ${cluster.zone} | IP: 10.20.${cluster.prefix.length}.${index * 4}`;
-
-  const p99 = currentTelemetry ? currentTelemetry.p99_ms : 22.0;
-  const cpu = isCpuIssue ? "94.2%" : (isDegraded ? "78.0%" : `${(15 + (index % 12)).toFixed(1)}%`);
-  const mem = isMemIssue ? "480 MB" : `${(60 + (index % 15))} MB`;
-
-  document.getElementById("hostCardCpu").textContent = cpu;
-  document.getElementById("hostCardP99").textContent = `${p99} ms`;
-  document.getElementById("hostCardMem").textContent = mem;
-
-  const statusBadge = document.getElementById("hostCardStatus");
-  statusBadge.textContent = isDegraded ? "CRITICAL" : "HEALTHY";
-  statusBadge.className = `badge ${isDegraded ? "CRITICAL" : "HEALTHY"}`;
-
-  const logBox = document.getElementById("hostCardLog");
-  if (isDbIssue) {
-    logBox.textContent = "🚨 CRITICAL: Thread blocked in DB_POOL_SEMAPHORE.acquire. Connection timeout after 120ms unindexed query.";
-  } else if (isMemIssue) {
-    logBox.textContent = "🚨 WARNING: Monotonic heap leak detected in telemetry ingestion buffer. GC pressure increasing.";
-  } else if (isCpuIssue) {
-    logBox.textContent = "🚨 CRITICAL: CPU spinlock in hashlib.sha256 starving event loop. Throughput throttled.";
+  const btn = document.getElementById("toggleActiveBottleneckBtn");
+  if (mode === "nominal") {
+    btn.textContent = "Reset to Baseline";
   } else {
-    logBox.textContent = "Nominal execution. All connection pools and thread workers operating within healthy bounds.";
+    const isCurrentlyActive = (mode === "db" && activeBottlenecks.db_exhaustion_enabled) ||
+                              (mode === "mem" && activeBottlenecks.memory_leak_enabled) ||
+                              (mode === "cpu" && activeBottlenecks.cpu_lock_enabled);
+    btn.textContent = isCurrentlyActive ? "Deactivate Bottleneck" : "Inject This Bottleneck";
+    btn.style.background = isCurrentlyActive ? "#ef4444" : "#090d16";
   }
 
-  card.classList.add("open");
+  const container = document.getElementById("editorCodeContent");
+  container.innerHTML = snippet.lines.map(l => `
+    <div class="code-row ${l.slow ? 'slow-hotspot' : ''}">
+      <span class="ln">${l.ln}</span>
+      <code>${escapeHtml(l.code)}</code>
+    </div>
+  `).join("");
 }
 
-function updateHoneycombStates() {
-  const isDbDown = currentBottlenecks.db_exhaustion_enabled;
-  const isMemDown = currentBottlenecks.memory_leak_enabled;
-  const isCpuDown = currentBottlenecks.cpu_lock_enabled;
-
-  // 1. Update DB cluster (us-east-1c)
-  const cluster1c = document.getElementById("cluster-us-east-1c");
-  if (cluster1c) {
-    cluster1c.classList.toggle("degraded", isDbDown);
-  }
-  for (let i = 1; i <= 14; i++) {
-    const hex = document.getElementById(`hex-db-pool-${String(i).padStart(2, "0")}`);
-    if (hex) {
-      if (isDbDown) {
-        hex.className = (i % 3 === 0) ? "hexagon critical" : "hexagon warning";
-      } else {
-        hex.className = "hexagon healthy";
-      }
-    }
-  }
-
-  // 2. Update Ingress/Worker cluster (us-west-1)
-  const clusterWest = document.getElementById("cluster-us-west-1");
-  if (clusterWest) {
-    clusterWest.classList.toggle("degraded", isMemDown);
-  }
-  for (let i = 1; i <= 16; i++) {
-    const hex = document.getElementById(`hex-worker-ingest-${String(i).padStart(2, "0")}`);
-    if (hex) {
-      if (isMemDown) {
-        hex.className = (i % 2 === 0) ? "hexagon critical" : "hexagon warning";
-      } else {
-        hex.className = "hexagon healthy";
-      }
-    }
-  }
-
-  // 3. Update API cluster (us-east-1a)
-  const cluster1a = document.getElementById("cluster-us-east-1a");
-  if (cluster1a) {
-    cluster1a.classList.toggle("degraded", isCpuDown);
-  }
-  for (let i = 1; i <= 18; i++) {
-    const hex = document.getElementById(`hex-api-core-${String(i).padStart(2, "0")}`);
-    if (hex) {
-      if (isCpuDown) {
-        hex.className = "hexagon critical";
-      } else {
-        hex.className = "hexagon healthy";
-      }
-    }
-  }
+function escapeHtml(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// --------------------------------------------------------------------------
-// 2. Interactive Product Accordion & Navigation
-// --------------------------------------------------------------------------
-
-function bindProductAccordionTabs() {
-  const tabs = document.querySelectorAll(".accordion-tab");
-  const views = document.querySelectorAll(".product-view");
-  const navDropdowns = document.querySelectorAll(".nav-link-dropdown");
-
-  const activateView = (viewKey) => {
-    tabs.forEach(t => t.classList.toggle("active", t.dataset.view === viewKey));
-    views.forEach(v => v.classList.toggle("active", v.id === `view-${viewKey}`));
-    navDropdowns.forEach(d => d.classList.toggle("active", d.dataset.target === viewKey));
-
-    if (viewKey === "apm" && apmLatencyChart) {
-      setTimeout(() => {
-        apmLatencyChart.resize();
-        apmThroughputChart.resize();
-        apmResourceChart.resize();
-      }, 50);
-    }
-  };
-
+function bindCodeTabs() {
+  const tabs = document.querySelectorAll(".code-tab");
   tabs.forEach(tab => {
-    tab.addEventListener("click", () => activateView(tab.dataset.view));
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      renderCodeInspector(tab.dataset.mode);
+    });
   });
 
-  navDropdowns.forEach(item => {
-    item.addEventListener("click", () => activateView(item.dataset.target));
-  });
-}
-
-// --------------------------------------------------------------------------
-// 3. Chaos Regressions & Hero Actions
-// --------------------------------------------------------------------------
-
-function bindChaosToggles() {
-  const toggleDb = document.getElementById("sidebarToggleDb");
-  const toggleMem = document.getElementById("sidebarToggleMem");
-  const toggleCpu = document.getElementById("sidebarToggleCpu");
-  const resetBtn = document.getElementById("navResetBtn");
-
-  const applyBottlenecks = async () => {
-    currentBottlenecks = {
-      db_exhaustion_enabled: toggleDb.checked,
-      db_simulated_delay_ms: 120.0,
-      memory_leak_enabled: toggleMem.checked,
-      memory_leak_chunk_kb: 512,
-      cpu_lock_enabled: toggleCpu.checked,
-      cpu_lock_iterations: 120000
-    };
-    try {
-      await fetch("/api/v1/admin/bottlenecks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(currentBottlenecks)
-      });
-      updateHoneycombStates();
-    } catch (err) {
-      console.error("Failed to update bottlenecks:", err);
-    }
-  };
-
-  toggleDb.addEventListener("change", applyBottlenecks);
-  toggleMem.addEventListener("change", applyBottlenecks);
-  toggleCpu.addEventListener("change", applyBottlenecks);
-
-  resetBtn.addEventListener("click", async () => {
-    if (!confirm("Reset all active regressions and memory buffers?")) return;
-    try {
+  const toggleBtn = document.getElementById("toggleActiveBottleneckBtn");
+  toggleBtn.addEventListener("click", async () => {
+    if (activeCodeMode === "nominal") {
       await fetch("/api/v1/admin/reset", { method: "POST" });
-      toggleDb.checked = false;
-      toggleMem.checked = false;
-      toggleCpu.checked = false;
-      currentBottlenecks = { db_exhaustion_enabled: false, memory_leak_enabled: false, cpu_lock_enabled: false };
-      updateHoneycombStates();
-    } catch (err) {
-      console.error("Reset failed:", err);
+      activeBottlenecks = { db_exhaustion_enabled: false, memory_leak_enabled: false, cpu_lock_enabled: false };
+    } else if (activeCodeMode === "db") {
+      activeBottlenecks.db_exhaustion_enabled = !activeBottlenecks.db_exhaustion_enabled;
+      await postBottlenecks();
+    } else if (activeCodeMode === "mem") {
+      activeBottlenecks.memory_leak_enabled = !activeBottlenecks.memory_leak_enabled;
+      await postBottlenecks();
+    } else if (activeCodeMode === "cpu") {
+      activeBottlenecks.cpu_lock_enabled = !activeBottlenecks.cpu_lock_enabled;
+      await postBottlenecks();
     }
+    renderCodeInspector(activeCodeMode);
   });
 }
 
-function bindHeroActions() {
-  const heroLaunchBtn = document.getElementById("heroLaunchBtn");
-  const heroInjectBtn = document.getElementById("heroInjectBtn");
+async function postBottlenecks() {
+  await fetch("/api/v1/admin/bottlenecks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      db_exhaustion_enabled: activeBottlenecks.db_exhaustion_enabled,
+      db_simulated_delay_ms: 120.0,
+      memory_leak_enabled: activeBottlenecks.memory_leak_enabled,
+      memory_leak_chunk_kb: 512,
+      cpu_lock_enabled: activeBottlenecks.cpu_lock_enabled,
+      cpu_lock_iterations: 120000
+    })
+  });
+}
 
-  heroLaunchBtn.addEventListener("click", async () => {
-    heroLaunchBtn.disabled = true;
-    heroLaunchBtn.textContent = "Running Benchmark (500 VUs)...";
+// --------------------------------------------------------------------------
+// 2. Hero Controls & Reset
+// --------------------------------------------------------------------------
+
+function bindHeroControls() {
+  const runBtn = document.getElementById("heroRunTestBtn");
+  const topReset = document.getElementById("topResetBtn");
+
+  runBtn.addEventListener("click", async () => {
+    runBtn.disabled = true;
+    runBtn.innerHTML = `<span>Running Load...</span>`;
     try {
       await fetch("/api/v1/load/start", {
         method: "POST",
@@ -247,80 +201,40 @@ function bindHeroActions() {
         body: JSON.stringify({ workload_type: "spike" })
       });
     } catch (err) {
-      console.error("Launch error:", err);
+      console.error(err);
     }
     setTimeout(() => {
-      heroLaunchBtn.disabled = false;
-      heroLaunchBtn.textContent = "▶ Run 500 VU Load Test";
+      runBtn.disabled = false;
+      runBtn.innerHTML = `<span>Run Benchmark</span><span class="btn-arrow">➔</span>`;
     }, 25000);
   });
 
-  heroInjectBtn.addEventListener("click", async () => {
-    const toggleDb = document.getElementById("sidebarToggleDb");
-    toggleDb.checked = !toggleDb.checked;
-    toggleDb.dispatchEvent(new Event("change"));
-
-    if (toggleDb.checked) {
-      heroInjectBtn.textContent = "✅ DB Starvation Active";
-      heroInjectBtn.className = "btn btn-danger btn-lg";
-    } else {
-      heroInjectBtn.textContent = "⚠️ Inject DB Starvation";
-      heroInjectBtn.className = "btn btn-outline-white btn-lg";
-    }
+  topReset.addEventListener("click", async () => {
+    if (!confirm("Reset all state and bottlenecks?")) return;
+    await fetch("/api/v1/admin/reset", { method: "POST" });
+    activeBottlenecks = { db_exhaustion_enabled: false, memory_leak_enabled: false, cpu_lock_enabled: false };
+    renderCodeInspector(activeCodeMode);
   });
 
-  // Load lab controls
-  const labSlider = document.getElementById("labVuSlider");
-  const labVuDisplay = document.getElementById("labVuDisplay");
-  const labExecBtn = document.getElementById("labExecBtn");
-  const labHaltBtn = document.getElementById("labHaltBtn");
-  const labSelect = document.getElementById("labStrategySelect");
-
-  labSlider.addEventListener("input", () => {
-    labVuDisplay.textContent = `${labSlider.value} Virtual Users`;
-  });
-
-  labExecBtn.addEventListener("click", async () => {
-    labExecBtn.disabled = true;
-    labHaltBtn.disabled = false;
-    try {
-      await fetch("/api/v1/load/start", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workload_type: labSelect.value })
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  });
-
-  labHaltBtn.addEventListener("click", async () => {
-    try {
-      await fetch("/api/v1/load/stop", { method: "POST" });
-    } catch (err) {
-      console.error(err);
-    }
-  });
-
-  document.getElementById("bitsDownloadBtn").addEventListener("click", () => {
+  document.getElementById("downloadRcaMarkdown").addEventListener("click", () => {
     window.open("/api/v1/aiops/report/download", "_blank");
   });
 }
 
 // --------------------------------------------------------------------------
-// 4. Bits AI Copilot (Datadog Bits AI Style)
+// 3. Floating Copilot Drawer
 // --------------------------------------------------------------------------
 
-function bindBitsAICopilot() {
+function bindCopilotDrawer() {
   const drawer = document.getElementById("copilotDrawer");
-  const navBtn = document.getElementById("navCopilotBtn");
+  const openBtn = document.getElementById("openCopilotTop");
   const closeBtn = document.getElementById("closeCopilotBtn");
   const sendBtn = document.getElementById("sendCopilotBtn");
   const input = document.getElementById("copilotInput");
   const stream = document.getElementById("copilotChatStream");
   const chips = document.querySelectorAll(".prompt-chip");
 
-  navBtn.addEventListener("click", () => drawer.classList.add("open"));
+  openBtn.addEventListener("click", () => drawer.classList.add("open"));
   closeBtn.addEventListener("click", () => drawer.classList.remove("open"));
 
   const appendMsg = (sender, html) => {
@@ -343,33 +257,33 @@ function bindBitsAICopilot() {
       let reply = "";
 
       if (q.includes("Why is p99") || q.includes("spiking")) {
-        if (currentBottlenecks.db_exhaustion_enabled) {
-          reply = `🚨 **p99 latency is currently ${p99}ms** due to **Database Connection Pool Starvation**. Workers are blocked on a 5-connection semaphore while executing unindexed sequential scans on \`/api/v1/workspaces\`. Notice the orange/red hexagons in **us-east-1c** on the Host Map!`;
-        } else if (currentBottlenecks.cpu_lock_enabled) {
-          reply = `🚨 **p99 latency is spiking** because synchronous cryptographic hashing (\`hashlib.sha256\`) is monopolizing 88% of CPU cycles, blocking the FastAPI asynchronous event loop in **us-east-1a**.`;
-        } else if (currentBottlenecks.memory_leak_enabled) {
-          reply = `⚠️ Latency degradation is being driven by heap allocation overhead in \`worker-ingest\` (**us-west-1**). An uncollected byte buffer in telemetry ingestion is bloating memory.`;
+        if (activeBottlenecks.db_exhaustion_enabled) {
+          reply = `🚨 **p99 latency is currently ${p99}ms** due to **Database Connection Pool Starvation**. Workers are stalled in \`async with DB_POOL_SEMAPHORE:\` on line 79 of \`app.py\` while executing unindexed sequential table scans.`;
+        } else if (activeBottlenecks.cpu_lock_enabled) {
+          reply = `🚨 **p99 latency is spiking** because a synchronous cryptographic loop (\`hashlib.sha256\`) on line 89 is monopolizing 88% of CPU cycles, blocking the non-blocking event loop.`;
+        } else if (activeBottlenecks.memory_leak_enabled) {
+          reply = `⚠️ Latency degradation is driven by memory allocation overhead. An uncollected byte buffer on line 114 in \`submit_device_telemetry\` is bloating the heap.`;
         } else {
-          reply = `✅ **System is nominal.** Current p99 latency is **${p99}ms**, well below your contractual 200ms SLO limit. All host hexagons are green.`;
+          reply = `✅ **System is nominal.** Current p99 latency is **${p99}ms**, well below your contractual 200ms SLO limit.`;
         }
       } else if (q.includes("DB pool") || q.includes("database")) {
-        if (currentBottlenecks.db_exhaustion_enabled) {
-          reply = `🔍 **DB Pool Analysis**: Active connections are saturated at 5/5. Average wait duration in pool queue is **${Math.round(p99 * 0.7)}ms**. Recommend scaling pool to 50 connections with index optimization.`;
+        if (activeBottlenecks.db_exhaustion_enabled) {
+          reply = `🔍 **DB Pool Analysis**: Active connections saturated at 5/5. Average wait duration in pool queue is **${Math.round(p99 * 0.7)}ms**. Recommend scaling pool to 50 connections with index optimization.`;
         } else {
           reply = `✅ **DB Pool Analysis**: Connection pool is healthy with 0 connection wait time.`;
         }
       } else if (q.includes("memory leak") || q.includes("leak")) {
-        if (currentBottlenecks.memory_leak_enabled) {
+        if (activeBottlenecks.memory_leak_enabled) {
           reply = `🧪 **Memory Leak Alert**: Linear heap accumulation detected in \`LEAKED_MEMORY_BUFFER\`. Allocation rate is ~512KB per telemetry payload.`;
         } else {
           reply = `✅ **Memory State**: Heap is stable. Garbage collection cycles are healthy.`;
         }
       } else {
-        reply = `🛠️ **Prescriptive Remediation Action Plan**:\n1. **Index DB**: Add compound B-tree index on \`workspace_id\` and \`tenant_id\`.\n2. **Resize Pool**: Increase DB pool capacity from 5 to 50 connections.\n3. **Circuit Breaker**: Implement 500ms connection timeout to fail fast.`;
+        reply = `🛠️ **3-Step Remediation Plan**:\n1. **Index Database**: Add compound B-tree index on \`workspace_id\` and \`tenant_id\`.\n2. **Resize Pool**: Increase DB pool capacity from 5 to 50 connections.\n3. **Circuit Breaker**: Implement 500ms connection timeout to fail fast.`;
       }
 
       appendMsg("ai", reply.replace(/\n/g, "<br>"));
-    }, 350);
+    }, 300);
   };
 
   sendBtn.addEventListener("click", () => {
@@ -386,52 +300,45 @@ function bindBitsAICopilot() {
 }
 
 // --------------------------------------------------------------------------
-// 5. APM Charts Initialization & Polling
+// 4. Parca Charts & Live Telemetry Polling
 // --------------------------------------------------------------------------
 
-function initApmCharts() {
+function initParcaCharts() {
   const common = {
     responsive: true,
     maintainAspectRatio: false,
     animation: { duration: 200 },
     scales: {
-      x: { grid: { color: '#1c263c' }, ticks: { color: '#64748b', font: { size: 10 } } },
-      y: { grid: { color: '#1c263c' }, ticks: { color: '#64748b', font: { size: 10 } }, beginAtZero: true }
+      x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } } },
+      y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 10 } }, beginAtZero: true }
     },
     plugins: { legend: { display: false } }
   };
 
-  const ctxLat = document.getElementById("apmLatencyChart").getContext("2d");
-  apmLatencyChart = new Chart(ctxLat, {
+  const ctxLat = document.getElementById("parcaLatencyChart").getContext("2d");
+  parcaLatencyChart = new Chart(ctxLat, {
     type: "line",
     data: {
       labels: [],
       datasets: [
-        { label: "p50", borderColor: "#38bdf8", data: [], tension: 0.3, borderWidth: 2, pointRadius: 2 },
-        { label: "p95", borderColor: "#f59e0b", data: [], tension: 0.3, borderWidth: 2, pointRadius: 2 },
-        { label: "p99", borderColor: "#ef4444", data: [], tension: 0.3, borderWidth: 2.5, pointRadius: 3 },
+        { label: "p50", borderColor: "#0284c7", data: [], tension: 0.3, borderWidth: 2, pointRadius: 2 },
+        { label: "p95", borderColor: "#d97706", data: [], tension: 0.3, borderWidth: 2, pointRadius: 2 },
+        { label: "p99", borderColor: "#dc2626", data: [], tension: 0.3, borderWidth: 2.5, pointRadius: 3 },
         { label: "SLO", borderColor: "#94a3b8", borderDash: [5, 5], data: [], pointRadius: 0, borderWidth: 1.5, fill: false }
       ]
     },
     options: common
   });
 
-  const ctxRps = document.getElementById("apmThroughputChart").getContext("2d");
-  apmThroughputChart = new Chart(ctxRps, {
+  const ctxRps = document.getElementById("parcaThroughputChart").getContext("2d");
+  parcaThroughputChart = new Chart(ctxRps, {
     type: "line",
     data: {
       labels: [],
-      datasets: [{ label: "RPS", borderColor: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.1)", fill: true, data: [], tension: 0.3, borderWidth: 2, pointRadius: 1 }]
-    },
-    options: common
-  });
-
-  const ctxMem = document.getElementById("apmResourceChart").getContext("2d");
-  apmResourceChart = new Chart(ctxMem, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [{ label: "RSS (MB)", borderColor: "#8b5cf6", backgroundColor: "rgba(139, 92, 246, 0.1)", fill: true, data: [], tension: 0.3, borderWidth: 2, pointRadius: 1 }]
+      datasets: [
+        { label: "RPS", borderColor: "#10b981", backgroundColor: "rgba(16, 185, 129, 0.1)", fill: true, data: [], tension: 0.3, borderWidth: 2, pointRadius: 1 },
+        { label: "Memory (MB)", borderColor: "#8b5cf6", borderDash: [3, 3], data: [], tension: 0.2, borderWidth: 1.5, pointRadius: 0 }
+      ]
     },
     options: common
   });
@@ -448,7 +355,6 @@ function startTelemetryPolling() {
         pollRCA(),
         pollFlameGraph()
       ]);
-      updateHoneycombStates();
     } catch (err) {
       console.error("Telemetry sync error:", err);
     }
@@ -459,90 +365,45 @@ async function pollLoadHistory() {
   const res = await fetch("/api/v1/load/history");
   const data = await res.json();
   const history = data.history || [];
-  const isRunning = data.is_running;
-
-  document.getElementById("labExecBtn").disabled = isRunning;
-  document.getElementById("labHaltBtn").disabled = !isRunning;
-  document.getElementById("loadLabStatusBadge").textContent = isRunning ? "STATUS: BENCHMARK ACTIVE" : "STATUS: IDLE";
-  document.getElementById("loadLabStatusBadge").className = `badge ${isRunning ? "WARNING" : "HEALTHY"}`;
 
   if (history.length === 0) return;
   const latest = history[history.length - 1];
   currentTelemetry = latest;
 
-  // Hero Ticker
-  document.getElementById("heroRps").innerHTML = `${latest.rps} <small>req/s</small>`;
-  document.getElementById("heroP99").innerHTML = `${latest.p99_ms} <small>ms</small>`;
-  document.getElementById("heroVus").innerHTML = `${latest.active_vus} <small>VUs</small>`;
+  // Hero Pill
+  document.getElementById("pillRps").innerHTML = `${latest.rps} <small>RPS</small>`;
+  document.getElementById("pillP99").innerHTML = `${latest.p99_ms} <small>ms</small>`;
+  document.getElementById("pillVus").innerHTML = `${latest.active_vus} <small>VUs</small>`;
 
-  // Lab Matrix
-  document.getElementById("mP50").textContent = `${latest.p50_ms} ms`;
-  document.getElementById("mP95").textContent = `${latest.p95_ms} ms`;
-  document.getElementById("mP99").textContent = `${latest.p99_ms} ms`;
-  document.getElementById("mP999").textContent = `${latest.p999_ms} ms`;
-  document.getElementById("mMax").textContent = `${latest.max_latency_ms} ms`;
-
-  const mP99Health = document.getElementById("mP99Health");
-  if (latest.p99_ms > 200.0) {
-    mP99Health.textContent = "SLO BREACHED";
-    mP99Health.className = "bad";
-  } else {
-    mP99Health.textContent = "Optimal";
-    mP99Health.className = "good";
-  }
-
-  // APM Chart update
+  // Update Latency Chart
   const recent = history.slice(-MAX_SAMPLES);
   const labels = recent.map(s => `${s.elapsed_seconds}s`);
 
-  apmLatencyChart.data.labels = labels;
-  apmLatencyChart.data.datasets[0].data = recent.map(s => s.p50_ms);
-  apmLatencyChart.data.datasets[1].data = recent.map(s => s.p95_ms);
-  apmLatencyChart.data.datasets[2].data = recent.map(s => s.p99_ms);
-  apmLatencyChart.data.datasets[3].data = recent.map(() => 200);
-  apmLatencyChart.update();
+  parcaLatencyChart.data.labels = labels;
+  parcaLatencyChart.data.datasets[0].data = recent.map(s => s.p50_ms);
+  parcaLatencyChart.data.datasets[1].data = recent.map(s => s.p95_ms);
+  parcaLatencyChart.data.datasets[2].data = recent.map(s => s.p99_ms);
+  parcaLatencyChart.data.datasets[3].data = recent.map(() => 200);
+  parcaLatencyChart.update();
 
-  apmThroughputChart.data.labels = labels;
-  apmThroughputChart.data.datasets[0].data = recent.map(s => s.rps);
-  apmThroughputChart.update();
+  parcaThroughputChart.data.labels = labels;
+  parcaThroughputChart.data.datasets[0].data = recent.map(s => s.rps);
+  parcaThroughputChart.update();
 }
 
 async function pollAdminStatus() {
   const res = await fetch("/api/v1/admin/status");
   const data = await res.json();
-
-  const nowLabel = new Date().toLocaleTimeString().split(" ")[0];
-  if (apmResourceChart.data.labels.length >= MAX_SAMPLES) {
-    apmResourceChart.data.labels.shift();
-    apmResourceChart.data.datasets[0].data.shift();
+  if (parcaThroughputChart && parcaThroughputChart.data.datasets.length > 1) {
+    const recent = parcaThroughputChart.data.labels;
+    parcaThroughputChart.data.datasets[1].data = recent.map(() => data.rss_memory_mb);
   }
-  apmResourceChart.data.labels.push(nowLabel);
-  apmResourceChart.data.datasets[0].data.push(data.rss_memory_mb);
-  apmResourceChart.update();
 }
 
 async function pollAIOpsAnomalies() {
   const res = await fetch("/api/v1/aiops/anomalies");
   const data = await res.json();
-  const anomalies = data.anomalies || [];
-
-  document.getElementById("heroAnomalyCount").textContent = `${data.total_anomalies} Flags`;
-  const stream = document.getElementById("bitsAnomalyStream");
-
-  if (anomalies.length === 0) {
-    stream.innerHTML = '<div class="empty-feed">No anomalies detected. Telemetry variance within normal distribution.</div>';
-    return;
-  }
-
-  stream.innerHTML = anomalies.slice(0, 8).map(a => `
-    <div class="anomaly-feed-item ${a.severity}">
-      <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-        <span class="badge ${a.severity}">${a.detector_type}</span>
-        <span style="font-family:monospace; color:#64748b; font-size:11px;">${new Date(a.timestamp * 1000).toLocaleTimeString()}</span>
-      </div>
-      <div style="color:#cbd5e1; font-size:12px;">${a.description}</div>
-    </div>
-  `).join("");
+  document.getElementById("pillAnomalies").textContent = `${data.total_anomalies} Flags`;
 }
 
 async function pollRCA() {
@@ -550,18 +411,18 @@ async function pollRCA() {
   const rca = await res.json();
   if (!rca || !rca.incident_id) return;
 
-  const sevBadge = document.getElementById("bitsSeverity");
-  sevBadge.textContent = rca.severity;
-  sevBadge.className = `badge ${rca.severity}`;
+  const badge = document.getElementById("rcaStatusBadge");
+  badge.textContent = rca.severity;
+  badge.className = `rca-badge ${rca.severity}`;
 
-  document.getElementById("bitsIncId").textContent = rca.incident_id;
-  document.getElementById("bitsConfidence").textContent = `${rca.confidence_pct}% Confidence`;
-  document.getElementById("bitsTitle").textContent = rca.title;
-  document.getElementById("bitsDiagnosis").textContent = rca.root_cause_diagnosis;
-  document.getElementById("bitsHotspot").textContent = rca.profiler_hotspot;
+  document.getElementById("rcaIncidentId").textContent = rca.incident_id;
+  document.getElementById("rcaConfidenceVal").textContent = `${rca.confidence_pct}% Confidence`;
+  document.getElementById("rcaHeading").textContent = rca.title;
+  document.getElementById("rcaSummary").textContent = rca.root_cause_diagnosis;
+  document.getElementById("rcaHotspotCode").textContent = rca.profiler_hotspot;
 
-  const list = document.getElementById("bitsRemediationList");
-  list.innerHTML = (rca.prescriptive_remediation || []).map(r => `<li>${r}</li>`).join("");
+  const ul = document.getElementById("rcaRemediationUl");
+  ul.innerHTML = (rca.prescriptive_remediation || []).map(r => `<li>${r}</li>`).join("");
 }
 
 async function pollFlameGraph() {
@@ -569,9 +430,9 @@ async function pollFlameGraph() {
   const data = await res.json();
   if (!data || !data.tree) return;
 
-  document.getElementById("profilerHotspotTitle").textContent = `Hotspot: ${data.hotspot_function}`;
+  document.getElementById("flameHotspotFlag").textContent = `Hotspot: ${data.hotspot_function}`;
 
-  const container = document.getElementById("flameGraphBox");
+  const container = document.getElementById("flameGraphCanvas");
   const rows = [];
 
   function walk(node, depth = 0) {
@@ -580,7 +441,7 @@ async function pollFlameGraph() {
     rows.push(`
       <div class="flame-bar-row ${isHot ? 'hotspot' : ''}">
         <span style="flex:1; color:#f8fafc;">${indent}↳ ${node.name}</span>
-        <div style="width: 120px;">
+        <div style="width: 140px;">
           <div class="flame-visual-bar" style="width: ${Math.min(node.value, 100)}%;"></div>
         </div>
         <span style="color:#94a3b8; width:50px; text-align:right;">${node.value}%</span>
@@ -591,31 +452,4 @@ async function pollFlameGraph() {
 
   walk(data.tree);
   container.innerHTML = rows.join("");
-
-  const tableBody = document.getElementById("profilerTableBody");
-  if (data.bottleneck_type === "DB_POOL_STARVATION") {
-    tableBody.innerHTML = `
-      <tr><td><code>DB_POOL_SEMAPHORE.acquire</code></td><td>68.0%</td><td>Connection Wait</td><td><span class="pill-tag p99">Critical Lock</span></td></tr>
-      <tr><td><code>postgres_seq_scan</code></td><td>24.5%</td><td>Unindexed Scan</td><td><span class="pill-tag p95">Warning</span></td></tr>
-      <tr><td><code>uvicorn.run</code></td><td>100.0%</td><td>HTTP Server</td><td><span class="pill-tag p50">Nominal</span></td></tr>
-    `;
-  } else if (data.bottleneck_type === "HEAP_MEMORY_LEAK") {
-    tableBody.innerHTML = `
-      <tr><td><code>LEAKED_MEMORY_BUFFER.append</code></td><td>74.0%</td><td>Heap Retain</td><td><span class="pill-tag p99">Memory Leak</span></td></tr>
-      <tr><td><code>os.urandom</code></td><td>69.5%</td><td>Buffer Alloc</td><td><span class="pill-tag p95">Warning</span></td></tr>
-      <tr><td><code>uvicorn.run</code></td><td>100.0%</td><td>HTTP Server</td><td><span class="pill-tag p50">Nominal</span></td></tr>
-    `;
-  } else if (data.bottleneck_type === "CPU_CONTENTION") {
-    tableBody.innerHTML = `
-      <tr><td><code>hashlib.sha256</code></td><td>88.5%</td><td>CPU Spinlock</td><td><span class="pill-tag p99">Event Loop Block</span></td></tr>
-      <tr><td><code>FastAPI.dispatch_request</code></td><td>97.2%</td><td>Dispatcher</td><td><span class="pill-tag p95">Starved</span></td></tr>
-      <tr><td><code>uvicorn.run</code></td><td>100.0%</td><td>HTTP Server</td><td><span class="pill-tag p50">Nominal</span></td></tr>
-    `;
-  } else {
-    tableBody.innerHTML = `
-      <tr><td><code>uvicorn.run</code></td><td>100.0%</td><td>Process Entrypoint</td><td><span class="pill-tag p50">Nominal</span></td></tr>
-      <tr><td><code>FastAPI.dispatch_request</code></td><td>95.0%</td><td>HTTP Router</td><td><span class="pill-tag p50">Nominal</span></td></tr>
-      <tr><td><code>db_in_memory_lookup</code></td><td>15.0%</td><td>Indexed Lookup</td><td><span class="pill-tag p50">Nominal</span></td></tr>
-    `;
-  }
 }
