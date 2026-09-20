@@ -54,14 +54,15 @@ body.parca-body {
    ========================================================================== */
 
 .parca-navbar {
-  background: rgba(12, 48, 40, 0.38);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(10, 40, 34, 0.18) 100%);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-container {
@@ -324,11 +325,13 @@ body.parca-body {
   height: 100%;
   display: block;
   overflow: visible;
-  opacity: 0.38;
-  transition: opacity 0.25s ease;
+  opacity: 0.48;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+  transition: opacity 0.25s ease, filter 0.25s ease;
 }
 .arrow-svg:hover {
-  opacity: 0.85;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
 }
 
 /* Hero Platform Subtext & Feature Chips */
