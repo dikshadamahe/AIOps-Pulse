@@ -1,5 +1,6 @@
 import os
 import sys
+from urllib.parse import parse_qs, urlencode
 
 # Ensure project root is on sys.path so modules import cleanly in serverless environment
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -10,36 +11,19 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from server import server_app
 
-@server_app.exception_handler(404)
-async def custom_404_handler(request: Request, exc):
-    return JSONResponse(
-        status_code=404,
-        content={
-            "error": "Route Not Found",
-            "path": request.scope.get("path"),
-            "raw_path": request.scope.get("raw_path", b"").decode("utf-8", errors="ignore"),
-            "url": str(request.url),
-            "headers": dict(request.headers),
-        }
-    )
-
 class VercelPathFixMiddleware:
     def __init__(self, asgi_app):
         self.asgi_app = asgi_app
 
     async def __call__(self, scope, receive, send):
         if scope["type"] == "http":
-            path = scope.get("path", "")
-            headers = dict(scope.get("headers", []))
-            
-            matched_path = headers.get(b"x-matched-path", b"").decode("utf-8")
-            forwarded_uri = headers.get(b"x-forwarded-uri", b"").decode("utf-8")
-            orig_path = matched_path or forwarded_uri
-
-            if orig_path and orig_path.startswith("/api/"):
-                scope["path"] = orig_path
-            elif not path.startswith("/api/") and path.startswith("/v1/"):
-                scope["path"] = "/api" + path
+            query_bytes = scope.get("query_string", b"")
+            if b"__path__=" in query_bytes:
+                qs = parse_qs(query_bytes.decode("utf-8", errors="ignore"))
+                custom_path = qs.pop("__path__", [None])[0]
+                if custom_path:
+                    scope["path"] = custom_path
+                    scope["query_string"] = urlencode(qs, doseq=True).encode("utf-8")
 
         await self.asgi_app(scope, receive, send)
 
