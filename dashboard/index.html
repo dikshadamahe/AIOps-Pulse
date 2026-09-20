@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
-  <link rel="stylesheet" href="/static/styles.css?v=8">
+  <link rel="stylesheet" href="/static/styles.css?v=9">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -92,15 +92,15 @@
 
       <!-- 1-Click Interactive Simulation Scenarios Bar -->
       <div class="hero-scenarios-bar">
-        <span class="scenarios-label">⚡ 1-Click Scenarios:</span>
+        <span class="scenarios-label">1-Click Scenarios:</span>
         <button class="btn-scenario-chip" id="scenarioSpikeBtn" title="Launch 500+ VU Traffic Surge without failure modes">
-          <span class="chip-icon">💥</span> Traffic Surge (500 VUs)
+          Traffic Surge (500 VUs)
         </button>
         <button class="btn-scenario-chip" id="scenarioDbBtn" title="Simulate unindexed query contention & DB connection exhaustion">
-          <span class="chip-icon">🛑</span> DB Pool Starvation
+          DB Pool Starvation
         </button>
         <button class="btn-scenario-chip" id="scenarioLeakBtn" title="Simulate unbounded telemetry heap growth and memory leak">
-          <span class="chip-icon">💧</span> Heap Memory Leak
+          Heap Memory Leak
         </button>
         <button class="btn-scenario-chip btn-scenario-reset" id="scenarioResetBtn" title="Reset system state and stop benchmarks">
           <span class="chip-icon">↺</span> Reset State
@@ -160,7 +160,6 @@
         <div class="pipeline-step-box active" data-step="1" id="pipeStep1">
           <div class="pipe-top-meta">
             <span class="pipe-step-badge">STEP 01</span>
-            <span class="pipe-icon">⚡</span>
           </div>
           <h3 class="pipe-title">Synthetic Load Generation</h3>
           <p class="pipe-text">Locust asyncio workers simulate up to 1,000 concurrent Virtual Users generating burst &amp; soak traffic.</p>
@@ -175,7 +174,6 @@
         <div class="pipeline-step-box" data-step="2" id="pipeStep2">
           <div class="pipe-top-meta">
             <span class="pipe-step-badge">STEP 02</span>
-            <span class="pipe-icon">🧪</span>
           </div>
           <h3 class="pipe-title">Chaos Fault Injections</h3>
           <p class="pipe-text">Simulate DB pool semaphore exhaustion, monotonic heap growth, and event-loop CPU spinlocks.</p>
@@ -190,7 +188,6 @@
         <div class="pipeline-step-box" data-step="3" id="pipeStep3">
           <div class="pipe-top-meta">
             <span class="pipe-step-badge">STEP 03</span>
-            <span class="pipe-icon">📊</span>
           </div>
           <h3 class="pipe-title">eBPF Profiling &amp; Flame Graphs</h3>
           <p class="pipe-text">Sample async call stacks in real time to attribute CPU and coroutine queue delays by method.</p>
@@ -205,7 +202,6 @@
         <div class="pipeline-step-box" data-step="4" id="pipeStep4">
           <div class="pipe-top-meta">
             <span class="pipe-step-badge">STEP 04</span>
-            <span class="pipe-icon">🧠</span>
           </div>
           <h3 class="pipe-title">ML Anomaly &amp; Autonomous RCA</h3>
           <p class="pipe-text">Rolling 60s Z-Scores detect &gt;3.0&sigma; deviations and generate prescriptive AI remediation runbooks.</p>
@@ -451,7 +447,6 @@
   <aside class="copilot-slideover" id="copilotDrawer">
     <div class="copilot-top-bar">
       <div class="copilot-brand-title">
-        <span class="copilot-icon">✨</span>
         <div>
           <h3>AIOps Diagnostic Copilot</h3>
           <span class="copilot-sub">Telemetry-Grounded Intelligence Assistant</span>
@@ -462,7 +457,7 @@
 
     <div class="copilot-chat-body" id="copilotChatStream">
       <div class="chat-msg ai">
-        <div class="msg-avatar">🤖</div>
+        <div class="msg-avatar">AI</div>
         <div class="msg-text">
           Hello! I am your performance intelligence copilot. Ask me about current p99 latency regressions, database lock contention, or continuous call-stack profiling!
         </div>
@@ -470,10 +465,10 @@
     </div>
 
     <div class="copilot-suggestions-bar">
-      <button class="prompt-chip" data-query="Why is p99 latency spiking?">❓ Why is p99 spiking?</button>
-      <button class="prompt-chip" data-query="Analyze database connection contention">🔍 Check DB pool wait times</button>
-      <button class="prompt-chip" data-query="Is there a memory leak in telemetry ingestion?">🧪 Check for memory leaks</button>
-      <button class="prompt-chip" data-query="Give me a 3-step remediation plan">🛠️ Remediation action plan</button>
+      <button class="prompt-chip" data-query="Why is p99 latency spiking?">Why is p99 spiking?</button>
+      <button class="prompt-chip" data-query="Analyze database connection contention">Check DB pool wait times</button>
+      <button class="prompt-chip" data-query="Is there a memory leak in telemetry ingestion?">Check for memory leaks</button>
+      <button class="prompt-chip" data-query="Give me a 3-step remediation plan">Remediation action plan</button>
     </div>
 
     <div class="copilot-input-row">
@@ -484,7 +479,6 @@
 
   <!-- Floating Action Button for AI Copilot -->
   <button id="floatingCopilotBtn" class="floating-copilot-fab" title="Open AI Diagnostic Copilot">
-    <span class="fab-icon">✨</span>
     <span class="fab-text">AI Copilot</span>
   </button>
 
@@ -505,6 +499,6 @@
   <!-- Global Toast Notification Container for Scenario Feedback -->
   <div id="scenarioToast" class="scenario-toast"></div>
 
-  <script src="/static/app.js?v=8"></script>
+  <script src="/static/app.js?v=9"></script>
 </body>
 </html>

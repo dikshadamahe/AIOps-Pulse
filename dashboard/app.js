@@ -563,7 +563,7 @@ function bindEventHandlers() {
       console.error(e);
     }
     await handleStartLoad();
-    showScenarioToast(`<strong>💥 Traffic Surge Started:</strong> 500 VUs active. Monitoring latency curve &amp; RPS saturation...`);
+    showScenarioToast(`<strong>Traffic Surge Started:</strong> 500 VUs active. Monitoring latency curve &amp; RPS saturation...`);
     setTimeout(scrollToTelemetry, 350);
   });
 
@@ -592,7 +592,7 @@ function bindEventHandlers() {
       console.error(e);
     }
     await handleStartLoad();
-    showScenarioToast(`<strong>🛑 DB Pool Starvation Injected:</strong> Semaphore capped at 5. Watch p99 breach 200ms SLO!`);
+    showScenarioToast(`<strong>DB Pool Starvation Injected:</strong> Semaphore capped at 5. Watch p99 breach 200ms SLO!`);
     setTimeout(scrollToTelemetry, 350);
   });
 
@@ -621,7 +621,7 @@ function bindEventHandlers() {
       console.error(e);
     }
     await handleStartLoad();
-    showScenarioToast(`<strong>💧 Heap Memory Leak Active:</strong> Monitoring steady RSS growth and GC saturation.`);
+    showScenarioToast(`<strong>Heap Memory Leak Active:</strong> Monitoring steady RSS growth and GC saturation.`);
     setTimeout(scrollToTelemetry, 350);
   });
 
@@ -685,7 +685,7 @@ function bindCopilotDrawer() {
     const msg = document.createElement("div");
     msg.className = `chat-msg ${sender}`;
     msg.innerHTML = `
-      <div class="msg-avatar">${sender === 'ai' ? '🤖' : '👤'}</div>
+      <div class="msg-avatar">${sender === 'ai' ? 'AI' : 'YOU'}</div>
       <div class="msg-text">${textHtml}</div>
     `;
     stream?.appendChild(msg);
@@ -731,49 +731,49 @@ function synthesizeCopilotReply(query) {
 
   if (q.includes("p99") || q.includes("spik") || q.includes("latency") || q.includes("slow")) {
     if (b.db_exhaustion_enabled) {
-      return `<strong>🚨 Bottleneck Identified: Database Pool Semaphore Starvation</strong><br/>
+      return `<strong>Bottleneck Identified: Database Pool Semaphore Starvation</strong><br/>
       Current p99 latency is <strong>${p99}ms</strong>, violating the 200ms SLO contract.<br/>
       Coroutines are blocking on <code>DB_POOL_SEMAPHORE.acquire</code> (5 connection cap) during unindexed scans.`;
     } else if (b.cpu_lock_enabled) {
-      return `<strong>🚨 Bottleneck Identified: Event-Loop CPU Spinlock</strong><br/>
+      return `<strong>Bottleneck Identified: Event-Loop CPU Spinlock</strong><br/>
       Current p99 is <strong>${p99}ms</strong>. A synchronous cryptographic hashing loop is monopolizing the Python async event loop thread.`;
     } else if (currentState.p99 > 200) {
-      return `<strong>⚠️ High Concurrency Saturation Detected</strong><br/>
+      return `<strong>High Concurrency Saturation Detected</strong><br/>
       Current p99 latency is <strong>${p99}ms</strong> under ${vus} concurrent Virtual Users at ${rps} RPS. Worker pool is saturated.`;
     } else {
-      return `<strong>✅ Systems Nominal</strong><br/>
+      return `<strong>Systems Nominal</strong><br/>
       Current p99 latency is <strong>${p99}ms</strong>, comfortably inside the 200ms SLO budget (${vus} VUs active, ${rps} RPS).`;
     }
   }
 
   if (q.includes("db") || q.includes("pool") || q.includes("contention") || q.includes("database")) {
     if (b.db_exhaustion_enabled) {
-      return `<strong>🔍 DB Pool Contention: ACTIVE</strong><br/>
+      return `<strong>DB Pool Contention: ACTIVE</strong><br/>
       The database semaphore is hard-capped at 5 handles. Query queue times account for 68% of response latency. Recommend connection pool resizing.`;
     } else {
-      return `<strong>🔍 DB Pool: HEALTHY</strong><br/>
+      return `<strong>DB Pool: HEALTHY</strong><br/>
       Zero semaphore queue stalls. All database lookups are resolving via memory indexes in sub-5ms.`;
     }
   }
 
   if (q.includes("memory") || q.includes("leak") || q.includes("heap")) {
     if (b.memory_leak_enabled) {
-      return `<strong>🚨 Heap Memory Leak Detected</strong><br/>
+      return `<strong>Heap Memory Leak Detected</strong><br/>
       Telemetry buffer is appending 512KB uncollected byte chunks on incoming requests. Host RSS is now <strong>${mem} MB</strong>.`;
     } else {
-      return `<strong>✅ Heap Memory: NOMINAL</strong><br/>
+      return `<strong>Heap Memory: NOMINAL</strong><br/>
       RSS footprint is stable at <strong>${mem} MB</strong>. Python garbage collector is reclaiming all request allocations.`;
     }
   }
 
   if (q.includes("remediat") || q.includes("plan") || q.includes("step") || q.includes("action")) {
-    return `<strong>🛠️ Prescriptive Remediation Plan</strong><br/>
+    return `<strong>Prescriptive Remediation Plan</strong><br/>
     1. Trip API Gateway circuit breaker to shed 30% of non-essential endpoint telemetry.<br/>
     2. Expand async connection pool limits from 5 to 25 handles in <code>target_service/app.py</code>.<br/>
     3. Trigger Horizontal Pod Autoscaler (HPA) to spin up 2 replica workers.`;
   }
 
-  return `<strong>⚡ AIOps Telemetry Summary</strong><br/>
+  return `<strong>AIOps Telemetry Summary</strong><br/>
   Current p99: <strong>${p99}ms</strong> | Throughput: <strong>${rps} RPS</strong> | Active VUs: <strong>${vus}</strong> | RSS Memory: <strong>${mem} MB</strong>.`;
 }
 
@@ -991,7 +991,7 @@ function renderAnomalies(anomalies) {
 
   feed.innerHTML = anomalies.slice(0, 10).map(a => `
     <div class="anomaly-item">
-      <strong>⚠️ ${escapeHtml(a.metric_name)} Anomaly</strong>
+      <strong>${escapeHtml(a.metric_name)} Anomaly</strong>
       <div>Observed: ${a.observed_value.toFixed(1)} (Threshold: ${a.threshold_value.toFixed(1)})</div>
     </div>
   `).join("");
