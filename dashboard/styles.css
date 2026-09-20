@@ -314,9 +314,11 @@ body.parca-body {
   line-height: 1.6;
   color: #e2e8f0;
   max-width: 860px;
-  margin-top: 14px;
-  margin-bottom: 22px;
+  margin-top: 18px;
+  margin-bottom: 28px;
   font-weight: 400;
+  display: block;
+  clear: both;
 }
 
 /* ==========================================================================
@@ -326,7 +328,7 @@ body.parca-body {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
   z-index: 3;
   position: relative;
