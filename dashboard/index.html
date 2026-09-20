@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
-  <link rel="stylesheet" href="/static/styles.css?v=11">
+  <link rel="stylesheet" href="/static/styles.css?v=12">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -45,6 +45,31 @@
       </div>
     </div>
   </header>
+
+  <!-- Real-Time Telemetry Stream Banner (Pleasant, Readable, Non-Chaotic) -->
+  <div class="top-telemetry-ribbon" id="topTelemetryRibbon">
+    <div class="ribbon-inner">
+      <div class="ribbon-badge">
+        <span class="ribbon-live-pulse"></span>
+        <span class="ribbon-badge-label">LIVE TELEMETRY</span>
+      </div>
+      <div class="ribbon-metrics-row">
+        <span class="ribbon-metric"><span class="rm-lbl">p99 LATENCY:</span> <strong id="ribbonP99" class="rm-val">142.4ms</strong></span>
+        <span class="rm-sep">•</span>
+        <span class="ribbon-metric"><span class="rm-lbl">THROUGHPUT:</span> <strong id="ribbonRps" class="rm-val">250.0 RPS</strong></span>
+        <span class="rm-sep">•</span>
+        <span class="ribbon-metric"><span class="rm-lbl">ACTIVE VUs:</span> <strong id="ribbonVus" class="rm-val">50</strong></span>
+        <span class="rm-sep">•</span>
+        <span class="ribbon-metric"><span class="rm-lbl">ERROR RATE:</span> <strong id="ribbonErr" class="rm-val">0.0%</strong></span>
+        <span class="rm-sep">•</span>
+        <span class="ribbon-metric"><span class="rm-lbl">MEMORY:</span> <strong id="ribbonMem" class="rm-val">128.4 MB</strong></span>
+        <span class="rm-sep">•</span>
+        <span class="ribbon-metric"><span class="rm-lbl">SLO TARGET:</span> <strong id="ribbonSlo" class="rm-val rm-slo-ok">200ms COMPLIANT</strong></span>
+        <span class="rm-sep">•</span>
+        <span class="ribbon-metric"><span class="rm-lbl">SAMPLER:</span> <strong class="rm-val">eBPF 99Hz ACTIVE</strong></span>
+      </div>
+    </div>
+  </div>
 
   <!-- SECTION 1: EXACT PARCA HERO (LIVE DYNAMIC HEX CANVAS ANIMATION) -->
   <section class="parca-hero-section" id="hero">
@@ -499,6 +524,6 @@
   <!-- Global Toast Notification Container for Scenario Feedback -->
   <div id="scenarioToast" class="scenario-toast"></div>
 
-  <script src="/static/app.js?v=11"></script>
+  <script src="/static/app.js?v=12"></script>
 </body>
 </html>

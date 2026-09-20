@@ -186,6 +186,106 @@ body.parca-body {
 }
 
 /* ==========================================================================
+   Pleasant Top Real-Time Telemetry Stream Banner
+   ========================================================================== */
+.top-telemetry-ribbon {
+  background: rgba(11, 46, 38, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 8px 24px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: #cbd5e1;
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.ribbon-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.ribbon-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.ribbon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 3px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.ribbon-live-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  display: inline-block;
+  animation: ribbonPulse 2s infinite ease-in-out;
+}
+
+@keyframes ribbonPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.ribbon-badge-label {
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.6px;
+  color: #ffffff;
+}
+
+.ribbon-metrics-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.ribbon-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rm-lbl {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.rm-val {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.rm-slo-ok {
+  color: #34d399;
+}
+
+.rm-slo-breach {
+  color: #f87171;
+}
+
+.rm-sep {
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 9px;
+}
+
+/* ==========================================================================
    2. Parca Hero Section (Live Dynamic Hex Canvas Animation)
    ========================================================================== */
 
@@ -194,11 +294,11 @@ body.parca-body {
   background-color: #124e41;
   background: linear-gradient(180deg, #186353 0%, #124e41 55%, #0d3d33 100%);
   color: #ffffff;
-  min-height: calc(100vh - 68px);
+  min-height: calc(100vh - 104px);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 42px 28px 50px;
+  padding: 38px 28px 50px;
   overflow: visible;
   border-bottom: none;
 }
