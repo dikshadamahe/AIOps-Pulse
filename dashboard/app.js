@@ -187,19 +187,19 @@ function initHexMatrixCanvas() {
   function render(time) {
     requestAnimationFrame(render);
 
-    // Dynamic morphing interval: ~35ms
-    if (time - lastUpdate > 35) {
+    // Calm ambient morphing interval: ~250ms (relaxed, non-distracting pace)
+    if (time - lastUpdate > 250) {
       lastUpdate = time;
 
-      // Morph 6-8% of the hex cells to new random numbers and alphabets
+      // Morph just ~1.8% of the cells so numbers change gently and smoothly
       const totalCells = rows * cols;
-      const count = Math.max(16, Math.floor(totalCells * 0.07));
+      const count = Math.max(5, Math.floor(totalCells * 0.018));
       for (let i = 0; i < count; i++) {
         const r = Math.floor(Math.random() * rows);
         const c = Math.floor(Math.random() * cols);
         if (grid[r] && grid[r][c]) {
           grid[r][c].val = getRandomByte();
-          if (Math.random() < 0.04) {
+          if (Math.random() < 0.05) {
             grid[r][c].glow = 1.0;
           }
         }
