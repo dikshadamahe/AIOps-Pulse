@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
+  <link rel="stylesheet" href="/static/styles.css?v=31">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js for real-time telemetry streaming -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="parca-body">
+
+  <!-- Parca Style Navigation Bar -->
+  <header class="parca-navbar">
+    <div class="nav-container">
+      <a href="/" class="parca-brand">
+        <span class="brand-name">aiops<span class="brand-dot">/</span>pulse</span>
+        <span class="brand-sub">Performance Intelligence</span>
+      </a>
+
+      <nav class="parca-nav-menu">
+        <a href="#hero" class="nav-link">Overview</a>
+        <a href="#how-it-works-section" class="nav-link">Pipeline</a>
+        <a href="#workload-section" class="nav-link">Workload</a>
+        <a href="#chaos-section" class="nav-link">Chaos Engine</a>
+        <a href="#telemetry-section" class="nav-link">Telemetry</a>
+        <a href="#profiler-section" class="nav-link">Flame Graph</a>
+        <a href="#rca-section" class="nav-link">Diagnostics</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="/metrics" target="_blank" class="nav-action-btn mono-link">/metrics&nbsp;↗</a>
+        <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank" class="nav-action-btn btn-parca-dark">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+
+        <button id="resetBtnNav" class="nav-action-btn btn-parca-reset">Reset State</button>
+        <button id="openCopilotTop" class="nav-action-btn btn-demo-green">AI Copilot <span class="btn-demo-square">■</span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION 1: EXACT PARCA HERO (LIVE DYNAMIC HEX CANVAS ANIMATION) -->
+  <section class="parca-hero-section" id="hero">
+    <!-- Live Dynamic Canvas Rendering Changing Numbers & Alphabets in Background -->
+    <canvas id="hexMatrixCanvas" class="hex-canvas-background"></canvas>
+
+    <div class="hero-container">
+      <!-- Top Kicker: TRACK -->
+      <div class="hero-kicker-track">TRACK IN REAL TIME</div>
+
+      <!-- Massive Central Headline: LATENCY. CPU. MEMORY. (Matching AIOps-Pulse Golden Signals) -->
+      <h1 class="hero-massive-headline">LATENCY. CPU. MEMORY.</h1>
+
+      <!-- Bottom Layout: BOTTLENECKS, Connected Line, and Run Workload Benchmark -->
+      <div class="hero-flow-layout">
+        <!-- Right-aligned Word: BOTTLENECKS -->
+        <div class="hero-bottlenecks-box">
+          <span class="hero-bottlenecks-word">BOTTLENECKS</span>
+        </div>
+
+        <!-- Connector Path and Run Workload Benchmark Button -->
+        <div class="hero-action-row">
+          <a href="#workload-section" id="heroTryNowBtn" class="btn-parca-purple-cta">
+            Run Workload Benchmark
+          </a>
+
+          <!-- SVG Connector: Drops down from BOTTLENECKS, turns 90deg left, points directly into Run Workload Benchmark -->
+          <div class="hero-arrow-connector">
+            <svg class="arrow-svg" viewBox="0 0 760 90" preserveAspectRatio="none">
+              <defs>
+                <marker id="parca-arrowhead" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+                  <path d="M 10 1 L 2 6 L 10 11" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+              </defs>
+              <path d="M 750 0 L 750 52 L 14 52" fill="none" stroke="#ffffff" stroke-width="2.2" marker-end="url(#parca-arrowhead)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clean, Spacious Platform Overview Subtext -->
+      <div class="hero-subtext-container">
+        <p class="hero-project-subtext">
+          Autonomous microservice APM &amp; continuous profiling engine. Correlates live p99 telemetry, eBPF call-stack flame graphs, and ML anomaly detection (Rolling Z-Score &amp; Isolation Forest) to diagnose production regressions and enforce contractual 200ms SLOs.
+        </p>
+        <div class="hero-quick-features">
+          <span class="hero-feat-chip">Continuous eBPF Profiling</span>
+          <span class="hero-feat-chip">ML Anomaly Detection</span>
+          <span class="hero-feat-chip">Contractual 200ms SLO Gating</span>
+          <span class="hero-feat-chip">1-Click Chaos Engineering</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: AIOPS-PULSE STATEMENT SECTION -->
+  <section class="parca-statement-bar">
+    <div class="statement-inner">
+      <h2>
+        AIOps-Pulse correlates call-stack flame graphs, continuous profiling, and rolling Z-scores to catch <span>latency regressions before contractual SLO breaches occur</span>.
+      </h2>
+    </div>
+  </section>
+
+  <!-- SECTION 2.5: HOW IT WORKS INTERACTIVE PIPELINE (CHANGE 2) -->
+  <section class="pipeline-section" id="how-it-works-section">
+    <div class="pipeline-inner">
+      <div class="pipeline-header-block">
+        <span class="pipeline-kicker">END-TO-END OBSERVABILITY PIPELINE</span>
+        <h2 class="pipeline-heading">How AIOps-Pulse Enforces 200ms SLO Contracts</h2>
+        <p class="pipeline-desc">Click any stage in the flow below to explore how load, eBPF profiling, and ML RCA interact in real time:</p>
+      </div>
+
+      <div class="pipeline-flow-row">
+        <!-- Step 1 -->
+        <div class="pipeline-step-box active" data-step="1" id="pipeStep1">
+          <div class="pipe-top-meta">
+            <span class="pipe-step-badge">STEP 01</span>
+          </div>
+          <h3 class="pipe-title">Synthetic Load Generation</h3>
+          <p class="pipe-text">Locust asyncio workers simulate up to 1,000 concurrent Virtual Users generating burst &amp; soak traffic.</p>
+          <div class="pipe-indicator"><span>Active View</span> &rarr;</div>
+        </div>
+
+        <div class="pipe-arrow-col">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="pipeline-step-box" data-step="2" id="pipeStep2">
+          <div class="pipe-top-meta">
+            <span class="pipe-step-badge">STEP 02</span>
+          </div>
+          <h3 class="pipe-title">Chaos Fault Injections</h3>
+          <p class="pipe-text">Simulate DB pool semaphore exhaustion, monotonic heap growth, and event-loop CPU spinlocks.</p>
+          <div class="pipe-indicator"><span>Inspect Stage</span> &rarr;</div>
+        </div>
+
+        <div class="pipe-arrow-col">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="pipeline-step-box" data-step="3" id="pipeStep3">
+          <div class="pipe-top-meta">
+            <span class="pipe-step-badge">STEP 03</span>
+          </div>
+          <h3 class="pipe-title">eBPF Profiling &amp; Flame Graphs</h3>
+          <p class="pipe-text">Sample async call stacks in real time to attribute CPU and coroutine queue delays by method.</p>
+          <div class="pipe-indicator"><span>Inspect Stage</span> &rarr;</div>
+        </div>
+
+        <div class="pipe-arrow-col">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="pipeline-step-box" data-step="4" id="pipeStep4">
+          <div class="pipe-top-meta">
+            <span class="pipe-step-badge">STEP 04</span>
+          </div>
+          <h3 class="pipe-title">ML Anomaly &amp; Autonomous RCA</h3>
+          <p class="pipe-text">Rolling 60s Z-Scores detect &gt;3.0&sigma; deviations and generate prescriptive AI remediation runbooks.</p>
+          <div class="pipe-indicator"><span>Inspect Stage</span> &rarr;</div>
+        </div>
+      </div>
+
+      <!-- Interactive Stage Deep-Dive Card -->
+      <div class="pipeline-explainer-card" id="pipelineExplainerCard">
+        <div class="explainer-left">
+          <span class="explainer-tag" id="pipeExplainerTag">STAGE 01 &bull; WORKLOAD GENERATION</span>
+          <h4 class="explainer-title" id="pipeExplainerTitle">Locust Async Workload Simulation</h4>
+          <p class="explainer-body" id="pipeExplainerBody">
+            The synthetic workload generator bombards target microservice endpoints (<code>/workspaces</code>, <code>/telemetry</code>, <code>/devices</code>) with configurable user arrival rates. Under spike workloads, concurrent connections rapidly fill asynchronous coroutine queues, revealing performance bottlenecks before users encounter them.
+          </p>
+        </div>
+        <div class="explainer-right">
+          <div class="explainer-stat-box">
+            <span class="stat-kpi-lbl">Primary Observable Signals</span>
+            <span class="stat-kpi-val" id="pipeExplainerMetric">Throughput (RPS) &amp; Virtual Users (VUs)</span>
+          </div>
+          <button class="btn-pipeline-jump" id="pipeJumpBtn">
+            <span>Jump to Workspace Component</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: MAIN WORKSPACE (ALL ORIGINAL OPTIONS IN CLEAN PARCA STYLING) -->
+  <main class="parca-workspace" id="workload-section">
+    
+    <!-- Systematic Workspace Section Header -->
+    <div class="workspace-section-header">
+      <div class="workspace-header-meta">
+        <span class="workspace-kicker">STAGE 03 &bull; OBSERVABILITY WORKSPACE</span>
+        <h2 class="workspace-heading">Interactive Mission Control &amp; Telemetry Cockpit</h2>
+        <p class="workspace-desc">Simulate production workloads, inject targeted chaos regressions, and observe real-time telemetry correlation across golden signals, continuous profiling, and AI diagnostics:</p>
+      </div>
+    </div>
+
+    <!-- Systematic Mission Control Cockpit (Unified Scenarios, Golden Signals & Live AI RCA) -->
+    <div class="mission-control-cockpit" id="missionCockpit">
+      <!-- Top Deck: Workload & Chaos Scenario Selector -->
+      <div class="cockpit-top-deck">
+        <div class="cockpit-deck-title">
+          <span class="cockpit-title-text">WORKLOAD SCENARIOS</span>
+        </div>
+        <div class="cockpit-scenarios-row">
+          <button class="cockpit-scenario-tab active" id="scenarioBaselineBtn" data-scenario="baseline" title="Normal operating conditions within 200ms SLO">
+            Baseline (Nominal)
+          </button>
+          <button class="cockpit-scenario-tab" id="scenarioSpikeBtn" data-scenario="spike" title="Launch 500+ VU Traffic Surge">
+            Traffic Surge (500 VUs)
+          </button>
+          <button class="cockpit-scenario-tab" id="scenarioDbBtn" data-scenario="db" title="Simulate unindexed query contention &amp; DB pool exhaustion">
+            DB Pool Starvation
+          </button>
+          <button class="cockpit-scenario-tab" id="scenarioLeakBtn" data-scenario="leak" title="Simulate unbounded telemetry heap growth and memory leak">
+            Heap Memory Leak
+          </button>
+          <button class="cockpit-scenario-tab cockpit-reset-tab" id="scenarioResetBtn" data-scenario="reset" title="Reset system state and stop benchmarks">
+            <span class="tab-reset-icon">↺</span> Reset State
+          </button>
+        </div>
+      </div>
+
+      <!-- Center Deck: Live Golden Signal Metric Cards with Micro-Sparklines -->
+      <div class="cockpit-center-deck">
+        <!-- Metric Card 1: p99 Latency -->
+        <div class="cockpit-metric-card" id="cardLatency">
+          <div class="cm-header">
+            <span class="cm-label">p99 Latency</span>
+            <span class="cm-sublabel">&lt;200ms SLO</span>
+          </div>
+          <div class="cm-body">
+            <span class="cm-value" id="kpiP99">0.0 <small>ms</small></span>
+            <svg class="cm-sparkline" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path class="sparkline-path" id="sparklineLatencyPath" d="M0,14 Q25,10 50,16 T100,12" />
+            </svg>
+          </div>
+          <div class="cm-footer">
+            <span id="kpiP50">p50: 0.0ms</span>
+            <span id="kpiP95">p95: 0.0ms</span>
+          </div>
+        </div>
+
+        <!-- Metric Card 2: Throughput -->
+        <div class="cockpit-metric-card" id="cardThroughput">
+          <div class="cm-header">
+            <span class="cm-label">Throughput</span>
+            <span class="cm-sublabel">Ingress</span>
+          </div>
+          <div class="cm-body">
+            <span class="cm-value" id="kpiRps">0.0 <small>RPS</small></span>
+            <svg class="cm-sparkline" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path class="sparkline-path" id="sparklineThroughputPath" d="M0,18 Q25,12 50,16 T100,10" />
+            </svg>
+          </div>
+          <div class="cm-footer">
+            <span id="kpiTotalReq">Total: 0 reqs</span>
+            <span id="kpiFailed">0 failed</span>
+          </div>
+        </div>
+
+        <!-- Metric Card 3: Active VUs & Memory -->
+        <div class="cockpit-metric-card" id="cardConcurrency">
+          <div class="cm-header">
+            <span class="cm-label">Active Concurrency</span>
+            <span class="cm-sublabel">Workload</span>
+          </div>
+          <div class="cm-body">
+            <span class="cm-value" id="kpiVus">0 <small>VUs</small></span>
+            <div class="vu-meter-bar" title="Virtual User capacity utilization">
+              <div class="vu-meter-fill" id="vuMeterFill" style="width: 10%;"></div>
+            </div>
+          </div>
+          <div class="cm-footer">
+            <span>Mem: <strong id="kpiMemory">0.0 MB</strong></span>
+            <span>Heap: <strong id="kpiHeap">0 KB</strong></span>
+          </div>
+        </div>
+
+        <!-- Metric Card 4: Error Rate -->
+        <div class="cockpit-metric-card" id="cardErrors">
+          <div class="cm-header">
+            <span class="cm-label">Error Rate</span>
+            <span class="cm-sublabel">HTTP 5xx</span>
+          </div>
+          <div class="cm-body">
+            <span class="cm-value" id="kpiError">0.0 <small>%</small></span>
+            <div class="error-status-pill" id="errorStatusPill">0 Failures</div>
+          </div>
+          <div class="cm-footer">
+            <span>Contract: 0.0% max</span>
+            <span id="errStateLabel">Nominal</span>
+          </div>
+        </div>
+
+        <!-- Metric Card 5: SLO Compliance Status -->
+        <div class="cockpit-metric-card card-slo-cell" id="cardSlo">
+          <div class="cm-header">
+            <span class="cm-label">SLO Contract</span>
+            <span class="cm-sublabel">200ms Target</span>
+          </div>
+          <div class="cm-body slo-body-layout">
+            <div class="pill-status-healthy" id="sloBadge">HEALTHY</div>
+          </div>
+          <div class="cm-footer">
+            <span id="sloDescText">p99 within 200ms threshold</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Deck: Real-Time Autonomous AI Diagnostics Feed -->
+      <div class="cockpit-bottom-deck">
+        <div class="ai-feed-badge">
+          <span class="ai-feed-title">AI DIAGNOSTICS</span>
+        </div>
+        <div class="ai-feed-text" id="aiFeedMessage">
+          <strong>System Nominal:</strong> eBPF call-stack sampling active at 99Hz. ML anomaly models (Isolation Forest &amp; Rolling Z-Score) report healthy baseline performance within contractual 200ms SLOs.
+        </div>
+        <a href="#rca-section" class="ai-feed-link">
+          Inspect Root Cause &rarr;
+        </a>
+      </div>
+    </div>
+
+    <div class="workspace-grid">
+      
+      <!-- LEFT COLUMN: CONTROLS, WORKLOAD BENCHMARK & CHAOS INJECTION -->
+      <aside class="workspace-sidebar">
+        
+        <!-- 1. Workload Benchmark Panel (Original Option) -->
+        <div class="parca-card">
+          <div class="card-header">
+            <h3>Benchmark Workload <span class="info-tip" data-tip="Configurable Locust workload generator to execute baseline, burst spike, soak, or step-stress tests.">ⓘ</span></h3>
+            <span class="badge-status-idle" id="kpiStatus">Idle</span>
+          </div>
+          
+          <div class="form-group">
+            <label for="workloadSelect" class="form-label">Workload Profile</label>
+            <select id="workloadSelect" class="parca-select">
+              <option value="baseline">Nominal Baseline (50 VUs)</option>
+              <option value="spike" selected>Spike Traffic Surge (500+ VUs)</option>
+              <option value="soak">Soak / Endurance Test (Leak Check)</option>
+              <option value="stress">Step-Stress Saturation (1000 VUs)</option>
+            </select>
+            <p class="form-hint" id="workloadDesc">Instantaneous surge from 50 to 500+ concurrent requests testing burst queues.</p>
+          </div>
+
+          <div class="btn-group-dual">
+            <button id="startLoadBtn" class="btn-parca-primary">Start Benchmark</button>
+            <button id="stopLoadBtn" class="btn-parca-danger" disabled>Stop Load</button>
+          </div>
+        </div>
+
+        <!-- 2. Production Regressions / Chaos Injections (Original Option) -->
+        <div class="parca-card" id="chaos-section">
+          <div class="card-header">
+            <h3>Inject Production Regressions <span class="info-tip" data-tip="Synthetic failure injections: DB semaphore saturation, heap memory leaks, and CPU locks to test resilience.">ⓘ</span></h3>
+            <span class="badge-status-idle">Chaos Engine</span>
+          </div>
+          <p class="card-desc">Simulate production failure modes to trigger and validate autonomous AIOps detection:</p>
+
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <strong>DB Connection Pool Starvation</strong>
+              <span>5-connection semaphore lock + table scans (/workspaces)</span>
+            </div>
+            <label class="parca-switch">
+              <input type="checkbox" id="toggleDb">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <strong>Heap Memory Leak</strong>
+              <span>Uncollected buffer growth in ingestion (/telemetry)</span>
+            </div>
+            <label class="parca-switch">
+              <input type="checkbox" id="toggleMemory">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <strong>Event-Loop CPU Lock</strong>
+              <span>Synchronous SHA-256 cryptographic spinlock (/devices)</span>
+            </div>
+            <label class="parca-switch">
+              <input type="checkbox" id="toggleCpu">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="card-footer-action">
+            <button id="resetBtn" class="btn-parca-reset-full">Reset System State</button>
+          </div>
+        </div>
+
+        <!-- 3. Telemetry Exporter & Service Status -->
+        <div class="parca-card">
+          <div class="card-header">
+            <h3>Telemetry Exporter <span class="info-tip" data-tip="Real-time Prometheus exporter metrics and microservice process memory stats.">ⓘ</span></h3>
+          </div>
+          <div class="exporter-stats">
+            <div class="stat-row">
+              <span>Host Memory RSS:</span>
+              <strong id="sidebarKpiMemory">0.0 MB</strong>
+            </div>
+            <div class="stat-row">
+              <span>Heap Leaked:</span>
+              <strong id="sidebarKpiHeap">0 KB</strong>
+            </div>
+            <div class="stat-row">
+              <span>Total Requests:</span>
+              <strong id="sidebarKpiTotalReq">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Failed Requests:</span>
+              <strong id="sidebarKpiFailed">0</strong>
+            </div>
+          </div>
+          <a href="/metrics" target="_blank" class="exporter-link">View Prometheus Metrics (/metrics) ↗</a>
+        </div>
+
+      </aside>
+
+      <!-- RIGHT COLUMN: TELEMETRY GRAPHS, FLAME GRAPH PROFILER & RCA REPORT -->
+      <section class="workspace-main" id="telemetry-section">
+        
+        <!-- Live Golden Signals Latency Curve Chart (Original Option) -->
+        <div class="parca-card">
+          <div class="card-header">
+            <div class="header-titles">
+              <h3>Live Golden Signals &amp; Latency Curves <span class="info-tip" data-tip="Tracks p50 (median), p95 (fast percentiles), and p99 against the contractual 200ms SLO threshold.">ⓘ</span></h3>
+              <span class="card-subtitle">p50, p95, and p99 evaluated continuously against contractual 200ms SLO</span>
+            </div>
+            <div class="chart-legend-tags">
+              <span class="tag-pill tag-p50" id="kpiP50">p50: 0.0ms</span>
+              <span class="tag-pill tag-p95" id="kpiP95">p95: 0.0ms</span>
+              <span class="tag-pill tag-p99">p99</span>
+              <span class="tag-pill tag-slo">Contractual SLO (200ms)</span>
+            </div>
+          </div>
+          <div class="chart-holder-large">
+            <canvas id="latencyChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Two Smaller Telemetry Charts Row (Original Option) -->
+        <div class="charts-dual-row">
+          <div class="parca-card half-card">
+            <div class="card-header">
+              <h3>Throughput (RPS) &amp; Virtual Users <span class="info-tip" data-tip="Monitors request delivery rate (RPS) alongside active concurrent simulated clients (VUs).">ⓘ</span></h3>
+            </div>
+            <div class="chart-holder-small">
+              <canvas id="throughputChart"></canvas>
+            </div>
+          </div>
+
+          <div class="parca-card half-card">
+            <div class="card-header">
+              <h3>Resource Saturation (Memory RSS MB) <span class="info-tip" data-tip="Tracks host Resident Set Size (RSS). Unbounded upward slope indicates a memory leak.">ⓘ</span></h3>
+            </div>
+            <div class="chart-holder-small">
+              <canvas id="resourceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Continuous Flame Graph Profiler (Original Option) -->
+        <div class="parca-card" id="profiler-section">
+          <div class="card-header">
+            <div class="header-titles">
+              <h3>Hierarchical Execution Flame Graph <span class="info-tip" data-tip="Continuous profiler displaying call-stack execution distribution. Red indicates bottleneck coroutines.">ⓘ</span></h3>
+              <span class="card-subtitle">Continuous call-stack time attribution across runtime, coroutines, and thread locks</span>
+            </div>
+            <span class="badge-hotspot-clean" id="hotspotBadge">None (Nominal)</span>
+          </div>
+          <div class="flamegraph-render-box" id="flamegraphView">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Automated Root Cause Analysis & Anomaly Stream (Original Option) -->
+        <div class="aiops-intelligence-row" id="rca-section">
+          
+          <!-- Anomaly Stream (Left) -->
+          <div class="parca-card anomaly-card">
+            <div class="card-header">
+              <h3>AIOps Anomaly Stream <span class="info-tip" data-tip="Rolling 60s Z-Score anomaly engine. Flags metrics that deviate beyond 3.0 standard deviations from baseline.">ⓘ</span></h3>
+              <span class="badge-anomaly-count" id="anomalyCountBadge">0 Flags</span>
+            </div>
+            <div class="anomaly-stream-list" id="anomalyFeed">
+              <div class="empty-state-text">No anomalies detected. Telemetry operating within normal variance.</div>
+            </div>
+          </div>
+
+          <!-- Incident RCA Card (Right) -->
+          <div class="parca-card rca-card" id="rcaCard">
+            <div class="card-header">
+              <div class="rca-header-left">
+                <span class="badge-severity" id="rcaSeverity">NOMINAL</span>
+                <span class="rca-incident-code" id="rcaId">INC-BASELINE</span>
+                <span class="rca-confidence-score" id="rcaConfidence">Confidence: 99%</span>
+                <span class="info-tip" data-tip="Root Cause Analysis engine correlating anomalies with stack frames to generate prescriptive remediation runbooks.">ⓘ</span>
+              </div>
+              <button id="downloadRcaBtn" class="btn-parca-export">Export CI/CD Audit Report ↗</button>
+            </div>
+
+            <h4 class="rca-headline" id="rcaTitle">Nominal System Baseline Performance</h4>
+            <p class="rca-summary-text" id="rcaDiagnosis">All telemetry streams operating within nominal parameters. p99 latency satisfies contractual SLO (&lt;200ms).</p>
+
+            <div class="rca-columns-wrap">
+              <div class="rca-col-item">
+                <h5>Attributed Profiler Hotspot:</h5>
+                <code id="rcaHotspot">uvicorn.run (Balanced I/O)</code>
+              </div>
+              <div class="rca-col-item">
+                <h5>Prescriptive Remediation Action Plan:</h5>
+                <ul id="rcaRemediationList" class="remediation-clean-list">
+                  <li>Continue continuous monitoring and automated regression gating.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <!-- FLOATING AI PERFORMANCE COPILOT DRAWER -->
+  <aside class="copilot-slideover" id="copilotDrawer">
+    <div class="copilot-top-bar">
+      <div class="copilot-brand-title">
+        <div>
+          <h3>AIOps Diagnostic Copilot</h3>
+          <span class="copilot-sub">Telemetry-Grounded Intelligence Assistant</span>
+        </div>
+      </div>
+      <button id="closeCopilotBtn" class="copilot-close-btn">&times;</button>
+    </div>
+
+    <div class="copilot-chat-body" id="copilotChatStream">
+      <div class="chat-msg ai">
+        <div class="msg-avatar">AI</div>
+        <div class="msg-text">
+          Hello! I am your performance intelligence copilot. Ask me about current p99 latency regressions, database lock contention, or continuous call-stack profiling!
+        </div>
+      </div>
+    </div>
+
+    <div class="copilot-suggestions-bar">
+      <button class="prompt-chip" data-query="Why is p99 latency spiking?">Why is p99 spiking?</button>
+      <button class="prompt-chip" data-query="Analyze database connection contention">Check DB pool wait times</button>
+      <button class="prompt-chip" data-query="Is there a memory leak in telemetry ingestion?">Check for memory leaks</button>
+      <button class="prompt-chip" data-query="Give me a 3-step remediation plan">Remediation action plan</button>
+    </div>
+
+    <div class="copilot-input-row">
+      <input type="text" id="copilotInput" placeholder="Ask about latency, bottlenecks, or flame graphs..." />
+      <button id="sendCopilotBtn" class="btn-copilot-submit">Send</button>
+    </div>
+  </aside>
+
+  <!-- Floating Action Button for AI Copilot -->
+  <button id="floatingCopilotBtn" class="floating-copilot-fab" title="Open AI Diagnostic Copilot">
+    <span class="fab-text">AI Copilot</span>
+  </button>
+
+  <!-- Parca Footer -->
+  <footer class="parca-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="f-logo">aiops<span class="brand-dot">/</span>pulse</span>
+        <span class="f-sub">Performance Intelligence</span>
+        <p>Autonomous Performance Engineering &amp; Continuous Telemetry Profiling.</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank">GitHub Repository</a>
+        <a href="/metrics" target="_blank">Prometheus Exporter</a>
+        <a href="#hero">Back to Top ↑</a>
+      </div>
+    </div>
+  <!-- Global Toast Notification Container for Scenario Feedback -->
+  <div id="scenarioToast" class="scenario-toast"></div>
+
+  <script src="/static/app.js?v=23"></script>
+</body>
+</html>
