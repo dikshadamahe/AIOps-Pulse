@@ -191,8 +191,8 @@ body.parca-body {
 
 .parca-hero-section {
   position: relative;
-  background-color: #0c382f;
-  background: linear-gradient(180deg, #124e43 0%, #0c382f 60%, #092c25 100%);
+  background-color: #124e41;
+  background: linear-gradient(180deg, #186353 0%, #124e41 55%, #0d3d33 100%);
   color: #ffffff;
   min-height: 84vh;
   display: flex;
@@ -271,7 +271,7 @@ body.parca-body {
 
 .btn-parca-purple-cta {
   background: #ffffff;
-  color: #0c382f;
+  color: #124e41;
   font-size: 18px;
   font-weight: 800;
   padding: 16px 38px;
@@ -288,7 +288,7 @@ body.parca-body {
 }
 .btn-parca-purple-cta:hover {
   background: #f1f5f9;
-  color: #082821;
+  color: #0d3d33;
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(255, 255, 255, 0.25);
 }
@@ -318,17 +318,17 @@ body.parca-body {
   font-weight: 400;
 }
 
-/* Hero Telemetry Figures (Box Removed, Floating Figures Only) */
+/* Hero Telemetry Box (Styled in Sea Green) */
 .hero-floating-pill {
   display: inline-flex;
   align-items: center;
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 10px 0 !important;
-  gap: 36px !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
+  background: rgba(18, 92, 73, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 12px !important;
+  padding: 14px 28px !important;
+  gap: 32px !important;
+  box-shadow: 0 8px 30px rgba(10, 48, 38, 0.35) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 .pill-col {
@@ -1102,8 +1102,8 @@ body.parca-body {
   bottom: 24px;
   right: 24px;
   z-index: 99;
-  background: var(--parca-black);
-  border: 1px solid #334155;
+  background: #145a47;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   color: #ffffff;
   border-radius: 50px;
   padding: 11px 20px;
@@ -1112,14 +1112,14 @@ body.parca-body {
   gap: 8px;
   font-size: 13px;
   font-weight: 700;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(10, 48, 38, 0.4);
   cursor: pointer;
   transition: transform 0.2s, background 0.2s;
 }
 .floating-copilot-fab:hover {
   transform: translateY(-2px);
-  background: #1e293b;
-  border-color: var(--parca-purple);
+  background: #1c6d5b;
+  border-color: #ffffff;
 }
 .fab-icon { font-size: 16px; }
 
