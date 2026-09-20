@@ -172,7 +172,7 @@ function initHexMatrixCanvas() {
       for (let c = 0; c < cols; c++) {
         row.push({
           val: getRandomByte(),
-          alpha: 0.16 + Math.random() * 0.18,
+          alpha: 0.28 + Math.random() * 0.26,
           glow: 0
         });
       }
@@ -222,11 +222,14 @@ function initHexMatrixCanvas() {
 
         if (cell.glow > 0) {
           // Luminous active white for freshly morphed characters
-          ctx.fillStyle = `rgba(255, 255, 255, ${0.85 + cell.glow * 0.15})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.92 + cell.glow * 0.08})`;
           cell.glow = Math.max(0, cell.glow - 0.05);
+        } else if (y < 70) {
+          // Under glass navbar: crisp bright characters that shine through the glass
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.42 + cell.alpha * 0.25})`;
         } else {
-          // Soft off-white for background characters over sea green
-          ctx.fillStyle = `rgba(241, 245, 249, ${0.22 + cell.alpha * 0.16})`;
+          // Crisp luminous off-white for background characters over sea green
+          ctx.fillStyle = `rgba(241, 245, 249, ${0.30 + cell.alpha * 0.22})`;
         }
 
         ctx.fillText(cell.val, x, y);
