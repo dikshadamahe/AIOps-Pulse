@@ -4,7 +4,7 @@ import asyncio
 import psutil
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, PlainTextResponse, JSONResponse
+from fastapi.responses import FileResponse, PlainTextResponse, JSONResponse, Response
 from pydantic import BaseModel
 
 from target_service.app import app as target_app, BOTTLENECK_CONFIG
@@ -144,7 +144,7 @@ def download_markdown_report():
     return Response(content=latest_incident_report.to_markdown(), media_type="text/markdown")
 
 # Static Dashboard UI Mount
-DASHBOARD_DIR = os.path.join(os.path.dirname(__file__), "dashboard")
+DASHBOARD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dashboard")
 server_app.mount("/static", StaticFiles(directory=DASHBOARD_DIR), name="static")
 
 @server_app.get("/")

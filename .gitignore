@@ -37,3 +37,4 @@ perf-report.html
 .idea/
 .vscode/
 *.swp
+.vercel/
