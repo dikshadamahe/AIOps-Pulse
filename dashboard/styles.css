@@ -54,10 +54,10 @@ body.parca-body {
    ========================================================================== */
 
 .parca-navbar {
-  background: rgba(12, 48, 40, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 48, 40, 0.38);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -324,11 +324,11 @@ body.parca-body {
   height: 100%;
   display: block;
   overflow: visible;
-  opacity: 0.72;
+  opacity: 0.38;
   transition: opacity 0.25s ease;
 }
 .arrow-svg:hover {
-  opacity: 0.95;
+  opacity: 0.85;
 }
 
 /* Hero Platform Subtext & Feature Chips */
