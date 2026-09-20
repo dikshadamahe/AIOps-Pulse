@@ -137,10 +137,12 @@ function initHexMatrixCanvas() {
         const y = r * charSpacingY + (charSpacingY / 2);
 
         if (cell.glow > 0) {
-          ctx.fillStyle = `rgba(139, 92, 246, ${0.4 + cell.glow * 0.4})`;
-          cell.glow = Math.max(0, cell.glow - 0.06);
+          // Luminous active white for freshly morphed characters
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.85 + cell.glow * 0.15})`;
+          cell.glow = Math.max(0, cell.glow - 0.05);
         } else {
-          ctx.fillStyle = `rgba(255, 255, 255, ${cell.alpha})`;
+          // Soft off-white for background characters over sea green
+          ctx.fillStyle = `rgba(241, 245, 249, ${0.22 + cell.alpha * 0.16})`;
         }
 
         ctx.fillText(cell.val, x, y);
