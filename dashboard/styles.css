@@ -200,7 +200,6 @@ body.parca-body {
   justify-content: center;
   padding: 70px 28px 60px;
   overflow: hidden;
-  border-bottom: 2px solid rgba(16, 185, 129, 0.4);
 }
 
 .hex-canvas-background {
@@ -307,11 +306,6 @@ body.parca-body {
   height: 100%;
   display: block;
   overflow: visible;
-}
-
-.arrow-svg path,
-#parca-arrowhead path {
-  stroke: #10b981 !important;
 }
 
 .hero-project-subtext {
@@ -423,9 +417,9 @@ body.parca-body {
 }
 
 .statement-inner h2 span {
-  color: #10b981;
+  color: var(--parca-purple);
   text-decoration: underline;
-  text-decoration-color: rgba(16, 185, 129, 0.4);
+  text-decoration-color: rgba(124, 58, 237, 0.3);
   text-underline-offset: 4px;
 }
 
