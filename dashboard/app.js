@@ -1084,29 +1084,74 @@ function updateCharts(history) {
 function renderFlameGraph(profileData) {
   const container = document.getElementById("flamegraphView");
   const badge = document.getElementById("hotspotBadge");
-  if (!container) return;
+  if (!container || !profileData) return;
 
-  const frames = profileData.frames || [];
-  const hotspot = profileData.hotspot_method || "None (Balanced)";
+  const hotspot = profileData.hotspot_function || "None (Balanced)";
+  const isDegraded = hotspot && !hotspot.toLowerCase().includes("none") && !hotspot.toLowerCase().includes("balanced");
 
   if (badge) {
     badge.textContent = hotspot;
-    badge.className = hotspot.includes("None") ? "badge-hotspot-clean" : "badge-hotspot-clean hot";
+    badge.className = isDegraded ? "badge-hotspot-clean hot" : "badge-hotspot-clean";
   }
 
-  container.innerHTML = frames.map(f => `
-    <div style="margin-bottom: 8px;">
-      <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; font-family:var(--font-mono); color:#cbd5e1;">
-        <span>${f.name}</span>
-        <strong>${f.percentage.toFixed(1)}%</strong>
-      </div>
-      <div style="background:#1e293b; border-radius:4px; height:22px; overflow:hidden; border:1px solid #334155;">
-        <div style="background:${f.is_bottleneck ? '#ef4444' : '#475569'}; width:${f.percentage}%; height:100%; display:flex; align-items:center; padding-left:8px; font-size:11px; font-weight:600; color:#ffffff;">
-          ${f.percentage > 30 ? f.name : ''}
+  const rootNode = profileData.tree;
+  if (!rootNode) {
+    container.innerHTML = `<div class="flame-empty-state">No profiling call stack data currently captured.</div>`;
+    return;
+  }
+
+  const rows = [];
+  const hotspotKeyword = profileData.hotspot_function ? profileData.hotspot_function.split(".")[0].toLowerCase() : "";
+
+  function walk(node, depth = 0) {
+    const isHot = isDegraded && (
+      (hotspotKeyword && node.name.toLowerCase().includes(hotspotKeyword)) ||
+      (profileData.hotspot_function && node.name.includes(profileData.hotspot_function)) ||
+      node.name.includes("Semaphore") ||
+      node.name.includes("LEAKED_MEMORY") ||
+      node.name.includes("sha256")
+    );
+
+    const val = typeof node.value === "number" ? node.value : 0;
+    const indentPx = Math.min(depth * 18, 120);
+
+    rows.push(`
+      <div class="flame-tree-row ${isHot ? 'is-hotspot' : ''}">
+        <div class="flame-row-name" style="padding-left: ${indentPx}px;" title="${escapeHtml(node.name)}">
+          ${depth > 0 ? '<span class="flame-branch-icon">↳</span>' : '<span class="flame-root-icon">●</span>'}
+          <span class="flame-fn-text">${escapeHtml(node.name)}</span>
+          ${isHot ? '<span class="flame-hot-tag">HOTSPOT</span>' : ''}
+        </div>
+        <div class="flame-bar-track">
+          <div class="flame-bar-fill ${isHot ? 'flame-fill-hot' : 'flame-fill-normal'}" style="width: ${Math.max(2, Math.min(val, 100))}%;">
+            <span class="flame-bar-pct">${val.toFixed(1)}%</span>
+          </div>
         </div>
       </div>
+    `);
+
+    if (node.children && Array.isArray(node.children)) {
+      node.children.forEach(child => walk(child, depth + 1));
+    }
+  }
+
+  walk(rootNode, 0);
+
+  container.innerHTML = `
+    <div class="flame-header-toolbar">
+      <div class="flame-toolbar-left">
+        <span class="flame-sample-rate">eBPF Call-Stack Profiler (99 Hz)</span>
+        <span class="flame-mode-tag">${escapeHtml(profileData.bottleneck_type || 'NOMINAL')}</span>
+      </div>
+      <div class="flame-toolbar-legend">
+        <span class="legend-item"><span class="legend-dot normal"></span> Normal Stack</span>
+        <span class="legend-item"><span class="legend-dot hot"></span> Bottleneck / Contention</span>
+      </div>
     </div>
-  `).join("");
+    <div class="flame-tree-body">
+      ${rows.join("")}
+    </div>
+  `;
 }
 
 function renderAnomalies(anomalies) {
