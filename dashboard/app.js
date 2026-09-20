@@ -964,6 +964,11 @@ function updateKPIs() {
   const kpiFailed = document.getElementById("kpiFailed");
   const sloBadge = document.getElementById("sloBadge");
 
+  const sidebarKpiMemory = document.getElementById("sidebarKpiMemory");
+  const sidebarKpiHeap = document.getElementById("sidebarKpiHeap");
+  const sidebarKpiTotalReq = document.getElementById("sidebarKpiTotalReq");
+  const sidebarKpiFailed = document.getElementById("sidebarKpiFailed");
+
   if (kpiRps) kpiRps.innerHTML = `${currentState.rps.toFixed(1)} <small>RPS</small>`;
   if (kpiP99) kpiP99.innerHTML = `${currentState.p99.toFixed(1)} <small>ms</small>`;
   if (kpiP50) kpiP50.textContent = `p50: ${currentState.p50.toFixed(1)}ms`;
@@ -971,9 +976,13 @@ function updateKPIs() {
   if (kpiVus) kpiVus.innerHTML = `${currentState.activeVus} <small>VUs</small>`;
   if (kpiError) kpiError.innerHTML = `${currentState.errorRate.toFixed(1)} <small>%</small>`;
   if (kpiMemory) kpiMemory.textContent = `${currentState.memMb.toFixed(1)} MB`;
+  if (sidebarKpiMemory) sidebarKpiMemory.textContent = `${currentState.memMb.toFixed(1)} MB`;
   if (kpiHeap) kpiHeap.textContent = `${currentState.heapKb} KB`;
+  if (sidebarKpiHeap) sidebarKpiHeap.textContent = `${currentState.heapKb} KB`;
   if (kpiTotalReq) kpiTotalReq.textContent = `Total: ${currentState.totalRequests} reqs`;
+  if (sidebarKpiTotalReq) sidebarKpiTotalReq.textContent = `${currentState.totalRequests}`;
   if (kpiFailed) kpiFailed.textContent = `${currentState.failedRequests} failed`;
+  if (sidebarKpiFailed) sidebarKpiFailed.textContent = `${currentState.failedRequests}`;
 
   // SLO Badge & Description
   const sloDescText = document.getElementById("sloDescText");

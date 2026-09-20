@@ -209,11 +209,11 @@ body.parca-body {
   background-color: #124e41;
   background: linear-gradient(180deg, #186353 0%, #124e41 55%, #0d3d33 100%);
   color: #ffffff;
-  min-height: calc(100vh - 68px);
+  min-height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 24px 28px 36px;
+  justify-content: center;
+  padding: 44px 28px 48px;
   overflow: visible;
   border-bottom: none;
 }
@@ -324,20 +324,61 @@ body.parca-body {
   overflow: visible;
 }
 
+/* Hero Platform Subtext & Feature Chips */
+.hero-subtext-container {
+  margin-top: 32px;
+  max-width: 860px;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-project-subtext {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 18px;
+  font-weight: 400;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.hero-quick-features {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hero-feat-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #f1f5f9;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.hero-feat-chip:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
 /* ==========================================================================
    Interactive Mission Control Cockpit (Unified Scenarios, Telemetry & AI RCA)
    ========================================================================== */
 .mission-control-cockpit {
-  background: rgba(10, 44, 37, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(145deg, #0b382f 0%, #0d463b 50%, #092e27 100%);
+  border: 1px solid rgba(18, 78, 65, 0.35);
   border-radius: 14px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 32px rgba(11, 56, 47, 0.16);
   backdrop-filter: blur(16px);
   overflow: hidden;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 0;
+  margin-bottom: 28px;
   z-index: 3;
   position: relative;
+  width: 100%;
 }
 
 /* Top Deck: Workload & Chaos Scenario Selector */
@@ -767,6 +808,36 @@ body.parca-body {
   max-width: 1320px;
   margin: 40px auto 80px;
   padding: 0 24px;
+}
+
+/* Workspace Header Section */
+.workspace-section-header {
+  margin-bottom: 22px;
+}
+
+.workspace-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #124e41;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.workspace-heading {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--parca-text-dark);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.workspace-desc {
+  font-size: 14.5px;
+  color: var(--parca-text-muted);
+  max-width: 820px;
+  line-height: 1.5;
 }
 
 .workspace-grid {
