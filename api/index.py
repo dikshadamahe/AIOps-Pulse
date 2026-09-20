@@ -9,13 +9,15 @@ if PROJECT_ROOT not in sys.path:
 from fastapi import Request
 from server import server_app
 
-@server_app.get("/api/debug-path")
-@server_app.get("/debug-path")
-def debug_path(request: Request):
+@server_app.api_route("/api/debug-all", methods=["GET", "POST"])
+@server_app.api_route("/debug-all", methods=["GET", "POST"])
+@server_app.api_route("/api/index.py", methods=["GET", "POST"])
+async def debug_catchall(request: Request):
     return {
         "url": str(request.url),
         "path": request.scope.get("path"),
-        "headers": dict(request.headers)
+        "headers": dict(request.headers),
+        "query_params": dict(request.query_params)
     }
 
 class VercelPathFixMiddleware:
