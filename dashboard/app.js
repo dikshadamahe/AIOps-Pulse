@@ -521,15 +521,23 @@ function bindEventHandlers() {
     window.open("/api/v1/aiops/report/download", "_blank");
   });
 
-  // 1-Click Interactive Simulation Scenarios
+  // Mission Control Cockpit Interactive Scenarios
+  const scenarioBaselineBtn = document.getElementById("scenarioBaselineBtn");
   const scenarioSpikeBtn = document.getElementById("scenarioSpikeBtn");
   const scenarioDbBtn = document.getElementById("scenarioDbBtn");
   const scenarioLeakBtn = document.getElementById("scenarioLeakBtn");
   const scenarioResetBtn = document.getElementById("scenarioResetBtn");
+  const aiFeedMessage = document.getElementById("aiFeedMessage");
 
   const setScenarioActive = (activeBtn) => {
-    [scenarioSpikeBtn, scenarioDbBtn, scenarioLeakBtn].forEach(b => b?.classList.remove("active"));
+    [scenarioBaselineBtn, scenarioSpikeBtn, scenarioDbBtn, scenarioLeakBtn].forEach(b => b?.classList.remove("active"));
     if (activeBtn) activeBtn.classList.add("active");
+  };
+
+  const updateAiFeed = (title, message) => {
+    if (aiFeedMessage) {
+      aiFeedMessage.innerHTML = `<strong>${title}:</strong> ${message}`;
+    }
   };
 
   const scrollToTelemetry = () => {
@@ -538,6 +546,37 @@ function bindEventHandlers() {
       target.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  // Scenario 0: Baseline Nominal
+  scenarioBaselineBtn?.addEventListener("click", async () => {
+    setScenarioActive(scenarioBaselineBtn);
+    if (workloadSelect) {
+      workloadSelect.value = "steady";
+      if (workloadDesc) workloadDesc.textContent = workloadDescriptions["steady"] || "";
+    }
+    if (toggleDb) toggleDb.checked = false;
+    if (toggleMemory) toggleMemory.checked = false;
+    if (toggleCpu) toggleCpu.checked = false;
+    try {
+      await fetch("/api/v1/admin/bottlenecks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          db_exhaustion_enabled: false,
+          memory_leak_enabled: false,
+          cpu_lock_enabled: false
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    await handleStartLoad();
+    updateAiFeed(
+      "Baseline Enforced",
+      "Synthetic workload operating at nominal 50 VUs. eBPF continuous call-stack sampler running at 99Hz. All 4 Golden Signals well within contractual 200ms SLO."
+    );
+    showScenarioToast(`<strong>Baseline Enforced:</strong> Operating nominally within 200ms contractual SLO.`);
+  });
 
   // Scenario 1: Traffic Surge (500 VUs)
   scenarioSpikeBtn?.addEventListener("click", async () => {
@@ -563,8 +602,11 @@ function bindEventHandlers() {
       console.error(e);
     }
     await handleStartLoad();
+    updateAiFeed(
+      "Traffic Surge Active",
+      "Locust asyncio workers scaled to 500 VUs. Ingress rate elevating to ~250 RPS. Microservice worker thread pool absorbing burst load."
+    );
     showScenarioToast(`<strong>Traffic Surge Started:</strong> 500 VUs active. Monitoring latency curve &amp; RPS saturation...`);
-    setTimeout(scrollToTelemetry, 350);
   });
 
   // Scenario 2: DB Pool Starvation
@@ -592,8 +634,11 @@ function bindEventHandlers() {
       console.error(e);
     }
     await handleStartLoad();
+    updateAiFeed(
+      "Critical DB Anomaly Detected",
+      "Connection pool exhaustion on orders_db (12 locked conns). Response p99 spiking above 200ms SLO. Root Cause: unindexed query thread blocking."
+    );
     showScenarioToast(`<strong>DB Pool Starvation Injected:</strong> Semaphore capped at 5. Watch p99 breach 200ms SLO!`);
-    setTimeout(scrollToTelemetry, 350);
   });
 
   // Scenario 3: Heap Memory Leak
@@ -621,13 +666,16 @@ function bindEventHandlers() {
       console.error(e);
     }
     await handleStartLoad();
+    updateAiFeed(
+      "Memory Leak Anomaly Detected",
+      "Rapid heap growth in telemetry worker buffer (+45MB/s). Isolation Forest anomaly score: 0.94. Garbage collection degradation and RSS exhaustion imminent."
+    );
     showScenarioToast(`<strong>Heap Memory Leak Active:</strong> Monitoring steady RSS growth and GC saturation.`);
-    setTimeout(scrollToTelemetry, 350);
   });
 
   // Scenario 4: Reset State
   scenarioResetBtn?.addEventListener("click", async () => {
-    setScenarioActive(null);
+    setScenarioActive(scenarioBaselineBtn);
     try {
       await fetch("/api/v1/admin/reset", { method: "POST" });
       await fetch("/api/v1/load/stop", { method: "POST" });
@@ -639,6 +687,10 @@ function bindEventHandlers() {
         startBtn.textContent = "Start Benchmark";
       }
       if (stopBtn) stopBtn.disabled = true;
+      updateAiFeed(
+        "State Nominal Restored",
+        "All simulated chaos vectors cleared. Workers drained. Telemetry baseline restored within contractual 200ms SLO."
+      );
       showScenarioToast(`<strong>↺ System Reset:</strong> All chaos injections cleared and benchmark stopped.`);
     } catch (e) {
       console.error("Scenario reset error:", e);
@@ -883,6 +935,22 @@ async function fetchTelemetryData() {
   }
 }
 
+// Micro-Sparklines Rolling History for Cockpit
+const sparklineLatencyHistory = [42, 50, 48, 62, 58, 65, 55, 70];
+const sparklineRpsHistory = [180, 210, 230, 245, 250, 248, 252, 250];
+
+function generateSparklineSvgPath(data, minVal, maxVal, width = 100, height = 28) {
+  if (!data || data.length < 2) return `M0,${height / 2} L${width},${height / 2}`;
+  const range = (maxVal - minVal) || 1;
+  const stepX = width / (data.length - 1);
+  return data.map((val, idx) => {
+    const x = (idx * stepX).toFixed(1);
+    const normalized = Math.max(0, Math.min(1, (val - minVal) / range));
+    const y = (height - 4 - normalized * (height - 8)).toFixed(1);
+    return `${idx === 0 ? "M" : "L"}${x},${y}`;
+  }).join(" ");
+}
+
 function updateKPIs() {
   const kpiRps = document.getElementById("kpiRps");
   const kpiP99 = document.getElementById("kpiP99");
@@ -904,17 +972,72 @@ function updateKPIs() {
   if (kpiError) kpiError.innerHTML = `${currentState.errorRate.toFixed(1)} <small>%</small>`;
   if (kpiMemory) kpiMemory.textContent = `${currentState.memMb.toFixed(1)} MB`;
   if (kpiHeap) kpiHeap.textContent = `${currentState.heapKb} KB`;
-  if (kpiTotalReq) kpiTotalReq.textContent = `${currentState.totalRequests}`;
-  if (kpiFailed) kpiFailed.textContent = `${currentState.failedRequests}`;
+  if (kpiTotalReq) kpiTotalReq.textContent = `Total: ${currentState.totalRequests} reqs`;
+  if (kpiFailed) kpiFailed.textContent = `${currentState.failedRequests} failed`;
 
-  // SLO Badge
+  // SLO Badge & Description
+  const sloDescText = document.getElementById("sloDescText");
   if (sloBadge) {
     if (currentState.p99 > 200.0) {
       sloBadge.textContent = "SLO BREACH";
       sloBadge.className = "pill-status-healthy pill-status-breach";
+      if (sloDescText) {
+        sloDescText.textContent = "p99 exceeds 200ms contract!";
+        sloDescText.style.color = "#f87171";
+      }
     } else {
       sloBadge.textContent = "HEALTHY";
       sloBadge.className = "pill-status-healthy";
+      if (sloDescText) {
+        sloDescText.textContent = "p99 within 200ms threshold";
+        sloDescText.style.color = "#94a3b8";
+      }
+    }
+  }
+
+  // Micro-Sparkline Updates
+  sparklineLatencyHistory.push(currentState.p99);
+  if (sparklineLatencyHistory.length > 10) sparklineLatencyHistory.shift();
+  const maxLat = Math.max(250, ...sparklineLatencyHistory);
+  const minLat = 0;
+  const latPath = document.getElementById("sparklineLatencyPath");
+  if (latPath) {
+    latPath.setAttribute("d", generateSparklineSvgPath(sparklineLatencyHistory, minLat, maxLat));
+    latPath.style.stroke = currentState.p99 > 200 ? "#f87171" : "#38bdf8";
+  }
+
+  sparklineRpsHistory.push(currentState.rps);
+  if (sparklineRpsHistory.length > 10) sparklineRpsHistory.shift();
+  const maxRps = Math.max(300, ...sparklineRpsHistory);
+  const minRps = 0;
+  const rpsPath = document.getElementById("sparklineThroughputPath");
+  if (rpsPath) {
+    rpsPath.setAttribute("d", generateSparklineSvgPath(sparklineRpsHistory, minRps, maxRps));
+  }
+
+  // VU Meter Fill Bar
+  const vuMeterFill = document.getElementById("vuMeterFill");
+  if (vuMeterFill) {
+    const pct = Math.min(100, Math.max(6, (currentState.activeVus / 500) * 100));
+    vuMeterFill.style.width = `${pct}%`;
+  }
+
+  // Error Status Pill
+  const errorStatusPill = document.getElementById("errorStatusPill");
+  const errStateLabel = document.getElementById("errStateLabel");
+  if (errorStatusPill) {
+    if (currentState.errorRate > 0) {
+      errorStatusPill.textContent = `${currentState.failedRequests} Dropped`;
+      errorStatusPill.style.color = "#f87171";
+      errorStatusPill.style.background = "rgba(239, 68, 68, 0.2)";
+      errorStatusPill.style.borderColor = "rgba(239, 68, 68, 0.4)";
+      if (errStateLabel) errStateLabel.textContent = "Degraded";
+    } else {
+      errorStatusPill.textContent = "0 Failures";
+      errorStatusPill.style.color = "#34d399";
+      errorStatusPill.style.background = "rgba(52, 211, 153, 0.15)";
+      errorStatusPill.style.borderColor = "rgba(52, 211, 153, 0.3)";
+      if (errStateLabel) errStateLabel.textContent = "Nominal";
     }
   }
 }

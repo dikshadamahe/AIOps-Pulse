@@ -321,87 +321,353 @@ body.parca-body {
   overflow: visible;
 }
 
-.hero-project-subtext {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: #e2e8f0;
-  max-width: 860px;
-  margin-top: 18px;
-  margin-bottom: 28px;
-  font-weight: 400;
-  display: block;
-  clear: both;
-}
-
 /* ==========================================================================
-   1-Click Interactive Simulation Scenarios Bar
+   Interactive Mission Control Cockpit (Unified Scenarios, Telemetry & AI RCA)
    ========================================================================== */
-.hero-scenarios-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+.mission-control-cockpit {
+  background: rgba(10, 44, 37, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  margin-top: 18px;
+  margin-bottom: 26px;
   z-index: 3;
   position: relative;
 }
 
-.scenarios-label {
-  font-size: 11px;
-  font-weight: 800;
-  color: #e2e8f0;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+/* Top Deck: Workload & Chaos Scenario Selector */
+.cockpit-top-deck {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.18);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.btn-scenario-chip {
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
+.cockpit-deck-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #cbd5e1;
+  letter-spacing: 0.8px;
+}
+
+.cockpit-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+.cockpit-scenarios-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cockpit-scenario-tab {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  backdrop-filter: blur(8px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-scenario-chip:hover {
-  background: #ffffff;
-  color: #124e41;
-  border-color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+.cockpit-scenario-tab:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-.btn-scenario-chip.active {
+.cockpit-scenario-tab.active {
   background: #ffffff;
-  color: #124e41;
+  color: #0d3830;
   border-color: #ffffff;
-  box-shadow: 0 4px 18px rgba(255, 255, 255, 0.35);
   font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
-.btn-scenario-reset {
-  background: transparent;
+.tab-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+.cockpit-scenario-tab.active .tab-indicator {
+  background: #0d3830;
+}
+
+.cockpit-reset-tab {
   border-color: rgba(255, 255, 255, 0.22);
+  background: transparent;
   color: #cbd5e1;
 }
-.btn-scenario-reset:hover {
-  background: rgba(255, 255, 255, 0.2);
+.cockpit-reset-tab:hover {
+  background: rgba(255, 255, 255, 0.16);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.4);
 }
 
-.chip-icon {
-  font-size: 14px;
+.tab-reset-icon {
+  font-size: 13px;
+}
+
+/* Center Deck: Live Golden Signal Metric Cards with Micro-Sparklines */
+.cockpit-center-deck {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  padding: 20px;
+}
+
+@media (max-width: 1120px) {
+  .cockpit-center-deck {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .cockpit-center-deck {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cockpit-metric-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cockpit-metric-card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.09);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-slo-cell {
+  background: rgba(14, 68, 54, 0.65);
+}
+
+.cm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.cm-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #cbd5e1;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.cm-badge {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.badge-slo {
+  background: rgba(52, 211, 153, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+.badge-neutral {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.badge-target {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.cm-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.cm-value {
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  line-height: 1;
+}
+.cm-value small {
+  font-size: 12px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.cm-sparkline {
+  width: 80px;
+  height: 26px;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.sparkline-path {
+  fill: none;
+  stroke: #38bdf8;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: d 0.3s ease;
+}
+
+.sparkline-path-green {
+  stroke: #34d399;
+}
+
+.vu-meter-bar {
+  width: 76px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.vu-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #34d399 0%, #38bdf8 100%);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.error-status-pill {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 3px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.cm-footer {
+  font-size: 11px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+}
+.cm-footer strong {
+  color: #e2e8f0;
+}
+
+.slo-body-layout {
+  justify-content: center;
+  padding: 4px 0;
+}
+
+/* Bottom Deck: Real-Time Autonomous AI Diagnostics Feed */
+.cockpit-bottom-deck {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.28);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  flex-wrap: wrap;
+}
+
+.ai-feed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ai-feed-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+  animation: pulseDot 1.8s infinite ease-in-out;
+}
+
+.ai-feed-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.6px;
+}
+
+.ai-feed-text {
+  font-size: 12.5px;
+  color: #e2e8f0;
+  line-height: 1.45;
+  flex: 1;
+  min-width: 260px;
+}
+.ai-feed-text strong {
+  color: #ffffff;
+}
+
+.ai-feed-link {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.ai-feed-link:hover {
+  background: #ffffff;
+  color: #0d3830;
+  border-color: #ffffff;
 }
 
 /* Global Scenario Toast Notification */
@@ -433,49 +699,6 @@ body.parca-body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Hero Telemetry Box (Styled in Sea Green) */
-.hero-floating-pill {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(18, 92, 73, 0.88) !important;
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  border-radius: 12px !important;
-  padding: 14px 28px !important;
-  gap: 32px !important;
-  box-shadow: 0 8px 30px rgba(10, 48, 38, 0.35) !important;
-  backdrop-filter: blur(12px) !important;
-}
-
-.pill-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.pill-lbl {
-  font-size: 11px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-}
-
-.pill-num {
-  font-size: 24px;
-  font-weight: 800;
-  color: #ffffff;
-  font-family: var(--font-mono);
-  margin-top: 2px;
-}
-.pill-num small {
-  font-size: 12px;
-  color: #cbd5e1;
-  font-weight: 500;
-}
-
-.pill-col.highlight .pill-num {
-  color: #ffffff;
-}
-
 .pill-status-healthy {
   font-size: 12px;
   font-weight: 800;
@@ -498,13 +721,6 @@ body.parca-body {
   margin-top: 2px;
   display: inline-block;
   letter-spacing: 0.5px;
-}
-
-.pill-divider {
-  width: 1px;
-  height: 38px;
-  background: rgba(255, 255, 255, 0.35);
-  margin: 0 4px;
 }
 
 /* ==========================================================================
@@ -1638,52 +1854,6 @@ body.parca-body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Hero Floating Pill Tooltips: Open DOWNWARD so they never overlap the scenarios bar or text above */
-.hero-floating-pill .info-tip::after {
-  bottom: auto;
-  top: calc(100% + 12px);
-  transform: translateX(-50%) translateY(-6px);
-}
-
-.hero-floating-pill .info-tip::before {
-  bottom: auto;
-  top: calc(100% + 2px);
-  transform: translateX(-50%);
-  border-top-color: transparent;
-  border-bottom-color: #0d3830;
-}
-
-.hero-floating-pill .info-tip:hover::after,
-.hero-floating-pill .info-tip:hover::before {
-  transform: translateX(-50%) translateY(0);
-}
-
-/* Edge safety for first and last items in hero floating pill */
-.hero-floating-pill .pill-col:first-child .info-tip::after {
-  left: 0;
-  transform: translateY(-6px);
-}
-.hero-floating-pill .pill-col:first-child .info-tip:hover::after {
-  transform: translateY(0);
-}
-.hero-floating-pill .pill-col:first-child .info-tip::before {
-  left: 4px;
-  transform: none;
-}
-
-.hero-floating-pill .pill-col:last-child .info-tip::after {
-  left: auto;
-  right: 0;
-  transform: translateY(-6px);
-}
-.hero-floating-pill .pill-col:last-child .info-tip:hover::after {
-  transform: translateY(0);
-}
-.hero-floating-pill .pill-col:last-child .info-tip::before {
-  left: auto;
-  right: 4px;
-  transform: none;
-}
 
 /* Smooth Highlight Pulse Animation When Jumping to Components */
 @keyframes sectionHighlightPulse {
