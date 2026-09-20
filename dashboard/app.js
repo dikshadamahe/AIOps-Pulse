@@ -41,10 +41,94 @@ let currentState = {
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
   initHexMatrixCanvas();
+  initPipelineInteraction();
   initCharts();
   bindEventHandlers();
   startTelemetryPolling();
 });
+
+// ==========================================================================
+// 1.5 Interactive Architecture Pipeline Controller (Change 2)
+// ==========================================================================
+const pipelineData = {
+  1: {
+    tag: "STAGE 01 • WORKLOAD GENERATION",
+    title: "Locust Async Workload Simulation",
+    body: "The synthetic workload generator bombards target microservice endpoints (<code>/workspaces</code>, <code>/telemetry</code>, <code>/devices</code>) with configurable user arrival rates. Under spike workloads, concurrent connections rapidly fill asynchronous coroutine queues, revealing performance bottlenecks before users encounter them.",
+    metric: "Throughput (RPS) & Virtual Users (VUs)",
+    targetId: "workload-section"
+  },
+  2: {
+    tag: "STAGE 02 • CHAOS FAULT INJECTION",
+    title: "Synthetic Microservice Bottlenecks",
+    body: "Controlled fault injection simulates real-world production incidents without crashing the host: an artificial 5-connection semaphore lock simulates unindexed DB table scans, heap array appending triggers memory leaks, and SHA-256 loops simulate CPU starvation.",
+    metric: "DB Semaphore Contention & Host RSS",
+    targetId: "chaos-section"
+  },
+  3: {
+    tag: "STAGE 03 • CONTINUOUS PROFILING",
+    title: "eBPF Profiling & Hierarchical Flame Graphs",
+    body: "Continuous profiling samples runtime execution stack traces at microsecond frequencies without degrading client response times. The hierarchical flame graph visualizes exact percentage breakdown of server time, immediately pinpointing which coroutine or database call is blocking.",
+    metric: "p99 / p95 / p50 Latency Curves & Call Stacks",
+    targetId: "telemetry-section"
+  },
+  4: {
+    tag: "STAGE 04 • AUTONOMOUS DIAGNOSTICS",
+    title: "Rolling Z-Score & Automated RCA Engine",
+    body: "A streaming ML detection window calculates real-time rolling mean (μ) and standard deviation (σ). When observed latency exceeds 3.0σ from baseline, anomalies are correlated with flame graph hotspots to generate prescriptive remediation runbooks and trigger the AI Copilot.",
+    metric: "Statistical Confidence Score & Action Plan",
+    targetId: "rca-section"
+  }
+};
+
+function initPipelineInteraction() {
+  const stepBoxes = document.querySelectorAll(".pipeline-step-box");
+  const explainerTag = document.getElementById("pipeExplainerTag");
+  const explainerTitle = document.getElementById("pipeExplainerTitle");
+  const explainerBody = document.getElementById("pipeExplainerBody");
+  const explainerMetric = document.getElementById("pipeExplainerMetric");
+  const jumpBtn = document.getElementById("pipeJumpBtn");
+
+  let currentStep = 1;
+
+  const selectStep = (stepNum) => {
+    currentStep = stepNum;
+    const data = pipelineData[stepNum];
+    if (!data) return;
+
+    stepBoxes.forEach(box => {
+      const isCurrent = box.getAttribute("data-step") === String(stepNum);
+      box.classList.toggle("active", isCurrent);
+      const ind = box.querySelector(".pipe-indicator span");
+      if (ind) ind.textContent = isCurrent ? "Active View" : "Inspect Stage";
+    });
+
+    if (explainerTag) explainerTag.textContent = data.tag;
+    if (explainerTitle) explainerTitle.textContent = data.title;
+    if (explainerBody) explainerBody.innerHTML = data.body;
+    if (explainerMetric) explainerMetric.textContent = data.metric;
+  };
+
+  stepBoxes.forEach(box => {
+    box.addEventListener("click", () => {
+      const s = parseInt(box.getAttribute("data-step") || "1", 10);
+      selectStep(s);
+    });
+  });
+
+  jumpBtn?.addEventListener("click", () => {
+    const data = pipelineData[currentStep];
+    if (!data) return;
+    const targetEl = document.getElementById(data.targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      targetEl.classList.remove("section-highlight-pulse");
+      void targetEl.offsetWidth; // force browser layout reflow to re-trigger CSS animation
+      targetEl.classList.add("section-highlight-pulse");
+      setTimeout(() => targetEl.classList.remove("section-highlight-pulse"), 2200);
+    }
+  });
+}
 
 // ==========================================================================
 // 1. Live Hexadecimal Matrix Background (Changing Numbers & Alphabets)
