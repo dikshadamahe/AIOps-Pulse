@@ -995,14 +995,14 @@ function updateKPIs() {
       sloBadge.className = "pill-status-healthy pill-status-breach";
       if (sloDescText) {
         sloDescText.textContent = "p99 exceeds 200ms contract!";
-        sloDescText.style.color = "#f87171";
+        sloDescText.style.color = "#fca5a5";
       }
     } else {
       sloBadge.textContent = "HEALTHY";
       sloBadge.className = "pill-status-healthy";
       if (sloDescText) {
         sloDescText.textContent = "p99 within 200ms threshold";
-        sloDescText.style.color = "#94a3b8";
+        sloDescText.style.color = "rgba(255, 255, 255, 0.55)";
       }
     }
   }
@@ -1015,7 +1015,7 @@ function updateKPIs() {
   const latPath = document.getElementById("sparklineLatencyPath");
   if (latPath) {
     latPath.setAttribute("d", generateSparklineSvgPath(sparklineLatencyHistory, minLat, maxLat));
-    latPath.style.stroke = currentState.p99 > 200 ? "#f87171" : "#38bdf8";
+    latPath.style.stroke = currentState.p99 > 200 ? "#f87171" : "rgba(255, 255, 255, 0.65)";
   }
 
   sparklineRpsHistory.push(currentState.rps);
@@ -1025,6 +1025,7 @@ function updateKPIs() {
   const rpsPath = document.getElementById("sparklineThroughputPath");
   if (rpsPath) {
     rpsPath.setAttribute("d", generateSparklineSvgPath(sparklineRpsHistory, minRps, maxRps));
+    rpsPath.style.stroke = "rgba(255, 255, 255, 0.65)";
   }
 
   // VU Meter Fill Bar
@@ -1040,15 +1041,15 @@ function updateKPIs() {
   if (errorStatusPill) {
     if (currentState.errorRate > 0) {
       errorStatusPill.textContent = `${currentState.failedRequests} Dropped`;
-      errorStatusPill.style.color = "#f87171";
+      errorStatusPill.style.color = "#fca5a5";
       errorStatusPill.style.background = "rgba(239, 68, 68, 0.2)";
-      errorStatusPill.style.borderColor = "rgba(239, 68, 68, 0.4)";
+      errorStatusPill.style.borderColor = "rgba(239, 68, 68, 0.35)";
       if (errStateLabel) errStateLabel.textContent = "Degraded";
     } else {
       errorStatusPill.textContent = "0 Failures";
-      errorStatusPill.style.color = "#34d399";
-      errorStatusPill.style.background = "rgba(52, 211, 153, 0.15)";
-      errorStatusPill.style.borderColor = "rgba(52, 211, 153, 0.3)";
+      errorStatusPill.style.color = "rgba(255, 255, 255, 0.7)";
+      errorStatusPill.style.background = "rgba(255, 255, 255, 0.08)";
+      errorStatusPill.style.borderColor = "rgba(255, 255, 255, 0.12)";
       if (errStateLabel) errStateLabel.textContent = "Nominal";
     }
   }

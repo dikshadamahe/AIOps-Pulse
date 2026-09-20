@@ -407,14 +407,13 @@ body.parca-body {
 }
 
 /* ==========================================================================
-   Interactive Mission Control Cockpit (Unified Scenarios, Telemetry & AI RCA)
+   Interactive Mission Control Cockpit (Hero-Style Unified Scenarios & Telemetry)
    ========================================================================== */
 .mission-control-cockpit {
-  background: linear-gradient(145deg, #0b382f 0%, #0d463b 50%, #092e27 100%);
-  border: 1px solid rgba(18, 78, 65, 0.35);
-  border-radius: 14px;
-  box-shadow: 0 12px 32px rgba(11, 56, 47, 0.16);
-  backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, #186353 0%, #124e41 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(18, 78, 65, 0.16);
   overflow: hidden;
   margin-top: 0;
   margin-bottom: 28px;
@@ -429,35 +428,20 @@ body.parca-body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.14);
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .cockpit-deck-title {
   display: flex;
   align-items: center;
-  gap: 8px;
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: #cbd5e1;
+  color: rgba(255, 255, 255, 0.7);
   letter-spacing: 0.8px;
-}
-
-.cockpit-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
-  animation: pulseDot 2s infinite ease-in-out;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.85); }
 }
 
 .cockpit-scenarios-row {
@@ -469,11 +453,11 @@ body.parca-body {
 
 .cockpit-scenario-tab {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.85);
   padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 12.5px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
@@ -483,42 +467,31 @@ body.parca-body {
 }
 
 .cockpit-scenario-tab:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
   color: #ffffff;
-  transform: translateY(-1px);
 }
 
 .cockpit-scenario-tab.active {
   background: #ffffff;
-  color: #0d3830;
+  color: #124e41;
   border-color: #ffffff;
-  font-weight: 800;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-}
-
-.tab-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-}
-.cockpit-scenario-tab.active .tab-indicator {
-  background: #0d3830;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .cockpit-reset-tab {
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.18);
   background: transparent;
-  color: #cbd5e1;
+  color: rgba(255, 255, 255, 0.7);
 }
 .cockpit-reset-tab:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
 }
 
 .tab-reset-icon {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* Center Deck: Live Golden Signal Metric Cards with Micro-Sparklines */
@@ -541,10 +514,10 @@ body.parca-body {
 }
 
 .cockpit-metric-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 10px;
-  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -552,14 +525,12 @@ body.parca-body {
 }
 
 .cockpit-metric-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.09);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.20);
 }
 
 .card-slo-cell {
-  background: rgba(14, 68, 54, 0.65);
+  background: rgba(0, 0, 0, 0.18);
 }
 
 .cm-header {
@@ -571,33 +542,21 @@ body.parca-body {
 
 .cm-label {
   font-size: 11px;
-  font-weight: 800;
-  color: #cbd5e1;
-  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
-.cm-badge {
+.cm-sublabel {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: var(--font-mono);
-  padding: 2px 6px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
   border-radius: 4px;
-}
-.badge-slo {
-  background: rgba(52, 211, 153, 0.2);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.35);
-}
-.badge-neutral {
-  background: rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-.badge-target {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .cm-body {
@@ -610,76 +569,74 @@ body.parca-body {
 
 .cm-value {
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 700;
   color: #ffffff;
   font-family: var(--font-mono);
   white-space: nowrap;
   line-height: 1;
+  letter-spacing: -0.4px;
 }
 .cm-value small {
   font-size: 12px;
-  color: #cbd5e1;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
 }
 
 .cm-sparkline {
-  width: 80px;
-  height: 26px;
+  width: 76px;
+  height: 24px;
   overflow: visible;
   flex-shrink: 0;
 }
 
 .sparkline-path {
   fill: none;
-  stroke: #38bdf8;
-  stroke-width: 2.2;
+  stroke: rgba(255, 255, 255, 0.65);
+  stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: d 0.3s ease;
 }
 
-.sparkline-path-green {
-  stroke: #34d399;
-}
-
 .vu-meter-bar {
-  width: 76px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
+  width: 70px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
   overflow: hidden;
   position: relative;
 }
 
 .vu-meter-fill {
   height: 100%;
-  background: linear-gradient(90deg, #34d399 0%, #38bdf8 100%);
-  border-radius: 3px;
+  background: #ffffff;
+  border-radius: 2px;
   transition: width 0.4s ease;
 }
 
 .error-status-pill {
   font-size: 10px;
   font-family: var(--font-mono);
-  font-weight: 700;
-  color: #34d399;
-  background: rgba(52, 211, 153, 0.15);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  padding: 3px 6px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2px 6px;
   border-radius: 4px;
   white-space: nowrap;
 }
 
 .cm-footer {
   font-size: 11px;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.55);
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-mono);
 }
 .cm-footer strong {
-  color: #e2e8f0;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
 }
 
 .slo-body-layout {
@@ -692,44 +649,34 @@ body.parca-body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 12px 20px;
-  background: rgba(0, 0, 0, 0.28);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  gap: 14px;
+  padding: 10px 18px;
+  background: rgba(0, 0, 0, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
   flex-wrap: wrap;
 }
 
 .ai-feed-badge {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   flex-shrink: 0;
-}
-
-.ai-feed-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #38bdf8;
-  box-shadow: 0 0 6px #38bdf8;
-  animation: pulseDot 1.8s infinite ease-in-out;
 }
 
 .ai-feed-title {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  font-weight: 800;
-  color: #ffffff;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
   letter-spacing: 0.6px;
 }
 
 .ai-feed-text {
   font-size: 12.5px;
-  color: #e2e8f0;
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.45;
   flex: 1;
   min-width: 260px;
@@ -741,18 +688,18 @@ body.parca-body {
 .ai-feed-link {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
+  border-radius: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   transition: all 0.2s;
 }
 .ai-feed-link:hover {
   background: #ffffff;
-  color: #0d3830;
+  color: #124e41;
   border-color: #ffffff;
 }
 
@@ -786,24 +733,24 @@ body.parca-body {
 }
 
 .pill-status-healthy {
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11.5px;
+  font-weight: 700;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
   padding: 4px 12px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   margin-top: 2px;
   display: inline-block;
   letter-spacing: 0.5px;
 }
 
 .pill-status-breach {
-  color: #ffffff;
-  background: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.22);
   padding: 4px 12px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   margin-top: 2px;
   display: inline-block;
   letter-spacing: 0.5px;

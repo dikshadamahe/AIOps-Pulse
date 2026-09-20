@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
-  <link rel="stylesheet" href="/static/styles.css?v=30">
+  <link rel="stylesheet" href="/static/styles.css?v=31">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -212,21 +212,20 @@
       <!-- Top Deck: Workload & Chaos Scenario Selector -->
       <div class="cockpit-top-deck">
         <div class="cockpit-deck-title">
-          <span class="cockpit-pulse-dot"></span>
-          <span class="cockpit-title-text">WORKLOAD SIMULATION &amp; CHAOS INJECTION</span>
+          <span class="cockpit-title-text">WORKLOAD SCENARIOS</span>
         </div>
         <div class="cockpit-scenarios-row">
           <button class="cockpit-scenario-tab active" id="scenarioBaselineBtn" data-scenario="baseline" title="Normal operating conditions within 200ms SLO">
-            <span class="tab-indicator"></span> Baseline (Nominal)
+            Baseline (Nominal)
           </button>
           <button class="cockpit-scenario-tab" id="scenarioSpikeBtn" data-scenario="spike" title="Launch 500+ VU Traffic Surge">
-            <span class="tab-indicator"></span> Traffic Surge (500 VUs)
+            Traffic Surge (500 VUs)
           </button>
           <button class="cockpit-scenario-tab" id="scenarioDbBtn" data-scenario="db" title="Simulate unindexed query contention &amp; DB pool exhaustion">
-            <span class="tab-indicator"></span> DB Pool Starvation
+            DB Pool Starvation
           </button>
           <button class="cockpit-scenario-tab" id="scenarioLeakBtn" data-scenario="leak" title="Simulate unbounded telemetry heap growth and memory leak">
-            <span class="tab-indicator"></span> Heap Memory Leak
+            Heap Memory Leak
           </button>
           <button class="cockpit-scenario-tab cockpit-reset-tab" id="scenarioResetBtn" data-scenario="reset" title="Reset system state and stop benchmarks">
             <span class="tab-reset-icon">↺</span> Reset State
@@ -239,8 +238,8 @@
         <!-- Metric Card 1: p99 Latency -->
         <div class="cockpit-metric-card" id="cardLatency">
           <div class="cm-header">
-            <span class="cm-label">p99 LATENCY</span>
-            <span class="cm-badge badge-slo">SLO: &lt;200ms</span>
+            <span class="cm-label">p99 Latency</span>
+            <span class="cm-sublabel">&lt;200ms SLO</span>
           </div>
           <div class="cm-body">
             <span class="cm-value" id="kpiP99">0.0 <small>ms</small></span>
@@ -257,13 +256,13 @@
         <!-- Metric Card 2: Throughput -->
         <div class="cockpit-metric-card" id="cardThroughput">
           <div class="cm-header">
-            <span class="cm-label">THROUGHPUT</span>
-            <span class="cm-badge badge-neutral">INGRESS</span>
+            <span class="cm-label">Throughput</span>
+            <span class="cm-sublabel">Ingress</span>
           </div>
           <div class="cm-body">
             <span class="cm-value" id="kpiRps">0.0 <small>RPS</small></span>
             <svg class="cm-sparkline" viewBox="0 0 100 28" preserveAspectRatio="none">
-              <path class="sparkline-path sparkline-path-green" id="sparklineThroughputPath" d="M0,18 Q25,12 50,16 T100,10" />
+              <path class="sparkline-path" id="sparklineThroughputPath" d="M0,18 Q25,12 50,16 T100,10" />
             </svg>
           </div>
           <div class="cm-footer">
@@ -275,8 +274,8 @@
         <!-- Metric Card 3: Active VUs & Memory -->
         <div class="cockpit-metric-card" id="cardConcurrency">
           <div class="cm-header">
-            <span class="cm-label">ACTIVE CONCURRENCY</span>
-            <span class="cm-badge badge-neutral">WORKLOAD</span>
+            <span class="cm-label">Active Concurrency</span>
+            <span class="cm-sublabel">Workload</span>
           </div>
           <div class="cm-body">
             <span class="cm-value" id="kpiVus">0 <small>VUs</small></span>
@@ -293,8 +292,8 @@
         <!-- Metric Card 4: Error Rate -->
         <div class="cockpit-metric-card" id="cardErrors">
           <div class="cm-header">
-            <span class="cm-label">ERROR RATE</span>
-            <span class="cm-badge badge-neutral">HTTP 5xx</span>
+            <span class="cm-label">Error Rate</span>
+            <span class="cm-sublabel">HTTP 5xx</span>
           </div>
           <div class="cm-body">
             <span class="cm-value" id="kpiError">0.0 <small>%</small></span>
@@ -309,8 +308,8 @@
         <!-- Metric Card 5: SLO Compliance Status -->
         <div class="cockpit-metric-card card-slo-cell" id="cardSlo">
           <div class="cm-header">
-            <span class="cm-label">SLO CONTRACT</span>
-            <span class="cm-badge badge-target">200ms TARGET</span>
+            <span class="cm-label">SLO Contract</span>
+            <span class="cm-sublabel">200ms Target</span>
           </div>
           <div class="cm-body slo-body-layout">
             <div class="pill-status-healthy" id="sloBadge">HEALTHY</div>
@@ -324,8 +323,7 @@
       <!-- Bottom Deck: Real-Time Autonomous AI Diagnostics Feed -->
       <div class="cockpit-bottom-deck">
         <div class="ai-feed-badge">
-          <span class="ai-feed-dot"></span>
-          <span class="ai-feed-title">AUTONOMOUS AI DIAGNOSTICS</span>
+          <span class="ai-feed-title">AI DIAGNOSTICS</span>
         </div>
         <div class="ai-feed-text" id="aiFeedMessage">
           <strong>System Nominal:</strong> eBPF call-stack sampling active at 99Hz. ML anomaly models (Isolation Forest &amp; Rolling Z-Score) report healthy baseline performance within contractual 200ms SLOs.
