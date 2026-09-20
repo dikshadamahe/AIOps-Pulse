@@ -7,18 +7,21 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from fastapi import Request
+from fastapi.responses import JSONResponse
 from server import server_app
 
-@server_app.api_route("/api/debug-all", methods=["GET", "POST"])
-@server_app.api_route("/debug-all", methods=["GET", "POST"])
-@server_app.api_route("/api/index.py", methods=["GET", "POST"])
-async def debug_catchall(request: Request):
-    return {
-        "url": str(request.url),
-        "path": request.scope.get("path"),
-        "headers": dict(request.headers),
-        "query_params": dict(request.query_params)
-    }
+@server_app.exception_handler(404)
+async def custom_404_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "error": "Route Not Found",
+            "path": request.scope.get("path"),
+            "raw_path": request.scope.get("raw_path", b"").decode("utf-8", errors="ignore"),
+            "url": str(request.url),
+            "headers": dict(request.headers),
+        }
+    )
 
 class VercelPathFixMiddleware:
     def __init__(self, asgi_app):
@@ -28,10 +31,11 @@ class VercelPathFixMiddleware:
         if scope["type"] == "http":
             path = scope.get("path", "")
             headers = dict(scope.get("headers", []))
+            
             matched_path = headers.get(b"x-matched-path", b"").decode("utf-8")
             forwarded_uri = headers.get(b"x-forwarded-uri", b"").decode("utf-8")
-            
             orig_path = matched_path or forwarded_uri
+
             if orig_path and orig_path.startswith("/api/"):
                 scope["path"] = orig_path
             elif not path.startswith("/api/") and path.startswith("/v1/"):
