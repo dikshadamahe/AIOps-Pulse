@@ -315,8 +315,108 @@ body.parca-body {
   color: #e2e8f0;
   max-width: 820px;
   margin-top: 10px;
-  margin-bottom: 28px;
+  margin-bottom: 22px;
   font-weight: 400;
+}
+
+/* ==========================================================================
+   1-Click Interactive Simulation Scenarios Bar
+   ========================================================================== */
+.hero-scenarios-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+  z-index: 3;
+  position: relative;
+}
+
+.scenarios-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #e2e8f0;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-scenario-chip {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.btn-scenario-chip:hover {
+  background: #ffffff;
+  color: #124e41;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-scenario-chip.active {
+  background: #ffffff;
+  color: #124e41;
+  border-color: #ffffff;
+  box-shadow: 0 4px 18px rgba(255, 255, 255, 0.35);
+  font-weight: 800;
+}
+
+.btn-scenario-reset {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #cbd5e1;
+}
+.btn-scenario-reset:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.chip-icon {
+  font-size: 14px;
+}
+
+/* Global Scenario Toast Notification */
+.scenario-toast {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  z-index: 1000;
+  background: rgba(14, 68, 54, 0.95);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 30px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scenario-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Hero Telemetry Box (Styled in Sea Green) */

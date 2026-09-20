@@ -437,8 +437,144 @@ function bindEventHandlers() {
     window.open("/api/v1/aiops/report/download", "_blank");
   });
 
+  // 1-Click Interactive Simulation Scenarios
+  const scenarioSpikeBtn = document.getElementById("scenarioSpikeBtn");
+  const scenarioDbBtn = document.getElementById("scenarioDbBtn");
+  const scenarioLeakBtn = document.getElementById("scenarioLeakBtn");
+  const scenarioResetBtn = document.getElementById("scenarioResetBtn");
+
+  const setScenarioActive = (activeBtn) => {
+    [scenarioSpikeBtn, scenarioDbBtn, scenarioLeakBtn].forEach(b => b?.classList.remove("active"));
+    if (activeBtn) activeBtn.classList.add("active");
+  };
+
+  const scrollToTelemetry = () => {
+    const target = document.getElementById("telemetry-section") || document.getElementById("workload-section");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // Scenario 1: Traffic Surge (500 VUs)
+  scenarioSpikeBtn?.addEventListener("click", async () => {
+    setScenarioActive(scenarioSpikeBtn);
+    if (workloadSelect) {
+      workloadSelect.value = "spike";
+      if (workloadDesc) workloadDesc.textContent = workloadDescriptions["spike"];
+    }
+    if (toggleDb) toggleDb.checked = false;
+    if (toggleMemory) toggleMemory.checked = false;
+    if (toggleCpu) toggleCpu.checked = false;
+    try {
+      await fetch("/api/v1/admin/bottlenecks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          db_exhaustion_enabled: false,
+          memory_leak_enabled: false,
+          cpu_lock_enabled: false
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    await handleStartLoad();
+    showScenarioToast(`<strong>💥 Traffic Surge Started:</strong> 500 VUs active. Monitoring latency curve &amp; RPS saturation...`);
+    setTimeout(scrollToTelemetry, 350);
+  });
+
+  // Scenario 2: DB Pool Starvation
+  scenarioDbBtn?.addEventListener("click", async () => {
+    setScenarioActive(scenarioDbBtn);
+    if (workloadSelect) {
+      workloadSelect.value = "spike";
+      if (workloadDesc) workloadDesc.textContent = workloadDescriptions["spike"];
+    }
+    if (toggleDb) toggleDb.checked = true;
+    if (toggleMemory) toggleMemory.checked = false;
+    if (toggleCpu) toggleCpu.checked = false;
+    try {
+      await fetch("/api/v1/admin/bottlenecks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          db_exhaustion_enabled: true,
+          db_simulated_delay_ms: 120.0,
+          memory_leak_enabled: false,
+          cpu_lock_enabled: false
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    await handleStartLoad();
+    showScenarioToast(`<strong>🛑 DB Pool Starvation Injected:</strong> Semaphore capped at 5. Watch p99 breach 200ms SLO!`);
+    setTimeout(scrollToTelemetry, 350);
+  });
+
+  // Scenario 3: Heap Memory Leak
+  scenarioLeakBtn?.addEventListener("click", async () => {
+    setScenarioActive(scenarioLeakBtn);
+    if (workloadSelect) {
+      workloadSelect.value = "soak";
+      if (workloadDesc) workloadDesc.textContent = workloadDescriptions["soak"];
+    }
+    if (toggleDb) toggleDb.checked = false;
+    if (toggleMemory) toggleMemory.checked = true;
+    if (toggleCpu) toggleCpu.checked = false;
+    try {
+      await fetch("/api/v1/admin/bottlenecks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          memory_leak_enabled: true,
+          memory_leak_chunk_kb: 512,
+          db_exhaustion_enabled: false,
+          cpu_lock_enabled: false
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    await handleStartLoad();
+    showScenarioToast(`<strong>💧 Heap Memory Leak Active:</strong> Monitoring steady RSS growth and GC saturation.`);
+    setTimeout(scrollToTelemetry, 350);
+  });
+
+  // Scenario 4: Reset State
+  scenarioResetBtn?.addEventListener("click", async () => {
+    setScenarioActive(null);
+    try {
+      await fetch("/api/v1/admin/reset", { method: "POST" });
+      await fetch("/api/v1/load/stop", { method: "POST" });
+      if (toggleDb) toggleDb.checked = false;
+      if (toggleMemory) toggleMemory.checked = false;
+      if (toggleCpu) toggleCpu.checked = false;
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.textContent = "Start Benchmark";
+      }
+      if (stopBtn) stopBtn.disabled = true;
+      showScenarioToast(`<strong>↺ System Reset:</strong> All chaos injections cleared and benchmark stopped.`);
+    } catch (e) {
+      console.error("Scenario reset error:", e);
+    }
+  });
+
   // AI Diagnostic Copilot Drawer Bindings
   bindCopilotDrawer();
+}
+
+let toastTimeout = null;
+function showScenarioToast(htmlContent, duration = 4000) {
+  const toast = document.getElementById("scenarioToast");
+  if (!toast) return;
+  toast.innerHTML = htmlContent;
+  toast.classList.add("visible");
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("visible");
+  }, duration);
 }
 
 // ==========================================================================

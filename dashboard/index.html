@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
-  <link rel="stylesheet" href="/static/styles.css?v=6">
+  <link rel="stylesheet" href="/static/styles.css?v=7">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -88,6 +88,23 @@
       <p class="hero-project-subtext">
         Autonomous microservice APM &amp; continuous profiling engine. Correlates live p99 telemetry, eBPF call-stack flame graphs, and ML anomaly detection (Rolling Z-Score &amp; Isolation Forest) to diagnose production regressions and enforce contractual 200ms SLOs.
       </p>
+
+      <!-- 1-Click Interactive Simulation Scenarios Bar -->
+      <div class="hero-scenarios-bar">
+        <span class="scenarios-label">⚡ 1-Click Scenarios:</span>
+        <button class="btn-scenario-chip" id="scenarioSpikeBtn" title="Launch 500+ VU Traffic Surge without failure modes">
+          <span class="chip-icon">💥</span> Traffic Surge (500 VUs)
+        </button>
+        <button class="btn-scenario-chip" id="scenarioDbBtn" title="Simulate unindexed query contention & DB connection exhaustion">
+          <span class="chip-icon">🛑</span> DB Pool Starvation
+        </button>
+        <button class="btn-scenario-chip" id="scenarioLeakBtn" title="Simulate unbounded telemetry heap growth and memory leak">
+          <span class="chip-icon">💧</span> Heap Memory Leak
+        </button>
+        <button class="btn-scenario-chip btn-scenario-reset" id="scenarioResetBtn" title="Reset system state and stop benchmarks">
+          <span class="chip-icon">↺</span> Reset State
+        </button>
+      </div>
 
       <!-- Floating Real-Time Golden Signals Pill -->
       <div class="hero-floating-pill">
@@ -393,8 +410,9 @@
         <a href="#hero">Back to Top ↑</a>
       </div>
     </div>
-  </footer>
+  <!-- Global Toast Notification Container for Scenario Feedback -->
+  <div id="scenarioToast" class="scenario-toast"></div>
 
-  <script src="/static/app.js?v=2"></script>
+  <script src="/static/app.js?v=7"></script>
 </body>
 </html>
