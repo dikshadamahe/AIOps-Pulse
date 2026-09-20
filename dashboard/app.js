@@ -147,9 +147,9 @@ function initHexMatrixCanvas() {
   let cols = 0;
   let rows = 0;
   let grid = [];
-  const charSpacingX = 36;
-  const charSpacingY = 24;
-  const fontSize = 12;
+  const charSpacingX = 32;
+  const charSpacingY = 22;
+  const fontSize = 13;
 
   function resize() {
     const parent = canvas.parentElement;
@@ -172,7 +172,7 @@ function initHexMatrixCanvas() {
       for (let c = 0; c < cols; c++) {
         row.push({
           val: getRandomByte(),
-          alpha: 0.12 + Math.random() * 0.12,
+          alpha: 0.16 + Math.random() * 0.18,
           glow: 0
         });
       }
@@ -187,19 +187,19 @@ function initHexMatrixCanvas() {
   function render(time) {
     requestAnimationFrame(render);
 
-    // Serene, calm ambient update interval: ~140ms
-    if (time - lastUpdate > 140) {
+    // Dynamic morphing interval: ~35ms
+    if (time - lastUpdate > 35) {
       lastUpdate = time;
 
-      // Morph just ~1.5% of cells for a gentle, pleasing ambient shimmer
+      // Morph 6-8% of the hex cells to new random numbers and alphabets
       const totalCells = rows * cols;
-      const count = Math.max(6, Math.floor(totalCells * 0.015));
+      const count = Math.max(16, Math.floor(totalCells * 0.07));
       for (let i = 0; i < count; i++) {
         const r = Math.floor(Math.random() * rows);
         const c = Math.floor(Math.random() * cols);
         if (grid[r] && grid[r][c]) {
           grid[r][c].val = getRandomByte();
-          if (Math.random() < 0.03) {
+          if (Math.random() < 0.04) {
             grid[r][c].glow = 1.0;
           }
         }
@@ -220,17 +220,13 @@ function initHexMatrixCanvas() {
         const x = c * charSpacingX;
         const y = r * charSpacingY + (charSpacingY / 2);
 
-        // Smooth vertical fade to eliminate any abrupt, chaotic line at the top
-        const topFade = Math.min(1, Math.max(0, (y - 50) / 90));
-        if (topFade <= 0.05) continue; // Skip rendering top margin completely
-
         if (cell.glow > 0) {
-          // Soft luminous accent for freshly morphed characters
-          ctx.fillStyle = `rgba(255, 255, 255, ${(0.45 + cell.glow * 0.35) * topFade})`;
-          cell.glow = Math.max(0, cell.glow - 0.03);
+          // Luminous active white for freshly morphed characters
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.85 + cell.glow * 0.15})`;
+          cell.glow = Math.max(0, cell.glow - 0.05);
         } else {
-          // Delicate watermark off-white over sea green
-          ctx.fillStyle = `rgba(241, 245, 249, ${(0.07 + cell.alpha * 0.08) * topFade})`;
+          // Soft off-white for background characters over sea green
+          ctx.fillStyle = `rgba(241, 245, 249, ${0.22 + cell.alpha * 0.16})`;
         }
 
         ctx.fillText(cell.val, x, y);
@@ -919,29 +915,6 @@ function updateKPIs() {
     } else {
       sloBadge.textContent = "HEALTHY";
       sloBadge.className = "pill-status-healthy";
-    }
-  }
-
-  // Top Real-Time Telemetry Ribbon Synchronization
-  const ribbonP99 = document.getElementById("ribbonP99");
-  const ribbonRps = document.getElementById("ribbonRps");
-  const ribbonVus = document.getElementById("ribbonVus");
-  const ribbonErr = document.getElementById("ribbonErr");
-  const ribbonMem = document.getElementById("ribbonMem");
-  const ribbonSlo = document.getElementById("ribbonSlo");
-
-  if (ribbonP99) ribbonP99.textContent = `${currentState.p99.toFixed(1)}ms`;
-  if (ribbonRps) ribbonRps.textContent = `${currentState.rps.toFixed(1)} RPS`;
-  if (ribbonVus) ribbonVus.textContent = `${currentState.activeVus}`;
-  if (ribbonErr) ribbonErr.textContent = `${currentState.errorRate.toFixed(1)}%`;
-  if (ribbonMem) ribbonMem.textContent = `${currentState.memMb.toFixed(1)} MB`;
-  if (ribbonSlo) {
-    if (currentState.p99 > 200.0) {
-      ribbonSlo.textContent = "SLO BREACH";
-      ribbonSlo.className = "rm-val rm-slo-breach";
-    } else {
-      ribbonSlo.textContent = "200ms COMPLIANT";
-      ribbonSlo.className = "rm-val rm-slo-ok";
     }
   }
 }

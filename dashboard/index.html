@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIOps-Pulse | Autonomous Performance Engineering & Telemetry Intelligence</title>
-  <link rel="stylesheet" href="/static/styles.css?v=12">
+  <link rel="stylesheet" href="/static/styles.css?v=13">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,47 +29,22 @@
         <a href="#telemetry-section" class="nav-link">Live Telemetry</a>
         <a href="#profiler-section" class="nav-link">Flame Graph</a>
         <a href="#rca-section" class="nav-link">RCA Diagnostics</a>
-        <a href="/metrics" target="_blank" class="nav-link mono-link">/metrics ↗</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank" class="btn-parca-dark">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <a href="/metrics" target="_blank" class="nav-action-btn mono-link">/metrics&nbsp;↗</a>
+        <a href="https://github.com/dikshadamahe/AIOps-Pulse-" target="_blank" class="nav-action-btn btn-parca-dark">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
           <span>GitHub</span>
         </a>
 
-        <button id="resetBtnNav" class="btn-parca-reset">Reset State</button>
-        <button id="openCopilotTop" class="btn-parca-white">AI Copilot</button>
+        <button id="resetBtnNav" class="nav-action-btn btn-parca-reset">Reset State</button>
+        <button id="openCopilotTop" class="nav-action-btn btn-parca-white">AI Copilot</button>
       </div>
     </div>
   </header>
-
-  <!-- Real-Time Telemetry Stream Banner (Pleasant, Readable, Non-Chaotic) -->
-  <div class="top-telemetry-ribbon" id="topTelemetryRibbon">
-    <div class="ribbon-inner">
-      <div class="ribbon-badge">
-        <span class="ribbon-live-pulse"></span>
-        <span class="ribbon-badge-label">LIVE TELEMETRY</span>
-      </div>
-      <div class="ribbon-metrics-row">
-        <span class="ribbon-metric"><span class="rm-lbl">p99 LATENCY:</span> <strong id="ribbonP99" class="rm-val">142.4ms</strong></span>
-        <span class="rm-sep">•</span>
-        <span class="ribbon-metric"><span class="rm-lbl">THROUGHPUT:</span> <strong id="ribbonRps" class="rm-val">250.0 RPS</strong></span>
-        <span class="rm-sep">•</span>
-        <span class="ribbon-metric"><span class="rm-lbl">ACTIVE VUs:</span> <strong id="ribbonVus" class="rm-val">50</strong></span>
-        <span class="rm-sep">•</span>
-        <span class="ribbon-metric"><span class="rm-lbl">ERROR RATE:</span> <strong id="ribbonErr" class="rm-val">0.0%</strong></span>
-        <span class="rm-sep">•</span>
-        <span class="ribbon-metric"><span class="rm-lbl">MEMORY:</span> <strong id="ribbonMem" class="rm-val">128.4 MB</strong></span>
-        <span class="rm-sep">•</span>
-        <span class="ribbon-metric"><span class="rm-lbl">SLO TARGET:</span> <strong id="ribbonSlo" class="rm-val rm-slo-ok">200ms COMPLIANT</strong></span>
-        <span class="rm-sep">•</span>
-        <span class="ribbon-metric"><span class="rm-lbl">SAMPLER:</span> <strong class="rm-val">eBPF 99Hz ACTIVE</strong></span>
-      </div>
-    </div>
-  </div>
 
   <!-- SECTION 1: EXACT PARCA HERO (LIVE DYNAMIC HEX CANVAS ANIMATION) -->
   <section class="parca-hero-section" id="hero">
@@ -524,6 +499,6 @@
   <!-- Global Toast Notification Container for Scenario Feedback -->
   <div id="scenarioToast" class="scenario-toast"></div>
 
-  <script src="/static/app.js?v=12"></script>
+  <script src="/static/app.js?v=11"></script>
 </body>
 </html>
