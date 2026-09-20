@@ -194,12 +194,13 @@ body.parca-body {
   background-color: #124e41;
   background: linear-gradient(180deg, #186353 0%, #124e41 55%, #0d3d33 100%);
   color: #ffffff;
-  min-height: 84vh;
+  min-height: calc(100vh - 68px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 70px 28px 60px;
+  padding: 60px 28px 70px;
   overflow: hidden;
+  border-bottom: none;
 }
 
 .hex-canvas-background {
@@ -397,9 +398,11 @@ body.parca-body {
    ========================================================================== */
 
 .parca-statement-bar {
-  background-color: var(--parca-white);
-  border-bottom: 1px solid var(--parca-border-light);
-  padding: 50px 24px;
+  background-color: #0b332b;
+  background: linear-gradient(180deg, #0d3d33 0%, #082620 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: none;
+  padding: 55px 24px;
 }
 
 .statement-inner {
@@ -409,17 +412,17 @@ body.parca-body {
 }
 
 .statement-inner h2 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
-  color: var(--parca-text-dark);
+  color: #ffffff;
   letter-spacing: -0.5px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .statement-inner h2 span {
-  color: var(--parca-purple);
+  color: #34d399;
   text-decoration: underline;
-  text-decoration-color: rgba(124, 58, 237, 0.3);
+  text-decoration-color: rgba(52, 211, 153, 0.4);
   text-underline-offset: 4px;
 }
 
