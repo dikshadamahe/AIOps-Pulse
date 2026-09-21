@@ -6,7 +6,9 @@
 [![Prometheus](https://img.shields.io/badge/Prometheus-Client-orange.svg)](https://prometheus.io/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-Isolation%20Forest-F7931E.svg)](https://scikit-learn.org/)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)](https://github.com/features/actions)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdikshadamahe%2FAIOps-Pulse)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ai--ops--pulse.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://ai-ops-pulse.vercel.app/)
+
+> 🌐 **Live Interactive Console**: [https://ai-ops-pulse.vercel.app/](https://ai-ops-pulse.vercel.app/)
 
 An end-to-end performance benchmarking and AIOps observability platform designed to stress-test enterprise microservices under high concurrency, export real-time golden signals to Prometheus, detect anomalies using **rolling Z-Score and multivariate Isolation Forest**, and automatically generate **Root Cause Analysis (RCA)** incident diagnostics.
 
