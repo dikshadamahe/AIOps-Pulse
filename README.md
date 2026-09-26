@@ -1,4 +1,4 @@
-# ⚡ AIOps-Pulse: Autonomous Performance Engineering & Telemetry Anomaly Detection Platform
+#  AIOps-Pulse: Autonomous Performance Engineering & Telemetry Anomaly Detection Platform
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688.svg)](https://fastapi.tiangolo.com/)
@@ -8,13 +8,13 @@
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)](https://github.com/features/actions)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-ai--ops--pulse.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://ai-ops-pulse.vercel.app/)
 
-> 🌐 **Live Interactive Console**: [https://ai-ops-pulse.vercel.app/](https://ai-ops-pulse.vercel.app/)
+>  **Live Interactive Console**: [https://ai-ops-pulse.vercel.app/](https://ai-ops-pulse.vercel.app/)
 
 An end-to-end performance benchmarking and AIOps observability platform designed to stress-test enterprise microservices under high concurrency, export real-time golden signals to Prometheus, detect anomalies using **rolling Z-Score and multivariate Isolation Forest**, and automatically generate **Root Cause Analysis (RCA)** incident diagnostics.
 
 ---
 
-## 🏛️ Architecture Overview
+##  Architecture Overview
 
 ```
                                   ┌───────────────────────────────┐
@@ -41,7 +41,7 @@ An end-to-end performance benchmarking and AIOps observability platform designed
 
 ---
 
-## 🎯 Key Engineering Pillars
+##  Key Engineering Pillars
 
 ### 1. Enterprise Microservice & Injected Regressions (`target_service/`)
 A high-throughput API modeling an Omnissa Unified Endpoint Management (UEM) platform (`/workspaces`, `/devices`, `/telemetry`).
@@ -75,7 +75,7 @@ A high-throughput API modeling an Omnissa Unified Endpoint Management (UEM) plat
 
 ---
 
-## 🚀 Quickstart
+##  Quickstart
 
 ### Prerequisites
 - Python 3.10+
@@ -104,7 +104,7 @@ docker-compose -f docker/docker-compose.yml up --build
 
 ---
 
-## 🧪 Interactive Testing Walkthrough
+##  Interactive Testing Walkthrough
 
 1. **Nominal State**: Open `http://localhost:8000`. Click **"Start Benchmark"** on *Nominal Baseline*. Notice p99 latency hovers around 15–30ms, RPS scales cleanly, and 0 anomalies are flagged.
 2. **Simulate DB Contention**: Toggle **"DB Connection Pool Starvation"** ON. Notice p99 latency diverges beyond the 200ms SLO limit to 1,200ms+. The **Z-Score Detector** immediately flags a statistical anomaly ($Z > 3.5\sigma$), and the **RCA card** attributes the degradation to `DB_POOL_SEMAPHORE.acquire`.
